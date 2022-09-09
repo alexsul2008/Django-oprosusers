@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% if user.is_authenticated %}
+
+    {% block content %}
+        <div class="container">
+            <div class="row">
+                <h1 class="mb-3">Статистика вопросов</h1>
+              
+                <div class="accordion" id="accordionExample">
+                    {% for items_all in user_stat %}
+                        <div class="card">
+                            <div class="" id="heading{{ items_all.number_opros_id }}" >
+
+                                <button class="btn btn-outline-danger btn-lg btn-block collapsed mt-2" type="button"
+                                        data-toggle="collapse" data-target="#collapse{{ items_all.number_opros_id }}"
+                                        aria-expanded="false" aria-controls="collapse{{ items_all.number_opros_id }}">
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <span class="badge float-right m-1">Опрос пройден: </span>
+                                        </div>
+                                        <div class="col-2">
+                                            <span class="badge badge-light float-left m-1">{{ items_all.date_passage|date:"j E Y" }}</span>
+                                        </div>
+
+                                        <div class="col-3">
+                                            <span class="badge float-right m-1">Вы не правильно ответили на: </span>
+                                        </div>
+                                        <div class="col-2 d-flex flex-row">
+                                            <span class="badge badge-light w-100 mb-1 mt-1">{{ items_all.count }}</span>
+                                            <span class="badge m-1">из</span>
+                                            <span class="badge badge-light w-100 mb-1 mt-1">{{ items_all.count_all_question }}</span>
+                                        </div>
+
+                                        <div class="col-2">
+                                            <span class="badge float-left m-1">вопроса(ов), а это</span>
+                                        </div>
+                                        <div class="col-1">
+                                            <span class="badge badge-light float-left w-100 m-1">{{ items_all.percents }} %</span>
+                                        </div>
+                                    </div>
+                                </button>
+
+                            </div>
+
+                            <div id="collapse{{ items_all.number_opros_id }}" style="transition: .6s;" class="collapse"
+                                 aria-labelledby="heading{{ items_all.number_opros_id }}"
+                                 data-parent="#accordionExample">
+                                <div class="card-body">
+                                    {% for vops in items_all.vop %}
+
+
+                                        <div class="row">
+                                            <div class="">
+                                                <h5 class="alert-heading">{{ vops.question }}</h5>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-5">
+                                            <div class="list-group w-100 disabled">
+                                                {% for answ in vops.new_answ %}
+                                                    <button type="button"
+                                                            class="list-group-item list-group-item-action {% if answ.approved == True %}list-group-item-success{% endif %}{% if answ.id in vops.otv %}list-group-item-danger{% endif %}"
+                                                            data-id="{{ answ.id }}">{{ answ.description }}</button>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}

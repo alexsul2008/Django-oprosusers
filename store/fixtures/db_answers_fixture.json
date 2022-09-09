@@ -1,0 +1,250 @@
+[
+  {
+    "model": "questions.answers",
+    "pk": 1,
+    "fields": {
+      "description": "Моцарт и Сальери",
+      "question_id": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 2,
+    "fields": {
+      "description": "Борис Годунов",
+      "question_id": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 3,
+    "fields": {
+      "description": "Евгений Онегин",
+      "question_id": 1,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 4,
+    "fields": {
+      "description": "Русалка",
+      "question_id": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 5,
+    "fields": {
+      "description": "Жан Мишель Жар",
+      "question_id": 2
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 6,
+    "fields": {
+      "description": "Пупо",
+      "question_id": 2
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 7,
+    "fields": {
+      "description": "Роз - Селяви",
+      "question_id": 2,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 8,
+    "fields": {
+      "description": "Клодт",
+      "question_id": 2
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 9,
+    "fields": {
+      "description": "Мец",
+      "question_id": 3
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 10,
+    "fields": {
+      "description": "Лилль",
+      "question_id": 3
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 11,
+    "fields": {
+      "description": "Версаль",
+      "question_id": 3
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 12,
+    "fields": {
+      "description": "Виши",
+      "question_id": 3,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 13,
+    "fields": {
+      "description": "В децибелах",
+      "question_id": 4,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 14,
+    "fields": {
+      "description": "В дециметрах",
+      "question_id": 4
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 15,
+    "fields": {
+      "description": "В паскалях",
+      "question_id": 4
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 16,
+    "fields": {
+      "description": "В парсеках",
+      "question_id": 4
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 17,
+    "fields": {
+      "description": "Белые",
+      "question_id": 5,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 18,
+    "fields": {
+      "description": "Черные",
+      "question_id": 5
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 19,
+    "fields": {
+      "description": "Красные",
+      "question_id": 5
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 20,
+    "fields": {
+      "description": "Зеленые",
+      "question_id": 5
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 21,
+    "fields": {
+      "description": "Чеснок",
+      "question_id": 6,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 22,
+    "fields": {
+      "description": "Кинжал",
+      "question_id": 6
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 23,
+    "fields": {
+      "description": "Дубина",
+      "question_id": 6
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 24,
+    "fields": {
+      "description": "Пуля",
+      "question_id": 6
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 25,
+    "fields": {
+      "description": "Завоевал",
+      "question_id": 7
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 26,
+    "fields": {
+      "description": "Открыл",
+      "question_id": 7,
+      "approved": 1
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 27,
+    "fields": {
+      "description": "Продал",
+      "question_id": 7
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 28,
+    "fields": {
+      "description": "Бетховен",
+      "question_id": 8
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 29,
+    "fields": {
+      "description": "Чайковский",
+      "question_id": 8
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 30,
+    "fields": {
+      "description": "Бах",
+      "question_id": 8,
+      "approved": 1
+    }
+  }
+]

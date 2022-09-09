@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% if user.is_authenticated %}
+
+    {% block content %}
+
+         <div class="container">
+
+            <h4>Опрос уже пройден!!!</h4>
+
+         </div>
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}
+

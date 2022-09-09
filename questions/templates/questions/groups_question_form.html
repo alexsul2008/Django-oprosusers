@@ -1,0 +1,30 @@
+{% load crispy_forms_tags crispy_forms_field static formset_tags %}
+
+
+<form id="add_form" method="POST" action="{% url 'group_question_creat' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+
+    <div id="{{ form.name.id_for_label }}" class="form-group">
+        {{ form.name.label_tag }}
+		{{ form.name }}
+    </div>
+
+        <div id="{{ form.in_active.id_for_label }}" class="form-check">
+            {{ form.in_active }}
+            {{ form.in_active.label }}
+
+            <p class="card-text"><small class="text-muted">{{ form.in_active.help_text }}</small></p>
+        </div>
+
+    <div id="{{ form.groups.id_for_label }}" class="form-group">
+        {{ form.groups.label_tag }}
+        {{ form.groups }}
+    </div>
+
+
+
+
+</form>
+
+

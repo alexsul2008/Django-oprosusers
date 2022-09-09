@@ -1,0 +1,63 @@
+[
+  {
+    "model": "questions.questions",
+    "pk": 1,
+    "fields": {
+      "description": "Какую оперную партию Ф. Шаляпин не исполнял?",
+      "image": "guestions/photo.jpg"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 2,
+    "fields": {
+      "description": "Под каким псевдонимом работал Мишель Дюшан?",
+      "in_active": 0
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 3,
+    "fields": {
+      "description": "В каком городе обосновалось коллаборационистское правительство Петена в период оккупации Франции немецкими войсками?",
+      "image": "guestions/060099959b0eb0173b8e25b3f71dad36c218705a66ceef7eaa6dd3328041b9ee.jpg"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 4,
+    "fields": {
+      "description": "В чем измеряется громкость звука?"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 5,
+    "fields": {
+      "description": "Какого цвета ягоды ядовитого плюща?",
+      "image": "guestions/2ecc73165b1a734928d9d6b7e7e0221e0b26d60f258d34ecc6c172c243ca26e2.jpg"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 6,
+    "fields": {
+      "description": "Назовите испытанное средство от вампиров?"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 7,
+    "fields": {
+      "description": "Что сделал с Америкой Колумб?"
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 8,
+    "fields": {
+      "description": "Музыку какого композитора Андрей Тарковский использовал в фильме «Солярис»?",
+      "image": "guestions/chaynik_risunok_minimalizm_svetlyy_66191_1920x1080.jpg"
+    }
+  }
+]

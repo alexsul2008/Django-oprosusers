@@ -1,0 +1,42 @@
+{% load static %}
+{% static 'media/no-img.jpg' as no_img %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+	<title>Title</title>
+	
+	<!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+	<!-- Custom styles for this template -->
+    <link href="{% static 'css/cover.css' %}" rel="stylesheet">
+	
+</head>
+<body  class="d-flex flex-column h-100">
+	{% include 'include/header.html' %}
+
+	<main role="main" class="flex-shrink-0">
+		{% include 'include/messages.html' %}
+		
+		{% block content %}{% endblock content %}
+	</main>
+
+	{% include 'include/footer.html' %}
+
+	<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+	{% block extra_head_script %}
+    {% endblock extra_head_script %}
+
+	<script src="{% static 'js/main.js' %}"></script>
+
+    {% block javascript %}{% endblock javascript %}
+
+</body>
+</html>

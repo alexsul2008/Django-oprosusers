@@ -1,0 +1,475 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags crispy_forms_field %}
+
+
+
+
+{% if user.is_authenticated %}
+
+    {% block content %}
+        <div class="container-fluid">
+            <h1 class="mb-4 pb-3 text-center">Статистика прохождения опросов</h1>
+
+            <div class="row mb-4">
+                <div class="col-4">
+                    <div id="container-highcharts-ajax1" ></div>
+                </div>
+                <div class="col-4">
+                    <div id="container-highcharts-ajax2"></div>
+                </div>
+                <div class="col-4">
+                    <div id="container-highcharts-ajax3"></div>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-3">
+
+
+                    <form method="get" id="filters-in-users" data-url="{% url 'totalusers' %}">
+                        <div class="list-group">
+
+
+                            <div class="card  border border-info">
+                                <div class="card-header pl-0 pr-0">
+                                    <div class="d-flex flex-row align-items-center">
+                                        <div class="col-7"><span class="text-center"></span></div>
+                                        <div class="col-5">
+                                            <a href="{% url 'statistics' %}" data-auto-id="clear"
+                                               class="btn btn-outline-info btn-block pt-2 pb-2 text-light"
+                                               data-toggle="" data-target=""
+                                               aria-expanded="false" aria-controls="" data-filter-toggle="true">Очистить
+                                            </a>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+
+                                <div class="filter-groups " data-filter-dropdown="true">
+
+                                    <header class="header d-flex align-items-center bg-info">
+                                        <div class="mh-100">
+                                            <p class=" mb-0 h-50 d-block"><small
+                                                    class="totalSelectedUsersValues"></small><small> выбрано</small>
+                                            </p>
+                                            <p class="selectedUsersValueList mb-0 h-50 d-inline-block">&nbsp;</p>
+                                        </div>
+
+                                    </header>
+                                    <div class="col-12 mt-3"><span class="text-center">Группа отдела:</span></div>
+                                    <div class="">
+
+                                        <ul>
+                                            {% for field in filterset.form.groups %}
+                                                <li>
+                                                    <div class="btn-group-toggle mt-2 position-relative"
+                                                         data-toggle="buttons" data-auto-id="refinementItem">
+                                                        <label class="btn btn-outline-info w-100 text-left text-light "
+                                                               for="{{ field.id_for_label }}"
+                                                               data-value="{{ field.choice_label }}">
+                                                            {{ field.tag }}
+                                                            {{ field.choice_label }}
+
+                                                            <span class="{{ field.data.name }}_id_{{ field.data.value }} badge-info float-right rounded-lg pl-2 pr-2"
+                                                                  data-auto-id="refinementItemCount">0</span>
+                                                        </label>
+
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+
+
+                                    </div>
+
+                                    <div class="col-12 mt-3"><span
+                                            class="text-center">Разрешение на прохождение опроса:</span></div>
+                                    <div class="">
+                                        <div class="btn-group btn-group-toggle d-block mt-2 pl-0"
+                                             data-toggle="buttons" data-auto-id="refinementItemInActive">
+                                            <ul>
+                                                {% for field_permits in filterset.form.is_permits %}
+                                                    <li>
+
+                                                        <label class="btn btn-outline-info w-100 text-left text-light "
+                                                               for="{{ field_permits.id_for_label }}">
+                                                            {{ field_permits.tag }}
+                                                            {{ field_permits.choice_label }}
+                                                            <span class="{{ field_permits.data.name }}_id_{{ field_permits.data.index }} badge-info float-right rounded-lg pl-2 pr-2"
+                                                                  data-auto-id="refinementItemCount">0</span>
+                                                        </label>
+
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-info btn-block pt-2 pb-2 mt-3 text-light">Вывести
+                        </button>
+                    </form>
+
+
+                </div>
+                <div class="col-9">
+                    {#    # Модальное окно http://sharelink.ru/blog/vyvod-tovara-v-modalnom-okne/#}
+
+
+                    {% if success %}
+                        <p style="color:red">Вопрос добавлен</p>
+                    {% endif %}
+					
+					
+					<div class="d-inline-flex">
+				
+                        <div class="mr-2"><a href="" class="btn btn-primary btn-lg mb-3" role="button"
+                                             data-url="{% url 'user_add' %}"
+                                             aria-pressed="true"
+                                             data-toggle="modal"
+                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>
+                        <div class="mr-2"><a href="" class="btn btn-info btn-lg mb-3" role="button"
+                                             data-url="{% url 'group_question_creat' %}"
+                                             aria-pressed="true"
+                                             data-toggle="modal"
+                                             data-target="#exampleModalCenter">Добавить группу пользователей</a></div>
+
+                   
+
+                    </div>
+
+
+                    <div class="list-group">
+                        <button class="btn btn-info btn-block mt-2 pt-2 pb-2 disabled"
+                                type="button"
+                                data-toggle="" data-target=""
+                                aria-expanded="false" aria-controls="">
+                            <div class="row">
+                                <div class="col-1 pr-0">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input check-all-user"
+                                               id="allpermits">
+                                        <label class="custom-control-label" for="allpermits">Все</label>
+
+                                    </div>
+                                </div>
+                                <div class="col-5 pl-0"><span class="text-center">Фамилия Имя инженера</span></div>
+                                <div class="col-2"><span class="text-center">Группа</span></div>
+                                <div class="col-2"><span class="text-center">&sum; опросов</span></div>
+                                <div class="col-2"><span class="text-center">Дата прохождения </span></div>
+                            </div>
+                        </button>
+
+
+                        <div class="accordion" id="accordExample">
+                            {% for list_answer_user in statistics_users %}
+                                <div class="" id="heading_{{ list_answer_user.id }}" data-heading-user="{{ list_answer_user.id }}">
+
+                                    <div class="row">
+                                        <div class="col-1 pr-0">
+                                            <div class="custom-control custom-switch text-center">
+                                                <input name="user-check" type="checkbox"
+                                                       class="custom-control-input"
+                                                       value="{{ list_answer_user.is_permits }}"
+                                                       {% if list_answer_user.is_permits == True %}checked{% endif %}
+                                                       id="userpermits_{{ list_answer_user.id }}"
+                                                       data-user="{{ list_answer_user.id }}"
+                                                       data-url="{% url 'userchecked' %}">
+                                                <label class="custom-control-label align-middle mt-3"
+                                                       for="userpermits_{{ list_answer_user.id }}"></label>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-11 pl-0">
+                                            <button class="btn btn-outline-info btn-lg btn-block mt-2 statistics-user"
+                                                    type="button" data-user-id="{{ list_answer_user.id }}"
+                                                    data-url="{% url 'statistics_for_user' %}"
+                                                    data-toggle="collapse"
+                                                    data-target="#collapse_{{ list_answer_user.id }}"
+                                                    aria-expanded="false"
+                                                    aria-controls="collapse_{{ list_answer_user.id }}">
+                                                <div class="row">
+                                                    <div class="col-4">
+                                                        <span class="username badge text-left m-1 w-100">{{ list_answer_user.last_name }} {{ list_answer_user.first_name }}</span>
+                                                    </div>
+													
+													<div class="col-2">
+														<span class="d-none childrens p-0">
+															<span class="fa fa-pencil btn btn-sm btn-light p-1"
+															   style="width: 30px; height: 30px;"
+															   role="button"
+															   aria-pressed="true"
+															   data-toggle="modal"
+															   data-url=""
+															   data-target="#editModalCenter"
+															   title="Редактировать">
+															</span>
+															
+															<span class="fa fa-trash delete-user btn btn-sm btn-danger p-1"
+															   style="width: 30px; height: 30px;"
+															   role="button"
+															   aria-pressed="true"
+															   data-url="{% url 'user_delete' list_answer_user.id %}"
+															   data-toggle="modal"
+															   data-target="#deleteUserModalCenter"
+															   title="Удалить">
+															</span>
+														</span>
+                                                    </div>
+
+                                                    <div class="col-2">
+                                                        <span class="badge badge-light text-left p-2 w-100">{{ list_answer_user.groups__name }}</span>
+                                                    </div>
+
+                                                    {% if list_answer_user.permit_count != 0 %}
+                                                        <div class="col-2">
+                                                            <span class="badge badge-light text-center p-2 w-50">{{ list_answer_user.permit_count }}</span>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <span class="badge badge-light text-center p-2 w-100">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
+                                                        </div>
+
+                                                    {% else %}
+                                                        <div class="col-4">
+                                                            <small class="text-center text-wrap">Опрос не проходил(а)</small>
+
+                                                        </div>
+                                                    {% endif %}
+
+
+                                                </div>
+
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div id="collapse_{{ list_answer_user.id }}" class="collapse"  style="transition: .6s;" data-collapse-user="{{ list_answer_user.id }}"
+                                     aria-labelledby="heading_{{ list_answer_user.id }}"
+                                     data-parent="#accordExample">
+
+                                    <div id="containerAllAnswerUser_{{ list_answer_user.id }}"></div>
+                                    <span id="datepassagejsonalluser" hidden>{{ date_passage }}</span>
+
+                                    {% for items_all in list_answer_user.list_quests %}
+                                        <div class="row">
+                                            <div class="col-1 pr-0  text-center">
+                                                <a class="fa fa-trash btn btn-outline-danger align-middle mt-3 pt-2 pb-2 {% if request.user.is_staff %}delete-user-statics"
+                                                   aria-pressed="true"
+                                                   data-id="{{ items_all.number_opros_id }}"
+                                                   data-url="{% url 'statisticsuserdelete' items_all.number_opros_id %}"
+                                                   {% else %}not-delete-user-statics"
+                                                    data-target="#succesDeleteModalCenter" aria-pressed="true"
+                                                    data-toggle="modal" {% endif %}
+                                                title="Удалить" role="button" href=""></a>
+                                            </div>
+
+
+                                            <div class="col-11 pl-0">
+                                                <button class="btn btn-outline-danger btn-lg btn-block mt-2"
+                                                        type="button"
+                                                        data-toggle="modal"
+                                                        data-target="#staticBackdrop_{{ items_all.number_opros_id }}"
+                                                        aria-expanded="false" aria-controls="">
+                                                    <div class="row">
+                                                        <div class="col-2">
+                                                            <span class="badge float-right m-1">Опрос пройден: </span>
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <span class="badge badge-light float-left m-1">{{ items_all.date_passage|date:"j E Y" }}</span>
+                                                        </div>
+
+                                                        <div class="col-3">
+                                                            <span class="badge float-right m-1">Не правильных ответов: </span>
+                                                        </div>
+                                                        <div class="col-2 d-flex flex-row">
+                                                            <span class="badge badge-light w-100 mb-1 mt-1">{{ items_all.count }}</span>
+                                                            <span class="badge m-1">из</span>
+                                                            <span class="badge badge-light w-100 mb-1 mt-1">{{ items_all.count_all_question }}</span>
+                                                        </div>
+
+                                                        <div class="col-2">
+                                                            <span class="badge float-left m-1">вопроса(ов), а это</span>
+                                                        </div>
+                                                        <div class="col-1">
+                                                            <span class="badge badge-light float-left w-100 m-1">{{ items_all.percents }} %</span>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop_{{ items_all.number_opros_id }}"
+                                             data-backdrop="static" data-keyboard="false" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="staticBackdropLabel_{{ items_all.number_opros_id }}"
+                                             aria-hidden="true">
+                                            <div class="modal-dialog modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-info text-white">
+                                                        <h5 class="modal-title"
+                                                            id="staticBackdropLabel_{{ items_all.number_opros_id }}">
+                                                            Ответы на вопросы опроса</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {% for vops in items_all.vop %}
+                                                            <div class="text-dark shadow p-2 mb-3 bg-white rounded">
+                                                                <div class="w-100 pl-2">
+                                                                    <h5 class="alert-heading">{{ vops.question }}</h5>
+                                                                </div>
+                                                            </div>
+                                                            <div class="shadow p-3 mb-5 bg-white rounded">
+                                                                <div class="list-group w-100 disabled">
+                                                                    {% for answ in vops.new_answ %}
+                                                                        <button type="button"
+                                                                                class="list-group-item list-group-item-action {% if answ.approved == True %}list-group-item-success{% endif %}{% if answ.id in vops.otv %}list-group-item-danger{% endif %}"
+                                                                                data-id="{{ answ.id }}">{{ answ.description }}</button>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <div class="modal-footer bg-light">
+                                                        <button type="button" class="btn btn-outline-info"
+                                                                data-dismiss="modal">
+                                                            Закрыть
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+
+
+                                </div>
+
+
+                                <div class="modal fade show" id="succesDeleteModalCenter" tabindex="-1" role="dialog"
+                                     aria-labelledby="succesDeleteModalCenterTitle" aria-modal="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger">
+                                                <h5 class="modal-title" id="succesDeleteModalCenterTitle">Права
+                                                    доступа</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h5 class="text-secondary text-center">У вас нет прав на удаление
+                                                    записи.<br/>Со
+                                                    всеми вопросами
+                                                    обратитесь к РГ Зотову С.В.</h5>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-danger"
+                                                        data-dismiss="modal">
+                                                    Закрыть
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% include 'include/paginator.html' %}
+                </div>
+
+<!--                <div class="col-1"></div>-->
+            </div>
+        </div>
+
+
+        </div>
+
+
+
+		<div class="modal fade" id="deleteUserModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="deleteUserModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="deleteUserModalCenterTitle">Удаление пользователя</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body bg-transparent text-dark">
+                                <div class="modal-user-delete jq-product-wrapper">
+									
+
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light text-dark">
+                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                                <button form="delete_user_form" type="submit" class="btn btn-outline-danger">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+		<div class="modal fade" id="exampleAddUserModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleAddUserModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+				<div class="modal-content">
+					<div class="modal-header bg-info text-white">
+						<h5 class="modal-title" id="exampleAddUserModalCenterTitle">Добавление пользователя</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body bg-transparent text-dark">
+						<div class="modal-user-add jq-product-wrapper">
+						
+						</div>
+					</div>
+					<div class="modal-footer bg-light text-white">
+						<button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+						<button form="user_add_form" type="submit" class="btn btn-outline-success">Добавить</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		
+
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}
+
+
+{% block javascript %}
+    <script>
+        {#var data = '{{ filter.form.groups|safe }}';#}
+        window.onload = function () {
+
+            {#console.log(data);#}
+            formFilterInUsers();
+        };
+
+
+    </script>
+
+{% endblock javascript %}
+

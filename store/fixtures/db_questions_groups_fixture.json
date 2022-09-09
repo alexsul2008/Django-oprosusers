@@ -1,0 +1,51 @@
+[
+  {
+    "model": "questions.groupsquestions",
+    "pk": 1,
+    "fields": {
+      "name": "Общий вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 2,
+    "fields": {
+      "name": "Открытый вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 3,
+    "fields": {
+      "name": "Закрытый вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 4,
+    "fields": {
+      "name": "Разъясняющий вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 5,
+    "fields": {
+      "name": "Контрольный вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 6,
+    "fields": {
+      "name": "Косвенный вопрос"
+    }
+  },
+  {
+    "model": "questions.groupsquestions",
+    "pk": 7,
+    "fields": {
+      "name": "Альтернативный вопрос"
+    }
+  }
+]
