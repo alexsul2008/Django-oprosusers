@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags crispy_forms_field widget_tweaks %}
+{% load crispy_forms_tags crispy_forms_field %}
 
 {% block content %}
 
@@ -129,7 +129,7 @@
             <div class="col-8">
                 <div class="row">
                     <div class="col d-inline-flex">
-                        {#    # Модальное окно http://sharelink.ru/blog/vyvod-tovara-v-modalnom-okne/#}
+
                         <div class="mr-2"><a href="" class="btn btn-primary btn-lg mb-3" role="button"
                                              data-url="{% url 'question_creat' %}"
                                              aria-pressed="true"
@@ -139,31 +139,7 @@
                                              data-url="{% url 'group_question_creat' %}"
                                              aria-pressed="true"
                                              data-toggle="modal"
-                                             data-target="#exampleModalCenter">Добавить группу вопросов</a></div>
-
-                        <div class="mr-2"><a href="{% url 'export_questions' %}" class="btn btn-info btn-lg mb-3"
-                                             role="button"
-                                             data-url="">Экспорт</a></div>
-                        <div class="mr-2"><a href="{% url 'country_import' %}" class="btn btn-info btn-lg mb-3"
-                                             role="button"
-                                             data-url="">Импорт</a></div>
-
-
-                        <form method="post" action="{% url 'export_answers' %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="input-group input-group-lg mb-3">
-                                <div class="input-group-prepend">
-                                    <button class="btn btn-info btn-lg" type="submit">Экспорт</button>
-                                </div>
-                                <select name="file-format" class="custom-select" id="inputFormatSelect">
-                                    <option selected>Выберите формат...</option>
-                                    <option>CSV</option>
-                                    <option>JSON</option>
-                                    <option>XLS (Excel)</option>
-                                </select>
-                            </div>
-                        </form>
-
+                                             data-target="#addGroupQuestinModalCenter">Добавить группу вопросов</a></div>
 
 
                     </div>
@@ -252,8 +228,8 @@
                                                 <a href="" class="fa fa-pencil btn btn-outline-info" role="button"
                                                    aria-pressed="true"
                                                    data-toggle="modal"
-                                                   data-url="{% url 'question_edit' pk=list_question.id %}"
-                                                   data-target="#editModalCenter"
+                                                   data-url="{% url 'question_edit' list_question.id %}"
+                                                   data-target="#editQuestionModalCenter"
                                                    title="Редактировать"></a>
 
 
@@ -268,7 +244,7 @@
                                                    aria-pressed="true"
                                                    data-url="{% url 'question_delete' list_question.id %}"
                                                    data-toggle="modal"
-                                                   data-target="#deleteModalCenter"
+                                                   data-target="#deleteQuestionModalCenter"
                                                    title="Удалить"></a>
 
                                             </div>
@@ -288,14 +264,14 @@
                                                                role="button"
                                                                aria-pressed="true"
                                                                data-toggle="modal"
-                                                               data-url="{% url 'group_question_edit' pk=gq.id %}"
+                                                               data-url="{% url 'group_question_edit' gq.id %}"
                                                                data-target="#editGroupQuestions"
                                                                title="Редактировать"></a>
                                                             <a href="#" class="fa fa-trash btn btn-outline-danger p-0"
                                                                role="button"
                                                                aria-pressed="true"
                                                                data-toggle="modal"
-                                                               data-url="{% url 'group_question_delete' pk=gq.id %}"
+                                                               data-url="{% url 'group_question_delete' gq.id %}"
                                                                data-target="#deleteGroupQuestions"
                                                                title="Удалить"></a>
 
@@ -346,36 +322,38 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="exportModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="exportModalCenterTitle" aria-hidden="true">
+
+                <div class="modal fade" id="addGroupQuestinModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="addGroupQuestinModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="exportModalCenterTitle">Экспортировать вопросы</h5>
+                                <h5 class="modal-title" id="addGroupQuestinModalCenterTitle">Добавление группы вопросов</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-export-question jq-product-wrapper">
+                                <div class="modal-add-groups-question jq-product-wrapper">
 
 
                                 </div>
                             </div>
                             <div class="modal-footer bg-light text-white">
                                 <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="add_form" type="submit" class="btn btn-outline-success">Добавить</button>
+                                <button form="add_groups_question_form" type="submit" class="btn btn-outline-success">Добавить</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="editModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="editModalCenterTitle" aria-hidden="true">
+
+                <div class="modal fade" id="editQuestionModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="editQuestionModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="editModalCenterTitle">Редактирование вопроса</h5>
+                                <h5 class="modal-title" id="editQuestionModalCenterTitle">Редактирование вопроса</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -396,12 +374,12 @@
                 </div>
 
 
-                <div class="modal fade" id="deleteModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="deleteModalCenterTitle" aria-hidden="true">
+                <div class="modal fade" id="deleteQuestionModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="deleteQuestionModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="deleteModalCenterTitle">Удаление вопроса</h5>
+                                <h5 class="modal-title" id="deleteQuestionModalCenterTitle">Удаление вопроса</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -414,7 +392,7 @@
                             </div>
                             <div class="modal-footer bg-light text-dark">
                                 <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="delete_form" type="submit" class="btn btn-outline-danger">Удалить</button>
+                                <button form="delete_question_form" type="submit" class="btn btn-outline-danger">Удалить</button>
                             </div>
                         </div>
                     </div>
@@ -426,7 +404,7 @@
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Добавление группы вопросов</h5>
+                                <h5 class="modal-title" id="groupQuestionsTitle">Добавление группы вопросов</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>

@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'import_export',
     'django_filters',
+    'extra_views',
+    'djangoformsetjs',
 
     'store',
 ]

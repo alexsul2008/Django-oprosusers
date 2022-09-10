@@ -1,0 +1,5 @@
+
+
+<form id="delete_question_form" method="post" action="{% url 'question_delete'  object.id %}">{% csrf_token %}
+    <p>Вы действительно хотите удалить вопрос: "{{ object }}"</p>
+</form>

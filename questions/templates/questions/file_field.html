@@ -1,0 +1,98 @@
+{# Custom Crispy Forms template for rendering an image field. #}
+{% load crispy_forms_field %}
+
+{% if field.is_hidden %}
+    {{ field }}
+{% else %}
+    {% if field|is_checkbox %}
+        <div class="form-group">
+        {% if label_class %}
+            <div class="controls col-{{ bootstrap_device_type }}-offset-{{ label_size }} {{ field_class }}">
+        {% endif %}
+    {% endif %}
+<{% if tag %}{{ tag }}{% else %}div{% endif %} id="div_{{ field.auto_id }}"
+                                               {% if not field|is_checkbox %}class="form-group{% else %}class="
+                                               checkbox{% endif %}{% if wrapper_class %} {{ wrapper_class }}{% endif %}
+                                               {% if form_show_errors %}{% if field.errors %}
+                                               has-error{% endif %}{% endif %}{% if field.css_classes %}
+                                                   {{ field.css_classes }}{% endif %}">
+{% if field.label and not field|is_checkbox and form_show_labels %}
+    <div class="header bg-info text-white text-center p-2">
+        <label for="{{ field.id_for_label }}"
+               class="m-0 control-label {{ label_class }}{% if field.field.required %} requiredField{% endif %}">
+            {{ field.label|safe }}{% if field.field.required %}<span class="asteriskField">*</span>{% endif %}
+        </label>
+    </div>
+{% endif %}
+
+{% if field|is_checkboxselectmultiple %}
+    <div class="header bg-info text-white text-center p-2">Привет</div>
+    {% include 'bootstrap4/layout/checkboxselectmultiple.html' %}
+{% endif %}
+
+{% if field|is_radioselect %}
+    {% include 'bootstrap4/layout/radioselect.html' %}
+{% endif %}
+
+{% if not field|is_checkboxselectmultiple and not field|is_radioselect %}
+    {% if field|is_checkbox and form_show_labels %}
+        <label for="{{ field.id_for_label }}" class="{% if field.field.required %} requiredField{% endif %}">
+            {% crispy_field field %}
+            {{ field.label|safe }}
+            {% include 'bootstrap4/layout/help_text_and_errors.html' %}
+        </label>
+    {% else %}
+        <div class="controls {{ field_class }}">
+            <div class="w-100 fileinput fileinput-{% if field.value and field.value.url %}exists{% else %}new{% endif %}"
+                 data-provides="fileinput">
+
+                {% if field.value and field.value.url %}
+                <div class="fileinput-preview fileinput-exists thumbnail mt-2 w-100" style="max-height: 150px; line-height: 10px;">
+                    <img src="{{ field.value.url }}" class="img-fluid img-thumbnail uploaded-images" style="height: 140px; width: 100%; display: block;">
+                </div>
+                {% else %}
+                <div class="fileinput-new thumbnail mt-2 w-100" style="height: 150px;">
+                    <img class="img-fluid img-thumbnail uploaded-images"
+                         src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iMTQwIj48cmVjdCB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk1IiB5PSI3MCIgc3R5bGU9ImZpbGw6I2FhYTtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjE5MHgxNDA8L3RleHQ+PC9zdmc+"
+                         style="height: 140px; width: 100%; display: block;">
+                </div>
+                {% endif %}
+
+                {# imgfileinput, imgselect, imremove used for removing image #}
+                <div id="imgfileinput" class="d-flex imgfileinput">
+                      <span id="imgselect" class="btn btn-outline-success btn-file flex-fill">
+                        <span class="select-image">Выбрать</span>
+                        <input id="___imgfile" type="file" name="{{ field.name }}" class="d-none imgfile" onchange="readURL(this);">
+                      </span>&nbsp
+                    <a id="imgremove" href="#" class="btn btn-outline-danger fileinput-exists flex-fill"
+                       data-dismiss="fileinput">Удалить</a>
+                </div>
+            </div>
+
+            {% include 'bootstrap4/layout/help_text_and_errors.html' %}
+        </div>
+    {% endif %}
+{% endif %}
+</{% if tag %}{{ tag }}{% else %}div{% endif %}>
+{% if field|is_checkbox %}
+    {% if label_class %}
+        </div>
+    {% endif %}
+    </div>
+{% endif %}
+{% endif %}
+
+<script>
+    function readURL(input){
+        if (input.files && input.files[0]){
+            var reader = new FileReader();
+            var modalContent = document.getElementById('editQuestionModalCenter');
+            var img = modalContent.getElementsByClassName("uploaded-images");
+            reader.onload = function(e){
+                img[0].src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>

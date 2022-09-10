@@ -1,0 +1,62 @@
+
+{% load crispy_forms_field crispy_forms_tags static formset_tags %}
+{% static 'media/no-img.jpg' as no_img %}
+
+
+<form id="update_form" class="update_form" method="POST" action="{% url 'question_edit' object.id %}" enctype="multipart/form-data">
+{% csrf_token %}
+
+    {% crispy form %}
+
+
+    <h3>Ответы к вопросу:</h3>
+
+    <div class="mt-3">
+
+        {% for formset in inlines %}
+
+
+            <div id="formset_new" data-formset-prefix="{{ formset.prefix }}">
+                {{ formset.management_form }}
+
+                <div data-formset-body>
+
+                    {% for form in formset %}
+                        <div class="mb-3" data-formset-form>
+							
+							{{ form|crispy }}
+
+                            <button type="button" class="btn btn-outline-danger" data-formset-delete-button>Удалить ответ</button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div class="mb-3" data-formset-form>
+                            {{ formset.empty_form|crispy }}
+                            <button type="button" class="btn btn-outline-danger" data-formset-delete-button>Удалить ответ</button>
+                        </div>
+                    {% endescapescript %}
+                </script>
+
+                <input type="button" class="btn btn-outline-success mb-3" value="Добавить ответ" data-formset-add>
+
+                <script>jQuery(function ($) {
+                    $("#formset_new").formset({
+                        animateForms: true,
+                        inputDeleteButton: true // Признак видимости input [id -DELETE]
+                    });
+                });</script>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</form>
+
+
+

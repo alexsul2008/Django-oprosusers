@@ -136,7 +136,7 @@ $(document).ready(function () {
                         html += '<div class="col-11 pl-0">';
                         html += '<div class="d-flex flex-row">';
                         html += '<div class="align-middle pr-2">';
-                        html += '<a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteModalCenter" title="Удалить"></a></div>';
+                        html += '<a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
                         html += '<div class="pl-0 w-100">';
                         html += '<button class="btn btn-outline-danger btn-lg btn-block collapsed" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
                         html += '<div class="row"><div class="col-1"></div>';
@@ -260,8 +260,30 @@ $(document).ready(function () {
         }
     );
 
+    $('.action-list').on('click', 'a.question-active', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var elem = $(this);
+        var url = elem.attr('href');
+        var in_active = elem.data('in_active');
+        var id = elem.data('id');
 
-     $('#exampleAddUserModalCenter').on('show.bs.modal', function (event) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'id': id,
+                'in_active': in_active,
+            },
+            success: function (data) {
+                location.reload();
+            }
+        });
+    });
+
+
+    $('#exampleAddUserModalCenter').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
         var url = button.data('url');
         var container = $(this).find('.modal-user-add');
@@ -274,10 +296,109 @@ $(document).ready(function () {
         });
     });
 
+
+    $('#editQuestionModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.edit-modal-question');
+
+        // console.log(container);
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+    });
+
+    $('#deleteQuestionModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-question-delete');
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+
+    });
+
+
+    $('#addGroupQuestinModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-add-groups-question');
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+    });
+
+    $('#editGroupQuestions').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-edit-groups-question');
+        container.html('');
+
+        console.log(button);
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+    });
+
+    $('#deleteGroupQuestions').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-groups-question-delete');
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+
+    });
+
+
+    $('body').on('click', '.select-image', function(){
+        if($('.imgclear').lenght > 0) {
+            $('.imgclear').remove();
+        };
+        $('.delete-image').removeClass('disabled');
+        $(this).next('.imgfile').click();
+    });
+
+    $('body').on('click', 'a.delete-image', function () {
+        var field_name = $('.imgfile')[0].getAttribute('name');
+        var images = $(this).closest('.fileinput').find('img.uploaded-images');
+        images.animate({opacity: 0}, 500, 'linear', function(){images.attr('src', deleteSRCimages())}).animate({opacity: 0}, 900, 'linear');
+        $(this).addClass('disabled')
+
+        $('.imgfileinput').append('<input id="imgclear" type="hidden" name="' + field_name + '-clear" value="on">');
+    });
+
+//    $('body').on('click', '#imgremove', function () {
+//        var field_name = $('#imgfile')[0].getAttribute('name');
+//        $('#imgfileinput').append('<input id="imgclear" type="hidden" name="' + field_name + '-clear" value="on">');
+//    });
+//
+//    $('body').on('click', '#imgselect', function () {
+//        $('#imgclear').remove();
+//    });
+
+
 });
 
 
-
+function deleteSRCimages(){
+    const img_src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iMTQwIj48cmVjdCB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk1IiB5PSI3MCIgc3R5bGU9ImZpbGw6I2FhYTtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjE5MHgxNDA8L3RleHQ+PC9zdmc+';
+    return img_src;
+}
 
 function contains(arr, elem) {
     for (let i = 0; i < arr.length; i++) {
@@ -372,6 +493,57 @@ function totalSelectedGroupsInFilter(totalselected, inputtext) {
     let totalselectgroup = parseInt($.trim(totalselected).split(',').length) - 1;
     inputtext.text(totalselectgroup);
 }
+
+
+function formFilterInQuestions() {
+    let forma = $('form#filters-in-questions')
+    let url = forma.data('url');
+    let arr = $('form#filters-in-questions input'), obj = {};
+    $.each(arr, function (index, el) {
+        obj[el.name] ? obj[el.name].push(el.value) : (obj[el.name] = [el.value]);
+    });
+
+    let objchec = '';
+    forma.find('input[name="groups_questions"]:checked').each(function () {
+        label = $("label[for='" + $(this).attr('id') + "']").data('value');
+        objchec += '' + label + ', ';
+    });
+    objchec += '';
+
+    forma.find('p.selectedGroupsQuestionsValueList').text(objchec.slice(0, -2));
+    totalSelectedGroupsInFilter(objchec, forma.find('small.totalSelectedGroupsQuestionsValues'));
+
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'data': JSON.stringify(obj),
+        },
+        success: function (data) {
+            let groups_questions = JSON.parse(data.groups_questions);
+            let in_active = JSON.parse(data.in_active);
+            let doc_url = JSON.parse(data.doc_url);
+            for (let i = 0; i < groups_questions.length; i++) {
+                $('span.groups_questions_id_' + groups_questions[i]['id']).text(groups_questions[i]['total']);
+            }
+            for (let j = 0; j < in_active.length; j++) {
+                $('span.in_active_id_' + [j]).text(in_active[j][0]['total']);
+            }
+            for (let d = 0; d < doc_url.length; d++) {
+                $('span.doc_url_id_' + [d]).text(doc_url[d][0]['total']);
+            }
+        }
+    });
+
+
+}
+
+
+
+
+
+
 
 function chartitInUsers() {
     let chart = $('#container-highcharts-ajax1')
