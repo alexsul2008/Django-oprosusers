@@ -1,0 +1,91 @@
+<header>
+
+        <h1 class="navbar-brand align-middle m-4">Название Отдела</h1>
+
+
+        {% if request.user.is_authenticated %}
+            <button type="button" class="btn btn-primary align-middle">
+            {% if request.user.is_superuser %}
+                {{ request.user.last_name }} <span class="badge badge-light align-middle p-2">Полный доступ</span>
+            {% else %}
+                {{ user.last_name }} {{ user.first_name }} <span class="badge badge-light align-middle p-2">
+                    {% for user_groups in request.user.groups.all %}
+                            {{ user_groups }}
+                    {% endfor %}</span>
+            {% endif %}
+            </button>
+        {% endif %}
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item ">{% url 'questions' as url_questions %}
+                        <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
+                               href="{% url 'questions' %}">Вопросы</a>
+                     </li>
+				
+					{% if request.user.is_superuser %}
+					<li class="nav-item ">{% url 'statistics' as url_statistics %}
+						<a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
+							   href="{% url 'statistics' %}">Статистика</a>
+					 </li>
+                    {% endif %}
+                    
+                    {% for groups in request.user.groups.all %}
+                    	{% if groups.is_boss %}
+                            <li class="nav-item ">{% url 'statistics' as url_statistics %}
+                            	<a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
+                                   href="{% url 'statistics' %}">Статистика</a>
+                         	</li>
+
+                        {% else %}
+                            <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
+                                <a class="nav-link {% if url_statistics_user == request.path %}active{% endif %}"
+                                   href="{% url 'statistics_user' %}">Статистика</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                {% endif %}
+
+				{% for user_groups in request.user.groups.all %}
+                    {% if user_groups.is_boss %}
+                        <li class="nav-item ">{% url 'filter' as filter %}
+                            <a class="nav-link {% if filter == request.path %}active{% endif %}"
+                               href="{% url 'filter' %}">Редактирование</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                 {% if request.user.is_superuser %}
+                        <li class="nav-item ">{% url 'filter' as filter %}
+                            <a class="nav-link {% if filter == request.path %}active{% endif %}"
+                               href="{% url 'filter' %}">Редактирование</a>
+                        </li>
+                 {% endif %}
+
+            </ul>
+
+
+           {% if user.is_authenticated %}
+                <a class="btn btn-outline-success my-2 my-sm-0" href="{%  url 'logout' %}">Выход</a>
+           {% else %}
+                <a class="btn btn-outline-success my-2 my-sm-0" href="{%  url 'login' %}">Вход</a>
+           {% endif %}
+        </div>
+    </nav>
+
+
+
+
+
+</header>
