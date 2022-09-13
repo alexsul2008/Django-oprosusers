@@ -16,13 +16,12 @@ class Command(BaseCommand):
 		call_command("migrate")
 		call_command("loaddata", "db_group_fixture.json")
 		call_command("loaddata", "db_user_fixture.json")
-		#
+
 
 		groups_user = Group.objects.all()
-		users_count = User.objects.count()
+		users = User.objects.all().exclude(is_superuser=True)
 
-		for i in range(1, users_count + 1):
-			user = User.objects.get(id=i)
+		for user in users:
 			user.groups.add(random.choice(groups_user))
 
 		call_command("loaddata", "db_questions_groups_fixture.json")

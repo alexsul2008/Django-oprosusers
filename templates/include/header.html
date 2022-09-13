@@ -66,6 +66,7 @@
                         </li>
                     {% endif %}
                 {% endfor %}
+
                  {% if request.user.is_superuser %}
                         <li class="nav-item ">{% url 'filter' as filter %}
                             <a class="nav-link {% if filter == request.path %}active{% endif %}"
