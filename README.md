@@ -1,2 +1,5 @@
-# django-oprousers
+<h2 align="center">Django OprosUsers</h2>
+
 Опросник теоретических знаний персонала отдела/групп подразделения.
+
+
