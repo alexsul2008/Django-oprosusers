@@ -5,6 +5,7 @@ Django==4.0
 django-braces==1.15.0
 django-clearcache==1.2.1
 django-crispy-forms==1.14.0
+django-debug-toolbar==4.1.0
 django-extra-views==0.14.0
 django-filter==22.1
 django-formset-js==0.5.0
