@@ -1,10 +1,26 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Div, Field
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
 from django.contrib.auth.models import User
 
 from questions.models import GroupsQuestions, Answers, Questions
+
+
+class UserPasswordChangeForm(SetPasswordForm):
+    """
+    Форма изменения пароля
+    """
+    def __init__(self, *args, **kwargs):
+        """
+        Обновление стилей формы
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
 
 
 class UserAddForm(UserCreationForm):
@@ -15,6 +31,16 @@ class UserAddForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("first_name", "last_name", "username", 'groups')
+
+class UserEditForm(UserChangeForm):
+    email = forms.EmailField(label = "Email")
+    first_name = forms.CharField(label = "Имя")
+    last_name = forms.CharField(label = "Фамилия")
+
+    class Meta:
+        model = User
+        fields = '__all__'
+        fields = ("first_name", "last_name", "username", 'email', 'groups', 'is_active', 'is_permits', 'password')
 
 
 class GroupsQuestionsForm(forms.ModelForm):

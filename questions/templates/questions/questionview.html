@@ -4,10 +4,10 @@
 
     {% block content %}
     <div class="container">
-		
+
             <div class="row mb-4 count-total">
                 <div class="col-sm-12">
-                    <h1 class="cover-heading">Вопрос <span id="count">{{ count_questions }}</span> из <span id="total">{{ total_questions }}</span>  {{ is_answered }}</h1>
+                    <h1 class="cover-heading">Вопрос <span id="count">{{ count_questions }}</span> из <span id="total">{{ total_questions }}</span></h1>
                 </div>
             </div>
 
@@ -30,36 +30,60 @@
             <div class="row">
 				<a type="button" class="btn btn-lg btn-secondary nextVopros first" data-id="{{ questions_list.id }}" data-answered="" data-next="{{ list_next }}" data-i="1" href="{% url 'nextquestion' %}">Следующий</a>
 			</div>
-		
-			
-				{% if is_answered %}
-					<div class="modal" tabindex="-1" role="dialog" id="myModal">
-					  <div class="modal-dialog" role="document">
-						<div class="modal-content">
-						  <div class="modal-header">
-							<h5 class="modal-title">Modal title</h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							  <span aria-hidden="true">&times;</span>
-							</button>
-						  </div>
-						  <div class="modal-body">
-							<p>Modal body text goes here.</p>
-						  </div>
-						  <div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary">Save changes</button>
-						  </div>
-						</div>
-					  </div>
-					</div>
-				
-			{% endif %}
-			
-			
+
+
+
+        <div class="modal" id="isAnsweredModal" tabindex="-1" role="dialog" aria-labelledby="isAnsweredModalTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                  <div class="modal-header bg-info text-white">
+                      <h5 class="modal-title" id="isAnsweredModalTitle"></h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body bg-transparent text-dark">
+                      <div class="jq-product-wrapper">
+                        <h3 class="">Вы ответили уже на этот вопрос.</h3>
+
+                      </div>
+                  </div>
+                  <div class="modal-footer bg-light text-dark">
+                      <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="modal" id="isNotAnsweredModal" tabindex="-1" role="dialog" aria-labelledby="isNotAnsweredModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="isNotAnsweredModalTitle">Вы не ответили на вопрос!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body bg-transparent text-dark">
+                    <div class="jq-product-wrapper">
+                      <h4 class="">Выберите ответ для дальнейшего прохождения опроса.</h4>
+
+                    </div>
+                </div>
+                <div class="modal-footer bg-light text-dark">
+                    <button type="button" class="btn btn-outline-info" data-dismiss="modal">Ок</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
 
 </div>
 
-	
+
 
 
     {% endblock content %}
@@ -68,6 +92,27 @@
 {% endif %}
 
 
+{% block javascript %}
+    <script>
+        window.onload = function() {
+          var loaded = sessionStorage.getItem('loaded');
+          if(loaded) {
+            // Reloaded();
 
+            var otv = localStorage.getItem('otv');
+            var status = localStorage.getItem('status');
+            if (otv && status){
+              $('#isAnsweredModal').modal('show');
+              $('body').find('.list-group a.list-group-item[data-id="' + otv + '"]').addClass(status);
+              $('body').find('div.answers').children('div.list-group').addClass('disabled');
+              // var elements = $('div[data-name|="alert"]');
+            }
 
+          } else {
+            sessionStorage.setItem('loaded', true);
+          }
+        }
 
+    </script>
+
+{% endblock javascript %}

@@ -9,9 +9,7 @@
                 {{ request.user.last_name }} <span class="badge badge-light align-middle p-2">Полный доступ</span>
             {% else %}
                 {{ user.last_name }} {{ user.first_name }} <span class="badge badge-light align-middle p-2">
-                    {% for user_groups in request.user.groups.all %}
-                            {{ user_groups }}
-                    {% endfor %}</span>
+                    {{user.groups.all.0.name}}</span>
             {% endif %}
             </button>
         {% endif %}
@@ -28,25 +26,21 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
 
-                {% if request.user.is_authenticated %}
+                {% if user.is_authenticated %}
                     <li class="nav-item ">{% url 'questions' as url_questions %}
                         <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
                                href="{% url 'questions' %}">Вопросы</a>
                      </li>
-				
-					{% if request.user.is_superuser %}
-					<li class="nav-item ">{% url 'statistics' as url_statistics %}
-						<a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
-							   href="{% url 'statistics' %}">Статистика</a>
-					 </li>
-                    {% endif %}
-                    
-                    {% for groups in request.user.groups.all %}
-                    	{% if groups.is_boss %}
+
+                    	{% if request.user.groups.all.0.is_boss or user.is_superuser %}
                             <li class="nav-item ">{% url 'statistics' as url_statistics %}
                             	<a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
                                    href="{% url 'statistics' %}">Статистика</a>
                          	</li>
+                             <li class="nav-item ">{% url 'filter' as filter %}
+                                <a class="nav-link {% if filter == request.path %}active{% endif %}"
+                                   href="{% url 'filter' %}">Редактирование</a>
+                            </li>
 
                         {% else %}
                             <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
@@ -54,26 +48,9 @@
                                    href="{% url 'statistics_user' %}">Статистика</a>
                             </li>
                         {% endif %}
-                    {% endfor %}
-                    
+
+
                 {% endif %}
-
-				{% for user_groups in request.user.groups.all %}
-                    {% if user_groups.is_boss %}
-                        <li class="nav-item ">{% url 'filter' as filter %}
-                            <a class="nav-link {% if filter == request.path %}active{% endif %}"
-                               href="{% url 'filter' %}">Редактирование</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-
-                 {% if request.user.is_superuser %}
-                        <li class="nav-item ">{% url 'filter' as filter %}
-                            <a class="nav-link {% if filter == request.path %}active{% endif %}"
-                               href="{% url 'filter' %}">Редактирование</a>
-                        </li>
-                 {% endif %}
-
             </ul>
 
 

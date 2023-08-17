@@ -48,10 +48,18 @@ $(document).ready(function () {
             $(this).removeClass('list-group-item-success').addClass('list-group-item-success')
             ok++;
             answerInQuestion(vop, otv, url, 1, 'True');
+
+            localStorage.setItem('otv', otv);
+            localStorage.setItem('status', 'list-group-item-success');
+
+
         } else {
             $(this).removeClass('list-group-item-danger').addClass('list-group-item-danger')
             notOk++;
             answerInQuestion(vop, otv, url, 0, 'True');
+
+            localStorage.setItem('otv', otv);
+            localStorage.setItem('status', 'list-group-item-danger');
         }
         $('div.list-group').removeClass('disabled').addClass('disabled');
     });
@@ -63,11 +71,13 @@ $(document).ready(function () {
         var id = $(this).data('next');
         var count = $(this).attr('data-i');
 
+
         $(this).attr('data-id', '').attr('data-next', '').attr('data-i', '');
 
         if (!$("div.list-group").hasClass("disabled")) {
-            alert('Выберите ответ');
+            $('#isNotAnsweredModal').modal('show');
         } else {
+            localStorage.clear();
             $.ajax({
                 type: 'POST',
                 url: url,
@@ -106,79 +116,104 @@ $(document).ready(function () {
         }
     });
 
-    $('body').on('click', 'button.statistics-user', function () {
-        var id = $(this).data('user-id');
-        var url = $(this).data('url');
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'pk': id,
-            },
-            success: function (data) {
-                // console.log(data);
-                var datepassage = JSON.parse(data.date_passage);
-                var listquests = JSON.parse(data.list_quests);
-
-                var html = '<div class="accordion mb-3" id="accordionExampleUserListQuestions">';
-                if (listquests.length == 0) {
-                    html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
-                } else {
-                    var dp = [];
-                    datepassage.forEach(function (el, i) {
-                        datepassage[i].date = new Date(el.date).toLocaleDateString();
-                        dp.push(datepassage[i].date);
-                    });
-                    for (i = 0; i < listquests.length; i++) {
-                        html += '<div class="card"><div class="" id="heading' + listquests[i].number_opros_id + '">';
-                        html += '<div class="row mt-1 mb-1"><div class="col-1"></div>';
-                        html += '<div class="col-11 pl-0">';
-                        html += '<div class="d-flex flex-row">';
-                        html += '<div class="align-middle pr-2">';
-                        html += '<a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
-                        html += '<div class="pl-0 w-100">';
-                        html += '<button class="btn btn-outline-danger btn-lg btn-block collapsed" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
-                        html += '<div class="row"><div class="col-1"></div>';
-                        html += '<div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div><div class="col-2"><span class="badge badge-light float-left m-1">' + new Date(listquests[i].date_passage).toLocaleDateString() + '</span></div>';
-                        html += '<div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>';
-                        html += '<div class="col-2 d-flex flex-row"><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count + '</span>';
-                        html += '<span class="badge m-1">из</span><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count_all_question + '</span></div>';
-                        html += '<div class="col-2"><span class="badge float-left m-1">вопроса(ов), а это</span></div>';
-                        html += '<div class="col-1"><span class="badge badge-light float-left w-100 m-1">' + listquests[i].percents + ' %</span></div></div>';
-                        html += '</div></button></div></div></div></div>';
-                        html += '<div id="collapse' + listquests[i].number_opros_id + '" style="transition: .6s;" class="collapse" aria-labelledby="heading' + listquests[i].number_opros_id + '" data-parent="#accordionExampleUserListQuestions"><div class="card-body">';
-
-                        for (j = 0; j < listquests[i].vop.length; j++) {
-                            html += '<div class="row"><div class="col-1"></div><div class="col-11"><h5 class="alert-heading">' + listquests[i].vop[j].question + '</h5><hr></div></div>';
-                            html += '<div class="row mb-5"><div class="col-1"></div><div class="list-group col-11 disabled">';
 
 
-                            for (jj = 0; jj < listquests[i].vop[j].new_answ.length; jj++) {
-                                html += '<button type="button" class="list-group-item list-group-item-action';
-                                if (listquests[i].vop[j].new_answ[jj].approved === true) {
-                                    html += ' list-group-item-success"';
-                                }
-                                if (contains(listquests[i].vop[j].otv, listquests[i].vop[j].new_answ[jj].id) == true) {
-                                    html += ' list-group-item-danger"';
-                                }
-                                html += ' data-id="' + listquests[i].vop[j].new_answ[jj].id + '">' + listquests[i].vop[j].new_answ[jj].description + '</button>';
-                            }
-                            html += '</div></div>';
-                        }
-                        html += '</div></div></div>';
-                    }
-                };
-                html += '</div>';
-                $('div#accordionExampleUserListQuestions').remove();
-                // parent.empty();
-                $('div#containerAllAnswerUser_' + data.user_id).after(html);
-                // parent.empty();
+    // $('body').on('click', 'span.statistics-user', function () {
+    //     var id = $(this).data('user-id');
+    //     var url = $(this).data('url');
 
-            }
-        });
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: url,
+    //         data: {
+    //             'csrfmiddlewaretoken': csrftoken,
+    //             'pk': id,
+    //         },
+    //         success: function (data) {
+    //             // console.log(data);
+    //             var datepassage = JSON.parse(data.date_passage);
+    //             var listquests = JSON.parse(data.list_quests);
 
-    });
+    //             // console.log(listquests);
+
+    //             var html = '<div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions">';
+    //             if (listquests.length == 0) {
+    //                 html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
+    //             } else {
+    //                 var dp = [];
+    //                 datepassage.forEach(function (el, i) {
+    //                     datepassage[i].date = new Date(el.date).toLocaleDateString();
+    //                     dp.push(datepassage[i].date);
+    //                 });
+    //                 for (i = 0; i < listquests.length; i++) {
+    //                     if (listquests[i].count == 0){
+    //                         html += '<div class="card border-0"><div class="" id="heading' + listquests[i].number_opros_id + '">';
+    //                         html += '<div class="row mt-1 mb-1"><div class="col-1"></div>';
+    //                         html += '<div class="col-11 pl-0">';
+    //                         html += '<div class="d-flex flex-row">';
+    //                         html += '<div class="align-middle pr-2">';
+    //                         html += '<a class="fa fa-trash btn btn-outline-success btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
+    //                         html += '<div class="pl-0 w-100">';
+    //                         html += '<button class="btn btn-outline-success btn-lg btn-block opros-user" data-url="oprosanswers/' + listquests[i].number_opros_id + '" data-opros-id="' + listquests[i].number_opros_id + '" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
+    //                         html += '<div class="row"><div class="col-1"></div>';
+    //                         html += '<div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div><div class="col-2"><span class="badge badge-light float-left m-1">' + new Date(listquests[i].date_passage).toLocaleDateString() + '</span></div>';
+    //                         html += '<div class="col-3"><span class="badge float-right m-1">Верные ответы получены на все: </span></div>';
+    //                         html += '<div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count_all_question + '</span></div>';
+    //                         html += '<div class="col-2"><span class="badge float-left m-1">вопроса(ов), а это</span></div>';
+    //                         html += '<div class="col-1"><span class="badge badge-light float-left w-100 m-1">100 %</span></div></div>';
+    //                         html += '</div></div></button></div></div></div></div>';
+    //                     }else{
+    //                         html += '<div class="card border-0"><div class="" id="heading' + listquests[i].number_opros_id + '">';
+    //                         html += '<div class="row mt-1 mb-1"><div class="col-1"></div>';
+    //                         html += '<div class="col-11 pl-0">';
+    //                         html += '<div class="d-flex flex-row">';
+    //                         html += '<div class="align-middle pr-2">';
+    //                         html += '<a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
+    //                         html += '<div class="pl-0 w-100">';
+    //                         html += '<button class="btn btn-outline-danger btn-lg btn-block opros-user" data-url="oprosanswers/' + listquests[i].number_opros_id + '" data-opros-id="' + listquests[i].number_opros_id + '" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
+    //                         html += '<div class="row"><div class="col-1"></div>';
+    //                         html += '<div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div><div class="col-2"><span class="badge badge-light float-left m-1">' + new Date(listquests[i].date_passage).toLocaleDateString() + '</span></div>';
+    //                         html += '<div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>';
+    //                         html += '<div class="col-2 d-flex flex-row"><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count + '</span>';
+    //                         html += '<span class="badge m-1">из</span><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count_all_question + '</span></div>';
+    //                         html += '<div class="col-2"><span class="badge float-left m-1">вопроса(ов), а это</span></div>';
+    //                         html += '<div class="col-1"><span class="badge badge-light float-left w-100 m-1">' + listquests[i].percents + ' %</span></div></div>';
+    //                         html += '</div></button></div></div></div></div>';
+    //                         html += '<div id="collapse' + listquests[i].number_opros_id + '" style="transition: .6s;" class="collapse" aria-labelledby="heading' + listquests[i].number_opros_id + '" data-parent="#accordionExampleUserListQuestions"><div class="card-body">';
+
+    //                         for (j = 0; j < listquests[i].vop.length; j++) {
+    //                             html += '<div class="row"><div class="col-1"></div><div class="col-11"><h5 class="alert-heading">' + listquests[i].vop[j].question + '</h5><hr></div></div>';
+    //                             html += '<div class="row mb-5"><div class="col-1"></div><div class="list-group col-11 disabled">';
+
+
+    //                             for (jj = 0; jj < listquests[i].vop[j].new_answ.length; jj++) {
+    //                                 html += '<button type="button" class="list-group-item list-group-item-action';
+    //                                 if (listquests[i].vop[j].new_answ[jj].approved === true) {
+    //                                     html += ' list-group-item-success"';
+    //                                 }
+    //                                 if (contains(listquests[i].vop[j].otv, listquests[i].vop[j].new_answ[jj].id) == true) {
+    //                                     html += ' list-group-item-danger"';
+    //                                 }
+    //                                 html += ' data-id="' + listquests[i].vop[j].new_answ[jj].id + '">' + listquests[i].vop[j].new_answ[jj].description + '</button>';
+    //                             }
+    //                             html += '</div></div>';
+    //                         }
+    //                         html += '</div></div></div>';
+    //                     }
+    //                 }
+    //             };
+    //             html += '</div>';
+    //             $('div#accordionExampleUserListQuestions').remove();
+    //             // parent.empty();
+    //             $('div#containerAllAnswerUser_' + data.user_id).after(html);
+    //             // parent.empty();
+
+    //         }
+    //     });
+
+    // });
+
+
 
     $('body').on('click', 'a.delete-user-statics', function (e) {
         e.preventDefault();
@@ -252,7 +287,7 @@ $(document).ready(function () {
         }
     });
 
-    $("button.statistics-user").hover(
+    $("button.btn-statistics-user").hover(
         function() {
             $(this).find("span.childrens").removeClass('d-none');
         }, function() {
@@ -281,6 +316,46 @@ $(document).ready(function () {
             }
         });
     });
+
+
+
+
+    $('#editUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var id = button.data('edit-user');
+        var container = $(this).find('.modal-user-edit');
+        container.html('');
+
+        $.ajax({
+            url: url
+        }).done(function (data) {
+            container.html(data);
+            $("small#hint_id_password").children("a").addClass("password_user");
+        });
+    });
+
+
+    $('#changePasswordUserModal').on('show.bs.modal', function (e) {
+        var button = $(e.relatedTarget);
+        var url = button.data('url');
+        var id = button.data('user-id');
+        var container = $(this).find('.modal-user-change-pass');
+        container.html('');
+
+        console.log(url);
+        console.log(id);
+
+        $.ajax({
+            url: url,
+            id: id
+        }).done(function (data) {
+            container.html(data);
+        });
+    });
+
+
+
 
 
     $('#exampleAddUserModalCenter').on('show.bs.modal', function (event) {
@@ -421,9 +496,8 @@ function answerInQuestion(vop, otv, url, correct, answered) {
         url: url,
         data: data,
         success: function (data) {
-            console.log(data);
             if (data.is_answered) {
-                $('#myModal').modal('show');
+                $('#isAnsweredModal').modal('show');
             }
         }
     });
@@ -746,7 +820,3 @@ function chartitInUsers() {
     });
 
 }
-
-
-
-

@@ -51,6 +51,8 @@ class Questions(models.Model):
         if self.groups_questions:
             return ", ".join([gq.name for gq in self.groups_questions.all()])
 
+
+
     get_groups_questions.short_description = "Группа вопросов"
 
     @property
@@ -101,14 +103,17 @@ class Answers(models.Model):
         verbose_name_plural = "Ответы"
 
 
+
+
 class UsersAnswer(models.Model):
     """Ответы пользователей"""
     user = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'user_permit_id', verbose_name="Пользователь")
     group = models.ForeignKey(Group, on_delete = models.CASCADE, related_name = 'user_group', verbose_name="Группа пользователя")
     session_key = models.CharField(max_length=150, verbose_name="Сессия пользователя")
     correct = models.BooleanField(verbose_name="Правильность ответа", default=False)
-    vop = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='user_answer_vop', verbose_name="Вопрос в ответе")
-    otv = models.IntegerField(verbose_name="Ответ", null=True, default=0)
+    vop = models.ForeignKey(Questions, on_delete=models.CASCADE, verbose_name="Вопрос в ответе")
+    # otv = models.IntegerField(verbose_name="Ответ", null=True, default=0)
+    otv = models.ForeignKey(Answers, on_delete=models.CASCADE, related_name='user_answer', verbose_name="Ответ")
     is_answer = models.BooleanField(verbose_name = "Признак ответа на вопрос", default = False)
 
     def __str__(self):
@@ -128,5 +133,3 @@ class WorkPermitUsers(models.Model):
 
     def __str__(self):
         return '{}'.format(self.date_passage)
-
-

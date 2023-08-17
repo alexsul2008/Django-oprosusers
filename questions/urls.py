@@ -14,8 +14,7 @@ urlpatterns = [
 
                   path('group-questions/create/', GroupsQuestionsCreateView.as_view(), name='group_question_creat'),
                   path('group-questions/<int:pk>/', GroupsQuestionsUpdateView.as_view(), name='group_question_edit'),
-                  path('group-questions/<int:pk>/delete/', GroupsQuestionsDeleteView.as_view(),
-                       name='group_question_delete'),
+                  path('group-questions/<int:pk>/delete/', GroupsQuestionsDeleteView.as_view(), name='group_question_delete'),
 
                   path('questionajax/', question_ajax, name='questionajax'),
                   path('nextquestion/', next_question, name='nextquestion'),
@@ -27,6 +26,8 @@ urlpatterns = [
 
                   path('user/add/', UserCreateView.as_view(), name='user_add'),
                   path('user/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
+                  path('user/<int:pk>/', UserEditView.as_view(), name='user_edit'),
+                  path('user/<int:pk>/password-change/', UserPasswordChangeView.as_view(), name='user_pass_change'),
 
                   path('totalquestions/', total_questions, name='totalquestions'),
                   path('totalusers/', total_users, name='totalusers'),
