@@ -21,6 +21,11 @@ function csrfSafeMethod(method) {
 
 let csrftoken = getCookie('csrftoken');
 
+// window.load = function () {
+//     console.log('Окно открыто')
+//     messagesInference();
+// }
+
 
 $(document).ready(function () {
     var ok = 0;
@@ -116,6 +121,80 @@ $(document).ready(function () {
         }
     });
 
+    $('body').on('click', 'button.user-opros', function (e) {
+        var button = $(e.relatedTarget);
+        var opros = $(this).data('opros-user');
+        var url = $(this).data('url');
+        var id = $(this).data('id');
+        var itemCollaps = $('.accordionExampleUserListQuestions').find('#collapseExample' + id);
+
+        // console.log(opros);
+        // console.log(url);
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'opros': opros,
+                'opros_id': id,
+            },
+            success: function (data) {
+                var listquests = JSON.parse(data.list_quests);
+                var html = '';
+
+
+                // console.log(id);
+                if (listquests.length != 0) {
+                    // html += '<div id="collapseExample' + id + '" class="collapse show" data-collapse-heading-question="' + id + '" aria-labelledby="heading_question_' + id + '" data-parent="#accordionExampleUserListQuestions">';
+
+                    for (i = 0; i < listquests.length; i++) {
+
+                        html += '<div class="row">';
+                        html += '<div class="col-1"></div>';
+                        html += '<div class="col-11"><h5 class="alert-heading">' + listquests[i].question + '</h5><hr></div>';
+                        html += '</div>';
+                        html += '<div class="row mb-5">';
+                        html += '<div class="col-1"></div>';
+                        html += '<div class="list-group col-11 disabled">';
+
+                                    for (j = 0; j < listquests[i].new_answ.length; j++) {
+                                        html += '<button type="button" class="list-group-item list-group-item-action';
+                                        if (listquests[i].new_answ[j].approved === true) {
+                                            html += ' list-group-item-success"';
+                                        }
+                                        if (contains(listquests[i].otv, listquests[i].new_answ[j].id) == true) {
+                                            html += ' list-group-item-danger"';
+                                        }
+                                        html += ' data-id="' + listquests[i].new_answ[j].id + '">' + listquests[i].new_answ[j].description + '</button>';
+                                    }
+
+                        html += '</div>';
+                        html += '</div>';
+
+                    }
+
+                    // html += '</div>';
+
+                } else {
+                    html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
+                };
+                // html += '';
+                // $('div#accordionExampleUserListQuestions').remove();
+                // $('div[id^="collapseExample"]').remove();
+                // $('#heading_question_' + id).after(html);
+                // $('#collapseExample' + id).append(html);
+                $(itemCollaps).append(html);
+                // $('#heading_question_' + id).next('#collapseExample' + id).slideToggle();
+                // $('#collapseExample' + id).addClass('show');
+                // $('#collapseExample' + id).collapse('toggle');
+
+                // $('#collapseExample' + id).collapse({ toggle: false });
+
+
+            }
+        });
+    });
 
 
     // $('body').on('click', 'span.statistics-user', function () {
@@ -318,6 +397,8 @@ $(document).ready(function () {
     });
 
 
+    // $('form#user_edit_form').find('a.password_user').attr('href');
+    // console.log($('form#user_edit_form').find('a.password_user').attr('href'));
 
 
     $('#editUserModal').on('show.bs.modal', function (event) {
@@ -331,7 +412,6 @@ $(document).ready(function () {
             url: url
         }).done(function (data) {
             container.html(data);
-            $("small#hint_id_password").children("a").addClass("password_user");
         });
     });
 
@@ -355,6 +435,27 @@ $(document).ready(function () {
     });
 
 
+    $('#deleteUserModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-user-delete');
+        container.html('');
+
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
+    });
+
+    $('#messageModalCenter').on('hidden.bs.modal', function (e) {
+        $('#messageModalCenter .custom-message-modal h5').empty();
+
+        // console.log('Окно закрыто');
+        // window.setTimeout(function () {
+        //     $('#messageModalCenter').modal('show');
+        // }, 1000);
+    });
 
 
 
@@ -368,6 +469,8 @@ $(document).ready(function () {
             url: url,
         }).done(function (data) {
             container.html(data);
+        }).fail(function (jqXHR, textStatus) {
+            console.log(textStatus);
         });
     });
 
@@ -469,6 +572,16 @@ $(document).ready(function () {
 
 });
 
+function messagesInference(){
+    const messageModalWin = new bootstrap.Modal(document.querySelector('#messageModalCenter'));
+    const messageText = document.querySelector('#messageModalCenter .custom-message-modal h5').innerHTML
+
+    if (messageText.length != 0){
+        messageModalWin.show()
+    }
+
+}
+
 
 function deleteSRCimages(){
     const img_src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iMTQwIj48cmVjdCB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk1IiB5PSI3MCIgc3R5bGU9ImZpbGw6I2FhYTtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjE5MHgxNDA8L3RleHQ+PC9zdmc+';
@@ -476,6 +589,9 @@ function deleteSRCimages(){
 }
 
 function contains(arr, elem) {
+    // console.log(arr);
+    // console.log(elem);
+    // console.log('*****************************');
     for (let i = 0; i < arr.length; i++) {
         if (arr[i] === elem) {
             return true;
@@ -550,6 +666,7 @@ function formFilterInUsers() {
         },
         success: function (data) {
             let users = JSON.parse(data.users);
+            // console.log(users);
             let is_permits = JSON.parse(data.is_permits);
             for (let i = 0; i < users.length; i++) {
                 $('span.groups_id_' + users[i]['id']).text(users[i]['total']);

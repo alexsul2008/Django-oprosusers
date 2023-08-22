@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Row, Column, Div, Field
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, SetPasswordForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from questions.models import GroupsQuestions, Answers, Questions
 
@@ -24,23 +24,81 @@ class UserPasswordChangeForm(SetPasswordForm):
 
 
 class UserAddForm(UserCreationForm):
-    email = forms.EmailField(label = "Email")
-    first_name = forms.CharField(label = "First name")
-    last_name = forms.CharField(label = "Last name")
-
-    class Meta:
-        model = User
-        fields = ("first_name", "last_name", "username", 'groups')
-
-class UserEditForm(UserChangeForm):
-    email = forms.EmailField(label = "Email")
+# class UserAddForm(forms.ModelForm):
+    email = forms.EmailField(label = "Email пользователя")
     first_name = forms.CharField(label = "Имя")
     last_name = forms.CharField(label = "Фамилия")
 
+    # password1 = forms.CharField(
+    #     label='Password',
+    #     widget=forms.PasswordInput(attrs={'placeholder': 'Password'})
+    # )
+    # password2 = forms.CharField(
+    #     label='Password confirmation',
+    #     widget=forms.PasswordInput(attrs={'placeholder': 'Re-Enter Password'})
+    # )
+    # class Meta:
+    #     model = User
+    #     fields = ['first_name', 'last_name', 'email', 'username', 'groups']
+
+    # def save(self, commit=True):
+    #     # Save the provided password in hashed format
+    #     user = super(UserAddForm, self).save(commit=False)
+    #     password = self.cleaned_data["password1"]
+    #     user.set_password(password)
+    #     if commit:
+    #         user.save()
+    #         user.save_m2m()
+    #     return user
+
+
+
+
+
+
+
+
+
+    # groups = forms.ModelChoiceField(
+    #     queryset=Group.objects.all(),
+    #     to_field_name='name',
+    #     required=True,
+    #     label = "Группа/Отдел пользователя",
+    #     widget=forms.Select(attrs={'class': 'form-control'})
+    # )
+
     class Meta:
         model = User
-        fields = '__all__'
-        fields = ("first_name", "last_name", "username", 'email', 'groups', 'is_active', 'is_permits', 'password')
+        fields = ['first_name', 'last_name', 'email', 'username', 'groups']
+
+class UserEditForm(UserChangeForm):
+    email = forms.EmailField(label = "Email пользователя", required=False)
+    username = forms.CharField(label = "Логин пользователя")
+    first_name = forms.CharField(label = "Имя")
+    last_name = forms.CharField(label = "Фамилия")
+
+    # groups = forms.ModelChoiceField(
+    #     queryset=Group.objects.all(),
+    #     to_field_name='name',
+    #     label = "Группа/Отдел пользователя",
+    #     widget=forms.SelectMultiple(attrs={'class': 'form-control'})
+    # )
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'username', 'email', 'groups', 'is_active', 'is_permits', 'password')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+            self.fields['is_active'].widget.attrs['class'] = 'custom-checkbox checkbox'
+            self.fields['is_permits'].widget.attrs['class'] = 'custom-checkbox checkbox'
+            # self.fields['groups'].widget.attrs['class'] = 'custom-select'
+            self.fields['groups'].widget.attrs.update({'class': 'custom-select', 'size': '6', 'required': True})
+
+
+
 
 
 class GroupsQuestionsForm(forms.ModelForm):

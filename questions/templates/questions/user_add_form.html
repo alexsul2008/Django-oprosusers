@@ -1,22 +1,8 @@
 {% load crispy_forms_tags crispy_forms_field static %}
 
-<form method="post" action="" id="user_add_form" >
+<form method="post" action="{% url 'user_add' %}" id="user_add_form" >
 {% csrf_token %}
-	
+
 	{{ form|crispy }}
 
 </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

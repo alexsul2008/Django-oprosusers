@@ -272,62 +272,69 @@
 
 
 
-                                        <div id="containerAllAnswerUser_{{ list_answer_user.id }}"></div>
-                                        <div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions">
-                                            <div class="card border-0">
 
-                                            {% for session in  user_session %}
-                                                {% if session.user_id == list_answer_user.id %}
 
-                                                    <div class="" id="heading{{session.id}}">
+                                            <div class="accordion mb-3 mt-2 accordionExampleUserListQuestions">
+
+                                            {% for sess in  user_session %}
+                                                {% if sess.user_id == list_answer_user.id %}
+                                                    <div class="" id="heading_question_{{sess.id}}" data-heading-question="{{sess.id}}">
                                                         <div class="row mt-1 mb-1">
                                                             <div class="col-1"></div>
                                                             <div class="col-11 pl-0">
                                                                 <div class="d-flex flex-row">
                                                                     <div class="align-middle pr-2">
-                                                                        <a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/{{session.id}}/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a>
+                                                                        <a class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/{{sess.id}}/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a>
                                                                     </div>
                                                                     <div class="pl-0 w-100">
-                                                                        {% if session.total_not_correct != 0 %}
-                                                                        <button class="btn btn-outline-danger btn-lg btn-block opros-user" data-url="oprosanswers/{{session.id}}" data-opros-id="{{session.id}}" type="button" data-toggle="collapse" data-target="#collapse{{session.id}}" aria-expanded="false" aria-controls="collapse{{session.id}}">
+
+                                                                        <button class="btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg btn-block user-opros"
+                                                                            data-url="{% url 'oprosanswers' %}"
+                                                                            type="button"
+                                                                            data-toggle="collapse"
+                                                                            data-target="#collapseExample{{sess.id}}"
+                                                                            aria-expanded="false"
+                                                                            aria-controls="collapseExample{{sess.id}}"
+                                                                            data-opros-user="{{sess.session_key}}"
+                                                                            data-id="{{sess.id}}">
                                                                             <div class="row">
-                                                                                <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">{{session.id}}</span></div>
+                                                                                {% if sess.total_not_correct != 0 %}
+                                                                                <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">{{sess.id}}</span></div>
                                                                                 <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
-                                                                                <div class="col-2"><span class="badge badge-light float-left m-1">{{session.date_passage}}</span></div>
+                                                                                <div class="col-2"><span class="badge badge-light float-left m-1">{{sess.date_passage}}</span></div>
                                                                                 <div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>
                                                                                 <div class="col-2 d-flex flex-row">
-                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{session.total_not_correct}}</span>
+                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{sess.total_not_correct}}</span>
                                                                                     <span class="badge m-1">из</span>
-                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{session.total_questions}}</span>
+                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{sess.total_questions}}</span>
                                                                                 </div>
                                                                                 <div class="col-2">
                                                                                     <span class="badge float-left m-1">вопроса(ов), а это</span>
                                                                                 </div>
-                                                                                <div class="col-1"><span class="badge badge-light float-left w-100 m-1">{{session.persents}} %</span></div>
-                                                                            </div>
-                                                                        </button>
-                                                                        {% else %}
-                                                                        <button class="btn btn-outline-success btn-lg btn-block opros-user" data-url="oprosanswers/{{session.id}}" data-opros-id="{{session.id}}" type="button" data-toggle="collapse" data-target="#collapse{{session.id}}" aria-expanded="false" aria-controls="collapse{{session.id}}">
-                                                                            <div class="row">
-                                                                                <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">{{session.id}}</span></div>
+                                                                                <div class="col-1"><span class="badge badge-light float-left w-100 m-1">{{sess.persents}} %</span></div>
+                                                                                {% else %}
+                                                                                <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">{{sess.id}}</span></div>
                                                                                 <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
-                                                                                <div class="col-2"><span class="badge badge-light float-left m-1">{{session.date_passage}}</span></div>
+                                                                                <div class="col-2"><span class="badge badge-light float-left m-1">{{sess.date_passage}}</span></div>
                                                                                 <div class="col-2"><span class="badge float-right m-1">Вы верно ответили на все: </span></div>
                                                                                 <div class="col-2 d-flex flex-row">
-                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{session.total_questions}}</span>
+                                                                                    <span class="badge badge-light w-100 mb-1 mt-1">{{sess.total_questions}}</span>
                                                                                 </div>
                                                                                 <div class="col-2">
                                                                                     <span class="badge float-left m-1">вопроса(ов), а это</span>
                                                                                 </div>
-                                                                                <div class="col-1"><span class="badge badge-light float-left w-100 m-1">{{session.persents}} %</span></div>
+                                                                                <div class="col-1"><span class="badge badge-light float-left w-100 m-1">{{sess.persents}} %</span></div>
+                                                                                {% endif %}
                                                                             </div>
                                                                         </button>
 
-                                                                        {% endif %}
+
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
+                                                    <div id="collapseExample{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent=".accordionExampleUserListQuestions">
                                                     </div>
 
 
@@ -335,11 +342,11 @@
 
 
 
+                                                {% endif %}
 
-                                        {% endif %}
-                                    {% endfor %}
+                                            {% endfor %}
                                             </div>
-                                        </div>
+
 
 
 
@@ -440,7 +447,7 @@
 		<div class="modal fade" id="deleteUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
-                    <div class="modal-header bg-info text-white">
+                    <div class="modal-header bg-danger text-white">
                         <h5 class="modal-title" id="deleteUserModalCenterTitle">Удаление пользователя</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -453,8 +460,8 @@
                         </div>
                     </div>
                     <div class="modal-footer bg-light text-dark">
-                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                        <button form="delete_user_form" type="submit" class="btn btn-outline-danger">Удалить</button>
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" aria-label="Close" aria-hidden="true">Закрыть</button>
+                        <button form="user_delete_form" type="submit" class="btn btn-outline-danger">Удалить</button>
                     </div>
                 </div>
             </div>
@@ -497,6 +504,7 @@
     <script>
         window.onload = function () {
             formFilterInUsers();
+            messagesInference();
         };
 
 

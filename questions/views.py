@@ -15,10 +15,10 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.cache import cache
 from django.db.models import Count, Max, Q, F
 from django.http import request, JsonResponse, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, DeleteView, UpdateView
 from django_filters.views import FilterView
@@ -28,6 +28,7 @@ from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInli
 from questions.filters import UsersGroupsFilter, QuestionsFilter
 from questions.forms import UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm
 from questions.models import Questions, GroupsQuestions, Answers, UsersAnswer, WorkPermitUsers
+from questions.mixins import MessageMixin
 
 global_total_questions = 0
 
@@ -422,6 +423,8 @@ def total_users(request):
         else:
             user_permit = users_count.filter(is_permits=x).values('is_permits').distinct().annotate(total=Count('id'))
 
+            # print(user_permit)
+
             if user_permit:
                 total_is_permits.append(list(user_permit))
             else:
@@ -483,6 +486,35 @@ def user_checked(request):
 
 
 @csrf_protect
+def oprosanswers(request):
+    sess = request.POST.get('opros')
+    opros_id = request.POST.get('opros_id')
+
+    list_questions = UsersAnswer.objects.filter(session_key=sess).values('vop_id', 'otv_id', 'vop_id__description')
+    answers = Answers.objects.values('id', 'description', 'approved', 'question_id').order_by('question_id', 'id')
+
+    # print(list_questions)
+
+    user_answers_quest = []
+    for vop in list_questions:
+        list_answers = [new_answ for new_answ in answers.filter(question_id=vop['vop_id'])]
+
+        list_all = {
+            'id': vop['vop_id'],
+            'otv': [item['otv_id'] for item in list_questions],
+            'new_answ': list_answers,
+            'question': vop['vop_id__description'],
+            'opros_id': opros_id,
+        }
+
+        user_answers_quest.append(list_all)
+
+    data={}
+    data['list_quests'] = json.dumps(user_answers_quest, cls=DjangoJSONEncoder)
+    return JsonResponse(data)
+
+
+@csrf_protect
 def statistics_for_user(request):
     id = request.POST.get('pk')
 
@@ -490,7 +522,7 @@ def statistics_for_user(request):
             .values('id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct') \
             .order_by('-date_passage')
 
-    answers = Answers.objects.values('id', 'description', 'approved', 'question_id').order_by('question_id', 'id')
+    # answers = Answers.objects.values('id', 'description', 'approved', 'question_id').order_by('question_id', 'id')
 
     #######################################################################################
     # quest = Questions.objects.all()
@@ -532,95 +564,95 @@ def statistics_for_user(request):
     count_all_ok_questions = []
     date_passage = []
 
-    for sessions_us in all_answers_user:
+    # for sessions_us in all_answers_user:
 
-        list_id_answers_not_correct = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id', 'otv_id', 'vop_id__description')
+    #     list_id_answers_not_correct = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id', 'otv_id', 'vop_id__description')
 
-        # list_id_answers_not_correct = cache.get('list_id_answers_not_correct')
-        # if not list_id_answers_not_correct:
-        #     list_id_answers_not_correct = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id', 'otv_id', 'vop_id__description')
-        #     cache.set('list_id_answers_not_correct', list_id_answers_not_correct, 60)
-
-
-        # test_list_id_answers_not_correct = Answers.objects.filter(question_id__in=UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id')).values()
-
-        # print(test_list_id_answers_not_correct.query)
+    #     # list_id_answers_not_correct = cache.get('list_id_answers_not_correct')
+    #     # if not list_id_answers_not_correct:
+    #     #     list_id_answers_not_correct = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id', 'otv_id', 'vop_id__description')
+    #     #     cache.set('list_id_answers_not_correct', list_id_answers_not_correct, 60)
 
 
+    #     # test_list_id_answers_not_correct = Answers.objects.filter(question_id__in=UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop_id')).values()
 
-        # print(list_id_answers_not_correct)
-
-        ######################################################
-        # user_answers_not_correct_quest = []
+    #     # print(test_list_id_answers_not_correct.query)
 
 
-        # list_quest_all_new = {
-        #         'id': [item['vop_id'] for item in list_id_answers_not_correct],
-        #         'otv': [item['otv_id'] for item in list_id_answers_not_correct],
-        #         'new_answ': [item for item in answers.filter(question_id__in = [item['vop_id'] for item in list_id_answers_not_correct])],
-        #         'question': [item['vop_id__description'] for item in list_id_answers_not_correct],
-        #     }
 
-        # user_answers_not_correct_quest.append(list_quest_all_new)
+    #     # print(list_id_answers_not_correct)
 
-        # print(json.dump({'data': test_list_id_answers_not_correct}))
-
-        ########################################################
-
-        # print(*[item['vop_id'] for item in list_id_answers_not_correct])
-        # print([item['vop_id'] for item in list_id_answers_not_correct])
-        # print('*'*25)
+    #     ######################################################
+    #     # user_answers_not_correct_quest = []
 
 
-        """Количество не правильных ответов"""
-        user_answers_not_correct_total = sessions_us['total_not_correct']
+    #     # list_quest_all_new = {
+    #     #         'id': [item['vop_id'] for item in list_id_answers_not_correct],
+    #     #         'otv': [item['otv_id'] for item in list_id_answers_not_correct],
+    #     #         'new_answ': [item for item in answers.filter(question_id__in = [item['vop_id'] for item in list_id_answers_not_correct])],
+    #     #         'question': [item['vop_id__description'] for item in list_id_answers_not_correct],
+    #     #     }
 
-        """Количество вопросов-ответов в сессии"""
-        models_users_answers_total = sessions_us['total_questions']
+    #     # user_answers_not_correct_quest.append(list_quest_all_new)
 
-        # print(models_users_answers_total)
+    #     # print(json.dump({'data': test_list_id_answers_not_correct}))
 
-        if models_users_answers_total != 0:
-            percents = user_answers_not_correct_total * 100 / models_users_answers_total
-        else:
-            percents = 0
+    #     ########################################################
 
-        user_answers_not_correct_quest = []
-
-        for vop in list_id_answers_not_correct:
-
-            # list_answers = [new_answ for new_answ in Answers.objects.filter(question_id=vop['vop_id']) \
-            #                 .values('id', 'description', 'approved', 'question_id', 'question_id__description') \
-            #                 .order_by('question_id', 'id')]
-            list_answers = [new_answ for new_answ in answers.filter(question_id=vop['vop_id'])]
+    #     # print(*[item['vop_id'] for item in list_id_answers_not_correct])
+    #     # print([item['vop_id'] for item in list_id_answers_not_correct])
+    #     # print('*'*25)
 
 
-            # list_answers = cache.get('list_answers')
-            # if not list_answers:
-            #     list_answers = [new_answ for new_answ in answers.filter(question_id=vop['vop_id'])]
-            #     cache.set('list_answers', list_answers, 60)
+    #     """Количество не правильных ответов"""
+    #     user_answers_not_correct_total = sessions_us['total_not_correct']
 
-            # print(list_answers)
+    #     """Количество вопросов-ответов в сессии"""
+    #     models_users_answers_total = sessions_us['total_questions']
 
-            list_quest_all_new = {
-                'id': vop['vop_id'],
-                'otv': [item['otv_id'] for item in list_id_answers_not_correct],
-                'new_answ': list_answers,
-                'question': vop['vop_id__description'],
-            }
+    #     # print(models_users_answers_total)
 
-            user_answers_not_correct_quest.append(list_quest_all_new)
+    #     if models_users_answers_total != 0:
+    #         percents = user_answers_not_correct_total * 100 / models_users_answers_total
+    #     else:
+    #         percents = 0
 
-        list_vop_count = {
-            'count': user_answers_not_correct_total,
-            'count_all_question': models_users_answers_total,
-            'percents': round(percents),
-            'date_passage': sessions_us['date_passage'],
-            'number_opros_id': sessions_us['id'],
-            'vop': user_answers_not_correct_quest,
-        }
+    #     user_answers_not_correct_quest = []
 
-        list_quests.append(list_vop_count)
+    #     for vop in list_id_answers_not_correct:
+
+    #         # list_answers = [new_answ for new_answ in Answers.objects.filter(question_id=vop['vop_id']) \
+    #         #                 .values('id', 'description', 'approved', 'question_id', 'question_id__description') \
+    #         #                 .order_by('question_id', 'id')]
+    #         list_answers = [new_answ for new_answ in answers.filter(question_id=vop['vop_id'])]
+
+
+    #         # list_answers = cache.get('list_answers')
+    #         # if not list_answers:
+    #         #     list_answers = [new_answ for new_answ in answers.filter(question_id=vop['vop_id'])]
+    #         #     cache.set('list_answers', list_answers, 60)
+
+    #         # print(list_answers)
+
+    #         list_quest_all_new = {
+    #             'id': vop['vop_id'],
+    #             'otv': [item['otv_id'] for item in list_id_answers_not_correct],
+    #             'new_answ': list_answers,
+    #             'question': vop['vop_id__description'],
+    #         }
+
+    #         user_answers_not_correct_quest.append(list_quest_all_new)
+
+    list_vop_count = {
+        'count': user_answers_not_correct_total,
+        'count_all_question': models_users_answers_total,
+        'percents': round(percents),
+        'date_passage': sessions_us['date_passage'],
+        'number_opros_id': sessions_us['id'],
+        # 'vop': user_answers_not_correct_quest,
+    }
+
+    list_quests.append(list_vop_count)
 
     count_all_questions.append(models_users_answers_total)
     count_all_not_questions.append(user_answers_not_correct_total)
@@ -683,6 +715,9 @@ class UserPasswordChangeView(SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('statistics')
     queryset = User.objects.all()
 
+    def get_success_message(self, cleaned_data):
+        return f'Пароль для пользователя: {self.object.first_name} {self.object.last_name} - успешно изменён.'
+
     def get(self, request, *args, **kwargs):
         self.object = User.objects.get(id=kwargs['pk'])
         return super(UserPasswordChangeView, self).get(request, *args, **kwargs)
@@ -699,59 +734,151 @@ class UserPasswordChangeView(SuccessMessageMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super(UserPasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = kwargs.pop('instance')
-        print(f"KWARGS: {kwargs}")
+        # print(f"KWARGS: {kwargs}")
         return kwargs
 
 
-class UserCreateView(LoginRequiredMixin, CreateView):
-    form_class = UserAddForm
+# def registration_form_view(request):
+#     form = UserAddForm(request.POST or None)
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             form.save()
+#             if request.is_ajax():
+#                 return JsonResponse({'success': True}, status=201)
+#             return reverse_lazy('statistics')
+#         else:
+#             if request.is_ajax():
+#                 return JsonResponse({'success': False, 'errors': form.errors}, status=406)
+#     return render(request, 'questions/user_add_form.html', {'form': form})
+
+
+
+
+class UserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'questions/user_add_form.html'
-    success_url = reverse_lazy('statistics')
+    form_class = UserAddForm
 
     def form_valid(self, form):
-        username = form.cleaned_data['username']
-        form.save()
+        instance = form.save(commit=False)
+        # other staff
+        # self.object = form.save()
+
+        instance.save()
         form.save_m2m()
-        return JsonResponse({"username": username}, status=200)
+        if self.request.is_ajax():
+            return JsonResponse({'success': True}, status=201)
+        return redirect(reverse('statistics'))
 
     def form_invalid(self, form):
-        errors = form.errors.as_json()
-        return JsonResponse({"errors": errors}, status=400)
+        if self.request.is_ajax():
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+        return super().form_invalid(form)
 
 
-class UserEditView(LoginRequiredMixin, UpdateView):
-    # model = User
-    # form_class = UserEditForm
-    # template_name = 'questions/user_edit_form.html'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # form_class = UserAddForm
+    # template_name = 'questions/user_add_form.html'
     # success_url = reverse_lazy('statistics')
 
-
     # def form_valid(self, form):
-    #     username = form.cleaned_data['username']
-    #     form.save()
+    #     # print('Форма валидна: ', form)
+    #     self.object = form.save()
     #     form.save_m2m()
-    #     return JsonResponse({"username": username}, status=200)
+    #     return super().form_valid(form)
 
-    # def form_invalid(self, form):
-    #     errors = form.errors.as_json()
-    #     return JsonResponse({"errors": errors}, status=400)
+    # def get_success_message(self, cleaned_data):
+    #     return f'Пользователь: {self.object.first_name} {self.object.last_name} - успешно добавлен.'
 
+    # # def post(self, request, *args, **kwargs):
+    # #     data = None
+    # #     status = None
+    # #     form = self.form_class(data=request.POST)
+    # #     if form.is_valid():
+    # #         form.save()
+    # #         data = {'success': True}
+    # #         status = 201
+    # #     else:
+    # #         data = json.dumps(dict(form.errors.items()), ensure_ascii=False)
+    # #         status = 400
+    # #     return JsonResponse(data, safe=False, status=status)
+
+
+
+
+class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = User
     form_class = UserEditForm
     template_name = 'questions/user_edit_form.html'
     success_url = reverse_lazy('statistics')
 
+    # def post(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+    #     print(self, request, args, kwargs, self.object)
+    #     return super().post(request, *args, **kwargs)
+
+    def get_success_message(self, cleaned_data):
+        print(f'Из get_success_message: {cleaned_data}')
+        return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        # form.save_m2m()
+        return super().form_valid(form)
 
 
+    def form_invalid(self, form):
+        print('Форма не валидна: ', form)
+        return self.render_to_response(self.get_context_data(form=form))
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+    # def form_invalid(self, form):
+    #     print('Форма не валидна: ', self, form)
+    #     errors = form.errors.as_json()
+    #     return JsonResponse({"errors": errors}, status=400)
+
+
+    def get_context_data(self, **kwargs):
+        # print(self.get_object().id, self.kwargs['pk'])
+        id_user = self.kwargs['pk']
+        context = super().get_context_data(**kwargs)
+        context['url_password'] = reverse_lazy('user_pass_change', kwargs={'pk': id_user})
+
+        # print(context)
+
+        return context
+
+
+class UserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = User
+    template_name = 'questions/user_delete_form.html'
+    success_url = reverse_lazy('statistics')
+    # success_message = "Пользовател: %(name)s - удален."
+    # success_message = "Пользователь: %(first_name)s - удален."
 
-    def post(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.delete()
-        data = {'success': 'OK'}
-        return JsonResponse(data)
+    def get_success_message(self, cleaned_data):
+        return f'Пользователь: {self.object.first_name} {self.object.last_name} - успешно удален.'
+
+
+    # def post(self, *args, **kwargs):
+    #     self.object = self.get_object()
+
+    #     print(self.object)
+
+    #     self.object.delete()
+    #     data = {'success': 'OK'}
+    #     return JsonResponse(data)
 
 
 class GroupsQuestionsCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):

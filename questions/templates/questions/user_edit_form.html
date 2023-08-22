@@ -1,8 +1,72 @@
 {% load crispy_forms_tags crispy_forms_field static %}
 
+
 <form method="post" action="{% url 'user_edit' object.id %}" id="user_edit_form" >
 {% csrf_token %}
 
-	{{ form|crispy }}
+	<div class="form-row">
+		<div class="form-group col-md-6" id="">
+			<label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+			<input name="{{ form.first_name.name }}" type="text" class="form-control" id="{{ form.first_name.id_for_label }}" aria-describedby="{{ form.first_name.id_for_label }}" placeholder="{{ form.first_name.label }}" value="{{ form.first_name.value }}">
+			<small  class="form-text text-muted">{{ form.first_name.help_text }}</small>
+
+		</div>
+
+		<div class="form-group col-md-6" id="">
+			<label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+			<input name="{{ form.last_name.name }}" type="text" class="form-control" id="{{ form.last_name.id_for_label }}" aria-describedby="{{ form.last_name.id_for_label }}" placeholder="{{ form.last_name.label }}" value="{{ form.last_name.value }}">
+			<small  class="form-text text-muted">{{ form.last_name.help_text }}</small>
+
+		</div>
+
+
+
+	</div>
+
+	<div class="form-row">
+		<div class="form-group col-md-6">
+			<label for="{{ form.username.id_for_label }}">{{ form.username.label }} *</label>
+			<input name="{{ form.username.name }}" type="text" class="form-control" id="{{ form.username.id_for_label }}" aria-describedby="{{ form.username.id_for_label }}" placeholder="{{ form.username.label }}" value="{{ form.username.value }}" required>
+			<small  class="form-text text-muted">{{ form.username.help_text }}</small>
+			{{form.username.errors}}
+		</div>
+
+		<div class="form-group col-md-6">
+			<label for="{{ form.email.id_for_label }}">Email address</label>
+			<input name="{{ form.email.name }}" type="email" class="form-control" id="{{ form.email.id_for_label }}" aria-describedby="{{ form.email.id_for_label }}" value="{{ form.email.value }}" placeholder="Email пользователя">
+			<small class="form-text text-muted">{{ form.email.help_text }}</small>
+		</div>
+	</div>
+
+
+	<div id="" class="form-check">
+		{{ form.is_active }}
+		{{ form.is_active.label }}
+
+		<p class="card-text"><small class="text-muted">{{ form.is_active.help_text }}</small></p>
+	</div>
+
+	<div id="" class="form-check">
+		{{ form.is_permits }}
+		{{ form.is_permits.label }}
+
+		<p class="card-text"><small class="text-muted">{{ form.is_permits.help_text }}</small></p>
+	</div>
+
+	<div id="" class="form-group mt-3">
+		<label for="{{ form.groups.id_for_label }}">{{ form.groups.label }} *</label>
+		{{ form.groups }}
+		<small class="form-text text-muted">{{ form.groups.help_text }}</small>
+	</div>
+
+	<div id="" class="form-group">
+		{{ form.password.label }}
+		{{ form.password }}
+		<p class="card-text"><small class="text-muted">Пароли хранятся в зашифрованном виде, поэтому нет возможности посмотреть пароль этого пользователя, но вы можете изменить его используя <a class="text-info" data-toggle="modal"
+			data-user-id="{{ list_answer_user.id }}"
+			data-url="{{url_password}}"
+			data-target="#changePasswordUserModal" data-dismiss="modal" href="">эту форму</a>.</small></p>
+	</div>
+
 
 </form>

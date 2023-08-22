@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.admindocs.middleware.XViewMiddleware',
+    'questions.middlewares.AjaxMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
