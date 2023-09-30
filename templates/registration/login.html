@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <form method="post" action="{% url 'login' %}">
+                        <form method="post" action="{% url 'login' %}" id="user-logining">
                             {% csrf_token %}
                             {{ form|crispy }}
 

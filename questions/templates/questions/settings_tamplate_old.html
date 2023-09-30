@@ -1,0 +1,279 @@
+{% extends "base.html" %}
+
+{% if user.is_authenticated %}  
+
+    {% block content %}
+        <div class="container pt-0">
+            <h1 class="mb-3">Настройки</h1>
+            <div class="row">
+                <div class="col-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <h3 class="w-100 pl-0">Группы пользователей</h3>
+
+
+                        <button class="flex-grow-1 btn btn-outline-info btn-lg btn-add_group_user" type="button"
+                                            role="button"
+                                            aria-pressed="true"
+                                            data-toggle="modal"
+                                            data-url="{% url 'group_user_creat' %}"
+                                            data-target="#exampleAddGroupUserModalCenter"
+                                            title="Добавить группу пользователей"><i class="fa fa-users" aria-hidden="true"></i>
+                                    
+                        </button>
+                    </div>
+
+
+                    {% for items in list_group_user %}
+                    <button class="btn btn-outline-info btn-lg btn-block btn-settings" type="button">
+                        <div class="row">
+                            <div class="col-1 pl-0 pr-0">{% if items.is_boss %}<i class="fa fa-user-secret" aria-hidden="true"></i>{% endif %}</div>
+                            <div class="col-7 pl-0 text-left">
+                                <span class="badge m-1">{{items.name}}</span>
+                            </div>
+                            <div class="col-4 text-right">
+                                
+                                <span class="d-none childrens p-0">
+                                    <span class="fa fa-pencil btn btn-sm btn-light p-1 edit-group-user"
+                                        style="width: 29x; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-toggle="modal"
+                                        data-url="{% url 'group_user_edit' items.id %}"
+                                        data-target="#editGroupUserModal"
+                                        title="Редактировать группу пользователей">
+                                    </span>
+                                    
+
+                                    <span class="fa fa-trash delete-group-user btn btn-sm btn-danger p-1"
+                                        style="width: 29px; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-url="{% url 'group_user_delete' items.id %}"
+                                        data-toggle="modal"
+                                        data-target="#deleteGroupUserModalCenter"
+                                        title="Удалить группу пользователей">
+                                    </span>
+                                </span>
+                                
+                            </div>
+                            
+                        </div>
+                    </button>
+                    {% endfor %}
+                </div>
+                <div class="col-2"></div>
+                <div class="col-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <h3 class="w-100 pl-0">Группы вопросов</h3>
+                        
+                        <button class="flex-grow-1 btn btn-outline-info btn-lg btn-add_group_questions" type="button"
+                            role="button"
+                            aria-pressed="true"
+                            data-toggle="modal"
+                            data-url="{% url 'group_question_creat' %}"
+                            data-target="#addGroupQuestinModalCenter"
+                            title="Добавить группу вопросов"><i class="fa fa-qrcode" aria-hidden="true"></i>
+                
+                        </button>
+                        
+                    </div>
+
+
+                    {% for items in list_group_questions %}
+                    {{items.groups.all}}
+                    <button class="btn btn-outline-info btn-lg btn-block btn-settings" type="button">
+                        <div class="row">
+                            <div class="col-8 text-left">
+                                <span class="badge m-1">{{items.name}}</span>
+                            </div>
+                            <div class="col-4 text-right">
+                                
+                                <span class="d-none childrens p-0">
+                                    <span class="fa fa-pencil btn btn-sm btn-light p-1 edit-group-questions"
+                                        style="width: 29x; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-toggle="modal"
+                                        data-url="{% url 'group_question_edit' items.id %}"
+                                        data-target="#editGroupQuestions"
+                                        title="Редактировать группу вопросов">
+                                    </span>
+                                    
+
+                                    <span class="fa fa-trash delete-group-user btn btn-sm btn-danger p-1"
+                                        style="width: 29px; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-url="{% url 'group_question_delete' items.id %}"
+                                        data-toggle="modal"
+                                        data-target="#deleteGroupQuestions"
+                                        title="Удалить группу вопросов">
+                                    </span>
+                                </span>                                
+                            </div>                            
+                        </div>
+                    </button>
+                    {% endfor %}
+                    
+                </div>
+            </div>
+            
+                
+            
+        </div>
+
+
+
+        <div class="modal fade" id="addGroupQuestinModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="addGroupQuestinModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="addGroupQuestinModalCenterTitle">Добавление группы вопросов</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-add-groups-question"></div>
+                    </div>
+                    <div class="modal-footer bg-light text-white">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                        <button form="add_groups_question_form" type="submit" class="btn btn-outline-success">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editGroupQuestions" tabindex="-1" role="dialog"
+                     aria-labelledby="editGroupQuestionsTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="editGroupQuestionsTitle">Редактирование группы вопросов</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body bg-transparent text-dark">
+                                <div class="modal-edit-groups-question"></div>
+                            </div>
+                            <div class="modal-footer bg-light text-white">
+                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                                <button form="update_group_form" type="submit" class="btn btn-outline-success">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="deleteGroupQuestions" tabindex="-1" role="dialog"
+                            aria-labelledby="deleteGroupQuestionsTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="deleteGroupQuestionsTitle">Удаление группы вопросов</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body bg-transparent text-dark">
+                                <div class="modal-groups-question-delete"></div>
+                            </div>
+                            <div class="modal-footer bg-light text-dark">
+                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                                <button form="delete_groups_form" type="submit" class="btn btn-outline-danger">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+        <div class="modal fade" id="exampleAddGroupUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="#exampleAddGroupUserModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="exampleAddGroupUserModalCenterTitle">Добавить группу пользователя</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-add-group-user"></div>
+                    </div>
+                    <div class="modal-footer bg-light text-dark">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" aria-label="Close" aria-hidden="true">Закрыть</button>
+                        <button form="add_group_user_form" type="submit" class="btn btn-outline-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="modal fade" id="deleteGroupUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteGroupUserModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteGroupUserModalCenterTitle">Удаление группы пользователя</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-group-user-delete"></div>
+                    </div>
+                    <div class="modal-footer bg-light text-dark">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" aria-label="Close" aria-hidden="true">Закрыть</button>
+                        <button form="group_user_delete_form" type="submit" class="btn btn-outline-danger">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editGroupUserModal" tabindex="-1" role="dialog" aria-labelledby="editGroupUserModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="editGroupUserModalTitle">Редактирование группы пользователя</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-group-user-edit"></div>
+                    </div>
+                    <div class="modal-footer bg-light text-dark">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal" aria-label="Close" aria-hidden="true">Закрыть</button>
+                        <button form="edit_group_user_form" type="submit" class="btn btn-outline-info">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        {% if messages %}
+       
+            {% for message in messages %}
+                <script>document.addEventListener("DOMContentLoaded", function(event) { 
+                    messagesInference('{{message}}', '{{message.tags}}');
+                });</script>
+
+                <!-- 
+                {%if message.tags %}{{ message.tags }}{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message.level }} -->
+           
+            {% endfor %}        
+        {% endif %}
+
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}
+
+
+{% block javascript %}
+    <script></script>
+
+{% endblock javascript %}

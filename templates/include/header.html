@@ -1,92 +1,112 @@
+{% load user_tags %}
+
 <header>
+    {% if request.user.is_authenticated %}
 
         <h1 class="navbar-brand align-middle m-4">Название Отдела</h1>
 
 
-        {% if request.user.is_authenticated %}
+        
             <button type="button" class="btn btn-primary align-middle">
             {% if request.user.is_superuser %}
-                {{ request.user.last_name }} <span class="badge badge-light align-middle p-2">Полный доступ</span>
+                {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">Полный доступ</span>
             {% else %}
-                {{ user.last_name }} {{ user.first_name }} <span class="badge badge-light align-middle p-2">
-                    {{user.groups.all.0.name}}</span>
+                {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">
+                    {{ request.user|has_group }}</span>
             {% endif %}
             </button>
-        {% endif %}
+       
 
 
 
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
+            <nav class="navbar navbar-expand-lg navbar-dark mb-4">
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
 
-                {% if user.is_authenticated %}
-                    <li class="nav-item ">{% url 'questions' as url_questions %}
-                        <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
-                               href="{% url 'questions' %}">Вопросы</a>
-                     </li>
-
-                    	{% if request.user.groups.all.0.is_boss or user.is_superuser %}
-                            <li class="nav-item ">{% url 'statistics' as url_statistics %}
-                            	<a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
-                                   href="{% url 'statistics' %}">Статистика</a>
-                         	</li>
-                             <li class="nav-item ">{% url 'filter' as filter %}
-                                <a class="nav-link {% if filter == request.path %}active{% endif %}"
-                                   href="{% url 'filter' %}">Редактирование</a>
+                    
+                            <li class="nav-item ">{% url 'questions' as url_questions %}
+                                <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
+                                    href="{% url 'questions' %}">Вопросы</a>
                             </li>
+                        
+                                {% if request.user|has_boss:"is_boss" or user.is_superuser %}
+                                    <li class="nav-item ">{% url 'statistics' as url_statistics %}
+                                        <a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
+                                        href="{% url 'statistics' %}">Статистика</a>
+                                    </li>
+                                    <li class="nav-item ">{% url 'filter' as filter %}
+                                        <a class="nav-link {% if filter == request.path %}active{% endif %}"
+                                        href="{% url 'filter' %}">Редактирование</a>
+                                    </li>
+                                    <li class="nav-item ">{% url 'settings' as settings %}
+                                        <a class="nav-link {% if settings == request.path %}active{% endif %}"
+                                        href="{% url 'settings' %}">Настройки</a>
+                                    </li>
+                                   
+                                {% else %}
+                                    <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
+                                        <a class="nav-link {% if url_statistics_user == request.path %}active{% endif %}"
+                                        href="{% url 'statistics_user' %}">Статистика</a>
+                                    </li>
+                                    <li class="nav-item ">{% url 'new_statistics_user' as url_new_statistics_user %}
+                                        <a class="nav-link {% if url_new_statistics_user == request.path %}active{% endif %}"
+                                        href="{% url 'new_statistics_user' %}">Статистика New</a>
+                                    </li>
+                                {% endif %}
 
-                        {% else %}
-                            <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
-                                <a class="nav-link {% if url_statistics_user == request.path %}active{% endif %}"
-                                   href="{% url 'statistics_user' %}">Статистика</a>
-                            </li>
-                        {% endif %}
+
+                        
+                    </ul>
 
 
-                {% endif %}
-            </ul>
+                
+                        <a class="btn btn-outline-success my-2 my-sm-0" onclick="userLogout();" href="{%  url 'logout' %}">Выход</a>
+
+                    </div>
+                </nav>
+
+                {% else %}
+                
+
+    {% endif %}
 
 
-           {% if user.is_authenticated %}
-                <a class="btn btn-outline-success my-2 my-sm-0" href="{%  url 'logout' %}">Выход</a>
-           {% else %}
-                <a class="btn btn-outline-success my-2 my-sm-0" href="{%  url 'login' %}">Вход</a>
-           {% endif %}
-        </div>
-    </nav>
-
-
-
-
-    <div class="modal fade" id="messageModalCenter" tabindex="-1" role="dialog" aria-labelledby="messageModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-info text-white">
-					<h5 class="modal-title" id="messageModalCenterTitle"></h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body bg-transparent text-dark">
-                    <div class="custom-message-modal text-center"><h5>{% if messages %}
-                            {% for message in messages %}
-                                {{ message }}
-                            {% endfor %}
-                        {% endif %}</h5></div>
-				</div>
-				<div class="modal-footer bg-light text-dark">
-					<button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-				</div>
-			</div>
-		</div>
-	</div>
+            <div class="modal fade" id="messageModalCenter" tabindex="-1" role="dialog" aria-labelledby="messageModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header text-white">
+                            <h5 class="modal-title" id="messageModalCenterTitle"></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body bg-transparent text-dark">
+                            <div class="message-join">
+                                <div class="row align-items-center">
+                                    <div class="col-1 pr-0 text-center"><i class="fa fa-3" aria-hidden="true"></i></div>
+                                    <div class="col-11">
+                                        <h5>{% if messages %}
+                                                {% for message in messages %}
+                                                    {{ message }}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </h5>
+                                    </div>
+                                </div>                     
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light text-dark pt-2 pb-2">
+                            <button type="button" class="btn " data-dismiss="modal">Закрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
 

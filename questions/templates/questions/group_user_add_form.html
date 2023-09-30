@@ -1,9 +1,9 @@
 {% load crispy_forms_tags crispy_forms_field static %}
 
-<form method="post" action="{% url 'user_add' %}" id="user_add_form" >
+<form method="post" action="{% url 'group_user_creat' %}" id="add_group_user_form" >
 {% csrf_token %}
 
-<div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+	<div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
 	{% for error in form.non_field_errors %}
 	  {{ error }}
 	{% endfor %}

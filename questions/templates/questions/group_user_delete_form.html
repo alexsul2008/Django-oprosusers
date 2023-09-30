@@ -1,0 +1,10 @@
+{% load crispy_forms_tags crispy_forms_field static %}
+
+
+<form method="post" action="{% url 'group_user_delete' object.id %}" id="group_user_delete_form" >
+{% csrf_token %}
+<div class="row align-items-center">
+	<div class="col-1 pr-0"><span class="fa fa-question-circle-o fa-3 text-danger" aria-hidden="true"></span></div>
+	<div class="col-11"><h5>Вы действительно хотите удалить группу: <span class="font-italic font-weight-bold">{{ object }} </span></h5></div>
+</div>
+</form>

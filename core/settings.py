@@ -51,6 +51,11 @@ INSTALLED_APPS = [
     'store',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'questions.auth_ADMSK.LdapADMSK',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

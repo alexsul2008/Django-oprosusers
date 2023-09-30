@@ -4,6 +4,8 @@
 <form method="post" action="{% url 'user_edit' object.id %}" id="user_edit_form" >
 {% csrf_token %}
 
+
+
 	<div class="form-row">
 		<div class="form-group col-md-6" id="">
 			<label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
@@ -62,10 +64,14 @@
 	<div id="" class="form-group">
 		{{ form.password.label }}
 		{{ form.password }}
+
+		
+		{% if request.user.is_superuser %}
 		<p class="card-text"><small class="text-muted">Пароли хранятся в зашифрованном виде, поэтому нет возможности посмотреть пароль этого пользователя, но вы можете изменить его используя <a class="text-info" data-toggle="modal"
 			data-user-id="{{ list_answer_user.id }}"
 			data-url="{{url_password}}"
 			data-target="#changePasswordUserModal" data-dismiss="modal" href="">эту форму</a>.</small></p>
+		{% endif %}
 	</div>
 
 

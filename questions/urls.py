@@ -6,6 +6,8 @@ from .views import *
 
 urlpatterns = [
         path('', questionsViews, name='questions'),
+        path('settings/', settingsViews, name='settings'),
+
 
         path('questions/', QuestionsGroupListsNew.as_view(), name='filter'),
         path('questions/create/', QuestionsCreateView.as_view(), name='question_creat'),
@@ -21,19 +23,28 @@ urlpatterns = [
         path('questioninactive/', question_inactive, name='questioninactive'),
 
         path('statistics-user/', statisticsuser, name='statistics_user'),
+
+        path('new-statistics-user/', new_statisticsuser, name='new_statistics_user'), 
+
         path('statistics/', UsersGroupListsNew.as_view(), name='statistics'),
         path('statistics/<int:pk>/delete/', statisticsUserDeleteView, name='statisticsuserdelete'),
 
-        path('user/add/', UserCreateView.as_view(), name='user_add'),
-        # path('user/add/', registration_form_view, name='user_add'),
+        path('user/add/', UserCreateView.as_view(), name='user_add'),        
         path('user/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
         path('user/<int:pk>/', UserEditView.as_view(), name='user_edit'),
         path('user/<int:pk>/password-change/', UserPasswordChangeView.as_view(), name='user_pass_change'),
+
+        path('group-user/', listGroupUsersView, name='list-group-users'),
+        path('group-user/create/', GroupUserCreateView.as_view(), name='group_user_creat'),
+        path('group-user/<int:pk>/delete/', GroupUserDeleteView.as_view(), name='group_user_delete'),
+        path('group-user/<int:pk>/', GroupUserEditView.as_view(), name='group_user_edit'),
 
         path('totalquestions/', total_questions, name='totalquestions'),
         path('totalusers/', total_users, name='totalusers'),
         path('userchecked/', user_checked, name='userchecked'),
         path('statisticsforuser/', statistics_for_user, name='statistics_for_user'),
+        
         path('oprosanswers/', oprosanswers, name='oprosanswers'),
+        path('oprosanswers-list/', oprosanswers_list, name='oprosanswers_list'),
 
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

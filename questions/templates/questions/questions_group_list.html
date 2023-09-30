@@ -134,12 +134,8 @@
                                              data-url="{% url 'question_creat' %}"
                                              aria-pressed="true"
                                              data-toggle="modal"
-                                             data-target="#exampleModalCenter">Добавить вопрос</a></div>
-                        <div class="mr-2"><a href="" class="btn btn-info btn-lg mb-3" role="button"
-                                             data-url="{% url 'group_question_creat' %}"
-                                             aria-pressed="true"
-                                             data-toggle="modal"
-                                             data-target="#addGroupQuestinModalCenter">Добавить группу вопросов</a></div>
+                                             data-target="#createQuestionModalCenter">Добавить вопрос</a></div>
+                       
 
 
                     </div>
@@ -252,32 +248,12 @@
                                             <div data-id="{{ list_question.id }}" class="align-self-end d-inline-flex">
                                                 {% for gq in list_question.groups_questions.all %}
 
-                                                    <div class="box">
-                                                        <div class="box-img mr-1 btn btn-outline-info mw100">
-                                                        <span class="" aria-disabled=""
-                                                              role="button" aria-pressed="" aria-hidden=""
-                                                              data-groups-questions="{{ gq.id }}" data-url=""
-                                                              title="">{{ gq.name }}</span>
+                                                    
+                                                        <div class="mr-1 mw100">
+                                                        <span class="btn btn-outline-info disabled">{{ gq.name }}</span>
                                                         </div>
-                                                        <div class="link border-info">
-                                                            <a href="" class="fa fa-pencil btn btn-outline-info p-0"
-                                                               role="button"
-                                                               aria-pressed="true"
-                                                               data-toggle="modal"
-                                                               data-url="{% url 'group_question_edit' gq.id %}"
-                                                               data-target="#editGroupQuestions"
-                                                               title="Редактировать"></a>
-                                                            <a href="#" class="fa fa-trash btn btn-outline-danger p-0"
-                                                               role="button"
-                                                               aria-pressed="true"
-                                                               data-toggle="modal"
-                                                               data-url="{% url 'group_question_delete' gq.id %}"
-                                                               data-target="#deleteGroupQuestions"
-                                                               title="Удалить"></a>
-
-
-                                                        </div>
-                                                    </div>
+                                                        
+                                                    
                                                 {% endfor %}
                                             </div>
                                         </div>
@@ -298,55 +274,26 @@
                 {% include 'include/paginator.html' %}
 
 
-                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal fade" id="createQuestionModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="createQuestionModalCenterTitle" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="exampleModalCenterTitle">Добавление вопроса</h5>
+                                <h5 class="modal-title" id="createQuestionModalCenterTitle">Добавление вопроса</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-question jq-product-wrapper">
-
-
-                                </div>
+                                <div class="modal-create-question"></div>
                             </div>
                             <div class="modal-footer bg-light text-white">
                                 <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="add_form" type="submit" class="btn btn-outline-success">Добавить</button>
+                                <button form="add_question_form" type="submit" class="btn btn-outline-success">Добавить</button>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-                <div class="modal fade" id="addGroupQuestinModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="addGroupQuestinModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="addGroupQuestinModalCenterTitle">Добавление группы вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-add-groups-question jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-white">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="add_groups_question_form" type="submit" class="btn btn-outline-success">Добавить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
 
                 <div class="modal fade" id="editQuestionModalCenter" tabindex="-1" role="dialog"
                      aria-labelledby="editQuestionModalCenterTitle" aria-hidden="true">
@@ -421,60 +368,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                <div class="modal fade" id="editGroupQuestions" tabindex="-1" role="dialog"
-                     aria-labelledby="editGroupQuestionsTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="editGroupQuestionsTitle">Редактирование группы вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-edit-groups-question jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-white">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="update_group_form" type="submit" class="btn btn-outline-success">
-                                    Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="deleteGroupQuestions" tabindex="-1" role="dialog"
-                     aria-labelledby="deleteGroupQuestionsTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="deleteGroupQuestionsTitle">Удаление группы вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-groups-question-delete jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-dark">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="delete_groups_form" type="submit" class="btn btn-outline-danger">Удалить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                </div> 
 
             </div>
             <div class="col-1"></div>
@@ -482,6 +376,22 @@
 
 
     </div>
+
+
+    {% if messages %}
+       
+        {% for message in messages %}
+            <script>document.addEventListener("DOMContentLoaded", function(event) { 
+                messagesInference('{{message}}', '{{message.tags}}');
+            });</script>
+
+            <!-- 
+            {%if message.tags %}{{ message.tags }}{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message.level }} -->
+        
+        {% endfor %}        
+    {% endif %}
 
 
 

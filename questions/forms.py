@@ -71,6 +71,7 @@ class UserAddForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'email', 'username', 'groups']
 
+
 class UserEditForm(UserChangeForm):
     email = forms.EmailField(label = "Email пользователя", required=False)
     username = forms.CharField(label = "Логин пользователя")
@@ -98,9 +99,6 @@ class UserEditForm(UserChangeForm):
             self.fields['groups'].widget.attrs.update({'class': 'custom-select', 'size': '6', 'required': True})
 
 
-
-
-
 class GroupsQuestionsForm(forms.ModelForm):
     class Meta:
         model = GroupsQuestions
@@ -115,6 +113,21 @@ class GroupsQuestionsForm(forms.ModelForm):
             self.fields['groups'].widget.attrs.update({'class': 'custom-select', 'size': '6', 'required': True})
             self.fields['name'].widget.attrs.update({'placeholder': 'Введите название группы'})
 
+
+class GroupsUserForm(forms.ModelForm):
+    name = forms.CharField(label = "Группа пользователя")
+
+    class Meta:
+        model = Group
+        fields = ('name', 'is_boss', 'is_group')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+            self.fields['name'].widget.attrs.update({'placeholder': 'Введите название группы'})
+            self.fields['is_boss'].widget.attrs['class'] = 'custom-checkbox checkbox'
+            self.fields['is_group'].widget.attrs['class'] = 'custom-checkbox checkbox'
 
 
 class AnswersForm(forms.ModelForm):

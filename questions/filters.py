@@ -106,8 +106,6 @@ class QuestionsFilter(django_filters.FilterSet):
         fields = []
 
     def filter_by_all_name_fields(self, queryset, name, value):
-        print(self.filters)
-        print(queryset)
         self.name = name
 
         if value == 'False':

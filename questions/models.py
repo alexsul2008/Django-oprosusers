@@ -14,7 +14,7 @@ class GroupsQuestions(models.Model):
     name = models.CharField(u"Наименование группы", max_length=200, null=True, blank=True)
     in_active = models.BooleanField("Активность группы", default=True, help_text="Атрибут указывающий выводить/не выводить группу вопросов при прохождении опроса")
     groups = models.ManyToManyField(
-        Group, verbose_name="Группа отдела", blank=True
+        Group, verbose_name="Группа отдела", blank=True, related_name="groups"
     )
 
     def __str__(self):

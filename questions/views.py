@@ -1,6 +1,7 @@
 import json
 from random import shuffle
 
+
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -14,19 +15,21 @@ from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.cache import cache
 from django.db.models import Count, Max, Q, F
-from django.http import request, JsonResponse, HttpResponse
+from django.http import HttpResponseRedirect, request, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.csrf import csrf_protect
-from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 from django_filters.views import FilterView
 from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
 
+# from django.views.generic.list import ListView
+
 
 from questions.filters import UsersGroupsFilter, QuestionsFilter
-from questions.forms import UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm
+from questions.forms import UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
 from questions.models import Questions, GroupsQuestions, Answers, UsersAnswer, WorkPermitUsers
 from questions.mixins import MessageMixin
 
@@ -65,12 +68,56 @@ def usedGroup(user):
 
 
 @login_required
+def settingsViews(request):
+    # list_group_user = Group.objects.all()
+    # list_group_questions = GroupsQuestions.objects.all()
+
+    # gr = GroupsQuestions.objects.get(pk=8)
+
+    # print(gr.groups.all())
+    # print(list_group_questions.query)
+
+
+    context = {
+            # 'list_group_user': list_group_user,
+            # 'list_group_questions': list_group_questions
+        }
+    template = 'questions/settings_tamplate.html'
+    return render(request, template, context)
+
+@login_required
+def listGroupUsersView(request):
+    list_group_user = Group.objects.all().values()
+    data={}
+    groups_user = []
+    for index, value in enumerate(list_group_user): 
+        lists = {
+            'url': reverse_lazy('group_user_edit', kwargs={'pk': value['id']}),
+            'id': value['id'],
+            'name': value['name'],
+            'is_boss': value['is_boss'],
+        }       
+        groups_user.append(lists)
+        
+    print (groups_user)   
+    data['groups_user'] = json.dumps(groups_user, cls=DjangoJSONEncoder)
+    #
+
+    
+    # data['groups_user'] = json.dumps(list(list_group_user), cls=DjangoJSONEncoder)
+    return JsonResponse(data)
+
+                    # serializers.serialize('json', answers_list, indent=2, ensure_ascii=False,
+                    #                             fields=('description', 'approved'))
+
+
+@login_required
 def questionsViews(request):
     """Первоначальная страница с вопросом"""
     global global_total_questions
     """Если список вопросв в сессии пуст, то определяем список из usedGroup"""
     if not 'listQuestionsCook' in request.session:
-        user_groups, arrayQuestions = usedGroup(request.user)
+        user_groups, arrayQuestions = usedGroup(request.user)        
 
     if global_total_questions > 0:
         """Перезагрузка сессии"""
@@ -260,6 +307,39 @@ def next_question(request):
 
         return JsonResponse(data)
 
+@login_required
+def addUsersForGroup(request):
+    name = request.POST.get('name').strip()
+    if request.user.is_superuser:
+        from questions.auth_ADMSK import LdapADMSK
+        data = {}
+        data['status'] = LdapADMSK().add_users_group(request, name)
+
+        print(data['status'])
+
+    
+    # return HttpResponseRedirect(reverse("statistics"))
+    return JsonResponse(data)
+   
+
+@login_required
+def oprosanswers_list(request):
+
+    session_for_user = request.POST.get('val')
+
+    print(session_for_user)
+
+    answers = UsersAnswer.objects.filter(session_key=session_for_user).values('correct', 'vop_id', 'vop__description', 'otv_id')
+
+    data = {}
+    data['status'] = 200
+    data['answers'] = list(answers)
+
+    for index, value in enumerate(answers): 
+        data['answers'][index]['otv'] = list(Answers.objects.filter(question=value['vop_id']).values())        
+    
+    return JsonResponse(data, safe=False)
+
 
 @login_required
 def statisticsuser(request):
@@ -272,18 +352,14 @@ def statisticsuser(request):
     users = User.objects.all().exclude(is_superuser=True)
 
     if not (request.user.is_superuser or request.user.groups.values('is_boss')[0]['is_boss']):
-        sessions_lists_users = WorkPermitUsers.objects.filter(user_id=request.user.id).values('id', 'session_key',
-                                                                                              'date_passage').order_by(
-            '-date_passage', '-id')
+        sessions_lists_users = WorkPermitUsers.objects.filter(user_id=request.user.id).values('id', 'session_key', 'date_passage').order_by('-date_passage', '-id')
 
         models_users_answers = UsersAnswer
 
         list_quests = []
 
         for sessions_us in sessions_lists_users:
-            user_answers_not_correct = models_users_answers.objects.filter(session_key=sessions_us['session_key'],
-                                                                           correct=False).values_list(
-                'vop', flat=True).order_by('vop')
+            user_answers_not_correct = models_users_answers.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')
 
             """Количество не правильных ответов"""
             user_answers_not_correct_total = user_answers_not_correct.count()
@@ -345,16 +421,20 @@ def render_to_json(request, data):
 @csrf_protect
 # @staff_member_required
 def statisticsUserDeleteView(request, pk):
-    delete_session = WorkPermitUsers.objects.filter(id=pk)
-    delete_session_val = delete_session.values('session_key')
-    del_session_answer = UsersAnswer.objects.filter(session_key__exact=delete_session_val[0]['session_key'])
+    delete_session = WorkPermitUsers.objects.filter(id=pk) #.values('session_key')[0]['session_key']
+    # print(delete_session)
+    delete_session_val = delete_session.values('session_key')[0]['session_key']
+    # del_session_answer = UsersAnswer.objects.filter(session_key__exact=delete_session_val[0]['session_key'])
+    del_session_answer = UsersAnswer.objects.filter(session_key__exact=delete_session_val)
+
+    print(delete_session_val)
+
+    # del_key = delete_session_val[0]['session_key']
 
     del_session_answer.delete()
     delete_session.delete()
     data = {}
-    # data['success'] = json.dumps(success, cls=DjangoJSONEncoder)
-    data['message'] = json.dumps('Запись статистики удалена.', cls=DjangoJSONEncoder)
-    data['title'] = json.dumps('Удаление записи статистики', cls=DjangoJSONEncoder)
+    data['key'] = json.dumps(delete_session_val, cls=DjangoJSONEncoder)
 
     return JsonResponse(data)
 
@@ -365,7 +445,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
     # context_object_name = 'statistics_filter'
     context_object_name = 'statistics_users'
     paginate_by = 20
-    ordering = 'id'
+    # ordering = 'last_name'
     filterset_class = UsersGroupsFilter
 
     # group_required = [i for i in Group.objects.filter(is_boss = True).values_list('name', flat = True)]
@@ -380,9 +460,8 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             .exclude(is_superuser=True) \
             .annotate(permit_count=Count('user_permit')) \
             .annotate(date_last_answ=Max('user_permit__date_passage')) \
-            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name')
-
-        # print(queryset.query)
+            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name').order_by('last_name')
+        
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs
@@ -393,17 +472,12 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
         context['user_session'] = WorkPermitUsers.objects.filter(user_id__in = User.objects.values('id')) \
             .annotate(persents=(F('total_not_correct') * 100 / F('total_questions'))) \
             .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'persents') \
-                .order_by('-date_passage')
-
-        # print(context['user_session'])
+                .order_by('-date_passage', '-id')
 
         query = self.request.GET.copy()
         if 'page' in query:
             del query['page']
         context['queries'] = query
-
-        # print(context)
-
         return context
 
 
@@ -485,6 +559,34 @@ def user_checked(request):
     return JsonResponse(data)
 
 
+@login_required
+def new_statisticsuser(request):
+    all_answers_user = WorkPermitUsers.objects.filter(user_id = request.user.id) \
+            .annotate(percents=(F('total_not_correct') * 100 / F('total_questions'))) \
+            .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'percents') \
+                .order_by('-date_passage', '-id')
+ 
+    list_quests = []
+
+    for items in all_answers_user:
+        list_vop_count = {
+            'count': items['total_not_correct'],
+            'count_all_question': items['total_questions'],
+            'percents': round(items['percents']),
+            'date_passage': items['date_passage'],
+            'number_opros_id': items['id'],
+            'oprosed': items['session_key'],
+        }
+
+        list_quests.append(list_vop_count)   
+
+    context = {
+            'user_stat': list_quests,
+        }
+    template = 'questions/statistics_questions_new.html'
+    return render(request, template, context)
+
+
 @csrf_protect
 def oprosanswers(request):
     sess = request.POST.get('opros')
@@ -493,7 +595,7 @@ def oprosanswers(request):
     list_questions = UsersAnswer.objects.filter(session_key=sess).values('vop_id', 'otv_id', 'vop_id__description')
     answers = Answers.objects.values('id', 'description', 'approved', 'question_id').order_by('question_id', 'id')
 
-    # print(list_questions)
+    print(sess)
 
     user_answers_quest = []
     for vop in list_questions:
@@ -690,24 +792,6 @@ def question_inactive(request):
     return JsonResponse(data)
 
 
-# class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
-#     """
-#     Изменение пароля пользователя
-#     """
-#     form_class = UserPasswordChangeForm
-#     template_name = 'questions/user_password_change_form.html'
-#     success_message = 'Пароль был успешно изменён!'
-#     success_url = reverse_lazy('statistics')
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Изменение пароля на сайте'
-#         return context
-
-#     # def get_success_url(self):
-#     #     return reverse_lazy('statistics')
-
-
 class UserPasswordChangeView(SuccessMessageMixin, UpdateView):
     form_class = PasswordChangeForm
     template_name = 'questions/user_password_change_form.html'
@@ -738,83 +822,37 @@ class UserPasswordChangeView(SuccessMessageMixin, UpdateView):
         return kwargs
 
 
-# def registration_form_view(request):
-#     form = UserAddForm(request.POST or None)
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             form.save()
-#             if request.is_ajax():
-#                 return JsonResponse({'success': True}, status=201)
-#             return reverse_lazy('statistics')
-#         else:
-#             if request.is_ajax():
-#                 return JsonResponse({'success': False, 'errors': form.errors}, status=406)
-#     return render(request, 'questions/user_add_form.html', {'form': form})
-
-
-
-
 class UserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'questions/user_add_form.html'
     form_class = UserAddForm
+    success_url = reverse_lazy('statistics')
+    success_message = "Пользователь: %(name)s - успешно добавлен."
+    error_url = reverse_lazy('statistics')
+    # error_message = "Данные не корректны."
 
+    def get_success_message(self, cleaned_data):
+        # return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
+        return self.success_message % dict(cleaned_data, name= self.object.first_name + ' ' + self.object.last_name)
+    
+    # def get_error_message(self, form): 
+    #     # return self.error_message % dict(form.cleaned_data)
+    #     return dict(form.errors.as_data())
+
+    
     def form_valid(self, form):
         instance = form.save(commit=False)
-        # other staff
-        # self.object = form.save()
-
         instance.save()
         form.save_m2m()
-        if self.request.is_ajax():
-            return JsonResponse({'success': True}, status=201)
-        return redirect(reverse('statistics'))
+        return super().form_valid(form)
+    
 
     def form_invalid(self, form):
-        if self.request.is_ajax():
-            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
-        return super().form_invalid(form)
+        error = form.errors
+        error_message =list(error.as_data()["password2"][0])        
+        messages.error(self.request, error_message[0])            
+        return HttpResponseRedirect(self.error_url, error_message[0])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # form_class = UserAddForm
-    # template_name = 'questions/user_add_form.html'
-    # success_url = reverse_lazy('statistics')
-
-    # def form_valid(self, form):
-    #     # print('Форма валидна: ', form)
-    #     self.object = form.save()
-    #     form.save_m2m()
-    #     return super().form_valid(form)
-
-    # def get_success_message(self, cleaned_data):
-    #     return f'Пользователь: {self.object.first_name} {self.object.last_name} - успешно добавлен.'
-
-    # # def post(self, request, *args, **kwargs):
-    # #     data = None
-    # #     status = None
-    # #     form = self.form_class(data=request.POST)
-    # #     if form.is_valid():
-    # #         form.save()
-    # #         data = {'success': True}
-    # #         status = 201
-    # #     else:
-    # #         data = json.dumps(dict(form.errors.items()), ensure_ascii=False)
-    # #         status = 400
-    # #     return JsonResponse(data, safe=False, status=status)
-
+       
 
 
 
@@ -823,6 +861,10 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     form_class = UserEditForm
     template_name = 'questions/user_edit_form.html'
     success_url = reverse_lazy('statistics')
+    error_url = reverse_lazy('statistics')
+    success_message = "Для пользователя: %(name)s - данные успешно обновлены."
+    # error_message = "Группа пользователей: %(name)s - уже существует."
+    error_message = "Данные не корректны. Заполните все поля"
 
     # def post(self, request, *args, **kwargs):
     #     self.object = self.get_object()
@@ -830,9 +872,13 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     #     return super().post(request, *args, **kwargs)
 
     def get_success_message(self, cleaned_data):
-        print(f'Из get_success_message: {cleaned_data}')
-        return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
+        # return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
+        return self.success_message % dict(cleaned_data, name= self.object.first_name + ' ' + self.object.last_name)
+    
+    def get_error_message(self, cleaned_data): 
+        return self.error_message % dict(cleaned_data)
 
+    
     def form_valid(self, form):
         self.object = form.save()
         # form.save_m2m()
@@ -840,13 +886,10 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
 
     def form_invalid(self, form):
-        print('Форма не валидна: ', form)
-        return self.render_to_response(self.get_context_data(form=form))
-
-    # def form_invalid(self, form):
-    #     print('Форма не валидна: ', self, form)
-    #     errors = form.errors.as_json()
-    #     return JsonResponse({"errors": errors}, status=400)
+        error_message = self.get_error_message(form.cleaned_data)
+        if self.error_message:
+            messages.error(self.request, error_message)            
+        return HttpResponseRedirect(self.error_url, error_message)
 
 
     def get_context_data(self, **kwargs):
@@ -854,9 +897,7 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         id_user = self.kwargs['pk']
         context = super().get_context_data(**kwargs)
         context['url_password'] = reverse_lazy('user_pass_change', kwargs={'pk': id_user})
-
         # print(context)
-
         return context
 
 
@@ -871,45 +912,89 @@ class UserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return f'Пользователь: {self.object.first_name} {self.object.last_name} - успешно удален.'
 
 
-    # def post(self, *args, **kwargs):
-    #     self.object = self.get_object()
+  
+class GroupUserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    model = Group
+    form_class = GroupsUserForm
+    template_name = 'questions/group_user_add_form.html'
+    success_url = reverse_lazy('settings')
+    error_url = reverse_lazy('settings')
+    success_message = "Группа пользователей: %(name)s - добавлена."
+    error_message = "Группа пользователей: %(name)s - уже существует."
 
-    #     print(self.object)
+    def get_success_message(self, cleaned_data):  
+        return self.success_message % dict(cleaned_data, name=self.object.name)
+    
+    def get_error_message(self, form):  
+        return self.error_message % dict(name=form["name"].data)
 
-    #     self.object.delete()
-    #     data = {'success': 'OK'}
-    #     return JsonResponse(data)
+    def form_invalid(self, form):
+        error_message = self.get_error_message(form)
+        if self.error_message:
+            messages.error(self.request, error_message)
+            
+        return HttpResponseRedirect(self.error_url, error_message)
+    
+
+class GroupUserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Group
+    form_class = GroupsUserForm
+    template_name = 'questions/group_user_edit_form.html'
+    success_url = reverse_lazy('settings')
+    success_message = "Группа пользователей: %(name)s  - успешно изменена."
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, name=self.object.name)
+  
+
+class GroupUserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Group
+    template_name = 'questions/group_user_delete_form.html'
+    success_url = reverse_lazy('settings')
+    success_message = "Группа пользователей: %(name)s  - успешно удалена."
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, name=self.object.name)
+    
 
 
-class GroupsQuestionsCreateView(LoginRequiredMixin, CreateView, SuccessMessageMixin):
+class GroupsQuestionsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = GroupsQuestions
     form_class = GroupsQuestionsForm
     template_name = 'questions/groups_question_form.html'
-    success_url = reverse_lazy('filter')
-    success_message = "Группа вопросов: %(name)s"
+    success_url = reverse_lazy('settings')
+    success_message = "Группа вопросов: %(name)s - успешно создана."
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, name=self.object.name)
+    
+
+
+class GroupsQuestionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = GroupsQuestions
+    form_class = GroupsQuestionsForm
+    template_name = 'questions/groups_question_update_form.html'
+    success_url = reverse_lazy('settings')
+    success_message = "Группа вопросов: %(name)s - успешно обновлена"
 
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
 
 
-class GroupsQuestionsUpdateView(LoginRequiredMixin, UpdateView):
-    model = GroupsQuestions
-    form_class = GroupsQuestionsForm
-    template_name = 'questions/groups_question_update_form.html'
-    success_url = reverse_lazy('filter')
-
-
-class GroupsQuestionsDeleteView(LoginRequiredMixin, DeleteView, SuccessMessageMixin):
+class GroupsQuestionsDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = GroupsQuestions
     template_name = 'questions/groups_question_confirm_delete.html'
-    success_url = reverse_lazy('filter')
+    success_url = reverse_lazy('settings')
     success_message = 'Группа вопросов: %(name)s - удалена.'
 
-    def delete(self, request, *args, **kwargs):
-        obj = self.get_object()
-        data_to_return = super(GroupsQuestionsDeleteView, self).delete(request, *args, **kwargs)
-        messages.success(self.request, self.success_message % obj.__dict__)
-        return data_to_return
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(cleaned_data, name=self.object.name)
+
+    # def delete(self, request, *args, **kwargs):
+    #     obj = self.get_object()
+    #     data_to_return = super(GroupsQuestionsDeleteView, self).delete(request, *args, **kwargs)
+    #     messages.success(self.request, self.success_message % obj.__dict__)
+    #     return data_to_return
 
 
 class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
@@ -954,17 +1039,26 @@ class QuestionsCreateView(LoginRequiredMixin, CreateWithInlinesView):
     inlines = [AnswersInline]
     template_name = 'questions/question_form.html'
     success_url = reverse_lazy('filter')
+    success_message = 'Вопрос успешно удален.'
 
 
-class QuestionsUpdateView(LoginRequiredMixin, UpdateWithInlinesView):
+
+class QuestionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateWithInlinesView):
     model = Questions
     form_class = QuestionsForm
     inlines = [AnswersInline]
     template_name = 'questions/question_update_form.html'
     success_url = reverse_lazy('filter')
+    success_message = 'Вопрос успешно обнавлен.'
+
+    # def get_success_message(self, cleaned_data):
+    #     return self.success_message % dict(cleaned_data, name=self.object.name)
 
 
 class QuestionsDeleteView(LoginRequiredMixin, DeleteView):
     model = Questions
     template_name = 'questions/question_confirm_delete.html'
     success_url = reverse_lazy('filter')
+    success_message = 'Вопрос успешно удален.'
+
+

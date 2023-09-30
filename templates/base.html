@@ -1,4 +1,4 @@
-{% load static user_tags %}
+{% load static %}
 {% static 'media/no-img.jpg' as no_img %}
 
 <!DOCTYPE html>
@@ -20,7 +20,7 @@
 	{% include 'include/header.html' %}
 
 	<main role="main" class="flex-shrink-0">
-		{% include 'include/messages.html' %}
+		
 
 		{% block content %}{% endblock content %}
 	</main>
@@ -36,13 +36,17 @@
 	<script src="{% static 'js/bootstrap.min.js' %}"></script>
 
 	<script src="{% static 'js/jquery.formset.js' %}"></script>
+	<script src="{% static 'js/sweetalert2.all.min.js' %}"></script>
 
 	{% block extra_head_script %}
     {% endblock extra_head_script %}
 
 	<script src="{% static 'js/main.js' %}"></script>
+	
 
     {% block javascript %}{% endblock javascript %}
+
+
 
 </body>
 </html>

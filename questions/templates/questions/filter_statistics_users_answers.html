@@ -133,14 +133,8 @@
                                              data-url="{% url 'user_add' %}"
                                              aria-pressed="true"
                                              data-toggle="modal"
-                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>
-                        <div class="mr-2"><a href="" class="btn btn-info btn-lg mb-3" role="button"
-                                             data-url="{% url 'group_question_creat' %}"
-                                             aria-pressed="true"
-                                             data-toggle="modal"
-                                             data-target="#exampleModalCenter">Добавить группу пользователей</a></div>
-
-
+                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>                       
+                      
 
                     </div>
 
@@ -212,7 +206,7 @@
 															   data-target="#editUserModal"
 															   title="Редактировать">
 															</span>
-
+                                                        {% if user.is_superuser %}
                                                             <span class="fa fa-key btn btn-sm btn-light p-1 edit-user-pass"
 															   style="width: 29x; height: 29px;"
 															   role="button"
@@ -223,7 +217,7 @@
 															   data-target="#changePasswordUserModal"
 															   title="Изменить пароль">
 															</span>
-
+                                                        {% endif %}
 
 															<span class="fa fa-trash delete-user btn btn-sm btn-danger p-1"
 															   style="width: 29px; height: 29px;"
@@ -243,7 +237,7 @@
 
                                                     {% if list_answer_user.permit_count != 0 %}
                                                         <div class="col-2">
-                                                            <span class="badge badge-light text-center p-2 w-50">{{ list_answer_user.permit_count }}</span>
+                                                            <span class="badge badge-light text-center p-2 w-50" data-count="{{ list_answer_user.permit_count }}">{{ list_answer_user.permit_count }}</span>
                                                         </div>
                                                         <div class="col-2">
                                                             <span class="badge badge-light text-center p-2 w-100">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
@@ -263,38 +257,33 @@
                                         </div>
                                     </div>
 
-                                </div>
+                                
                                 <div id="collapse_{{ list_answer_user.id }}" class="collapse"  style="transition: .6s;" data-collapse-user="{{ list_answer_user.id }}"
                                      aria-labelledby="heading_{{ list_answer_user.id }}" data-parent="#accordExample">
 
-                                    <!-- <div id="containerAllAnswerUser_{{ list_answer_user.id }}"></div>
-                                    <span id="datepassagejsonalluser" hidden>{{ date_passage }}</span> -->
 
-
-
-
-
-                                            <div class="accordion mb-3 mt-2 accordionExampleUserListQuestions">
+                                            <div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions_{{ list_answer_user.id }}">
 
                                             {% for sess in  user_session %}
                                                 {% if sess.user_id == list_answer_user.id %}
-                                                    <div class="" id="heading_question_{{sess.id}}" data-heading-question="{{sess.id}}">
+                                                    <div class="" id="heading{{sess.id}}" data-heading-question="{{sess.id}}" data-url = "{% url 'oprosanswers_list' %}">
                                                         <div class="row mt-1 mb-1">
                                                             <div class="col-1"></div>
                                                             <div class="col-11 pl-0">
                                                                 <div class="d-flex flex-row">
                                                                     <div class="align-middle pr-2">
-                                                                        <a class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/{{sess.id}}/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a>
+                                                                        <!-- <button class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" data-delete="{{sess.id}}" style="font-size: x-large;" role="button" aria-pressed="true" data-url="/statistics/{{sess.id}}/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></button> -->
+                                                                        <button class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" data-delete="{{sess.id}}" style="font-size: x-large;" data-url="/statistics/{{sess.id}}/delete/" title="Удалить"></button>
                                                                     </div>
-                                                                    <div class="pl-0 w-100">
+                                                                    <div class="pl-0 w-100" onclick="collapseOtvet('{{ sess.id }}', '{{sess.session_key}}',);" >
 
                                                                         <button class="btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg btn-block user-opros"
                                                                             data-url="{% url 'oprosanswers' %}"
                                                                             type="button"
                                                                             data-toggle="collapse"
-                                                                            data-target="#collapseExample{{sess.id}}"
+                                                                            data-target="#collapse{{sess.id}}"
                                                                             aria-expanded="false"
-                                                                            aria-controls="collapseExample{{sess.id}}"
+                                                                            aria-controls="collapse{{sess.id}}"
                                                                             data-opros-user="{{sess.session_key}}"
                                                                             data-id="{{sess.id}}">
                                                                             <div class="row">
@@ -331,11 +320,16 @@
 
                                                                     </div>
                                                                 </div>
+                                                            
+
+                                                            <div id="collapse{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent="#accordionExampleUserListQuestions_{{ list_answer_user.id }}">
+                                                    
                                                             </div>
                                                         </div>
+
                                                     </div>
-                                                    <div id="collapseExample{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent=".accordionExampleUserListQuestions">
-                                                    </div>
+                                                </div>
+                                                    
 
 
 
@@ -351,6 +345,7 @@
 
 
                                 </div>
+                            </div>
                             {% endfor %}
 
                                 <div class="modal fade show" id="succesDeleteModalCenter" tabindex="-1" role="dialog"
@@ -387,7 +382,7 @@
                     {% include 'include/paginator.html' %}
                 </div>
 
-<!--                <div class="col-1"></div>-->
+
             </div>
         </div>
 
@@ -413,6 +408,30 @@
                     <div class="modal-footer bg-light text-dark">
                         <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
                         <button form="user_edit_form" type="submit" class="btn btn-outline-success">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="exampleAddGroupUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleAddGroupUserModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h5 class="modal-title" id="exampleAddGroupUserModalCenterTitle">Добавление группы пользователей</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-add-group-user jq-product-wrapper">
+
+
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light text-dark">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                        <button form="add_group_user_form" type="submit" class="btn btn-outline-success">Сохранить</button>
                     </div>
                 </div>
             </div>
@@ -490,6 +509,16 @@
 			</div>
 		</div>
 
+        {% if messages %}
+       
+        {% for message in messages %}
+            <script>document.addEventListener("DOMContentLoaded", function(event) { 
+                messagesInference('{{message}}', '{{message.tags}}');
+            });</script>
+
+        {% endfor %}        
+    {% endif %}
+
 
 
 
@@ -502,10 +531,14 @@
 
 {% block javascript %}
     <script>
-        window.onload = function () {
+        window.onload = (function () {
             formFilterInUsers();
-            messagesInference();
-        };
+        });
+
+        document.addEventListener("DOMContentLoaded", function(event) { 
+            
+        });
+        
 
 
     </script>

@@ -1,4 +1,7 @@
 
 <form id="delete_groups_form" method="post" action="{% url 'group_question_delete' object.id %}">{% csrf_token %}
-    <p>Вы действительно хотите удалить группу вопросов: "{{ object }}"?</p>
+    <div class="row align-items-center">
+        <div class="col-1 pr-0"><span class="fa fa-question-circle-o fa-3 text-danger" aria-hidden="true"></span></div>
+        <div class="col-11"><h5>Вы действительно хотите удалить группу вопросов:  <span class="font-italic font-weight-bold">{{ object }} </span></h5></div>
+    </div>
 </form>

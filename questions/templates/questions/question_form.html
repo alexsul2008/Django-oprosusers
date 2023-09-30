@@ -2,7 +2,7 @@
 {% static 'media/no-img.jpg' as no_img %}
 
 
-<form id="add_form" method="POST" action="{% url 'question_creat' %}" enctype="multipart/form-data">
+<form id="add_question_form" method="POST" action="{% url 'question_creat' %}" enctype="multipart/form-data">
 {% csrf_token %}
 
     {% crispy form %}

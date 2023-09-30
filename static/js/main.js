@@ -21,10 +21,9 @@ function csrfSafeMethod(method) {
 
 let csrftoken = getCookie('csrftoken');
 
-// window.load = function () {
-//     console.log('Окно открыто')
-//     messagesInference();
-// }
+
+
+// window.addEventListener('load', dataHover)
 
 
 $(document).ready(function () {
@@ -121,212 +120,70 @@ $(document).ready(function () {
         }
     });
 
-    $('body').on('click', 'button.user-opros', function (e) {
-        var button = $(e.relatedTarget);
-        var opros = $(this).data('opros-user');
-        var url = $(this).data('url');
-        var id = $(this).data('id');
-        var itemCollaps = $('.accordionExampleUserListQuestions').find('#collapseExample' + id);
+    // $('body').on('click', 'button.user-opros', function (e) {
+    //     let button = $(e.relatedTarget);
+    //     let opros = $(this).data('opros-user');
+    //     let url = $(this).data('url');
+    //     let id = $(this).data('id');
+    //     let itemCollaps = $('.accordionExampleUserListQuestions').find('#collapse' + id);
 
-        // console.log(opros);
-        // console.log(url);
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'opros': opros,
-                'opros_id': id,
-            },
-            success: function (data) {
-                var listquests = JSON.parse(data.list_quests);
-                var html = '';
-
-
-                // console.log(id);
-                if (listquests.length != 0) {
-                    // html += '<div id="collapseExample' + id + '" class="collapse show" data-collapse-heading-question="' + id + '" aria-labelledby="heading_question_' + id + '" data-parent="#accordionExampleUserListQuestions">';
-
-                    for (i = 0; i < listquests.length; i++) {
-
-                        html += '<div class="row">';
-                        html += '<div class="col-1"></div>';
-                        html += '<div class="col-11"><h5 class="alert-heading">' + listquests[i].question + '</h5><hr></div>';
-                        html += '</div>';
-                        html += '<div class="row mb-5">';
-                        html += '<div class="col-1"></div>';
-                        html += '<div class="list-group col-11 disabled">';
-
-                                    for (j = 0; j < listquests[i].new_answ.length; j++) {
-                                        html += '<button type="button" class="list-group-item list-group-item-action';
-                                        if (listquests[i].new_answ[j].approved === true) {
-                                            html += ' list-group-item-success"';
-                                        }
-                                        if (contains(listquests[i].otv, listquests[i].new_answ[j].id) == true) {
-                                            html += ' list-group-item-danger"';
-                                        }
-                                        html += ' data-id="' + listquests[i].new_answ[j].id + '">' + listquests[i].new_answ[j].description + '</button>';
-                                    }
-
-                        html += '</div>';
-                        html += '</div>';
-
-                    }
-
-                    // html += '</div>';
-
-                } else {
-                    html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
-                };
-                // html += '';
-                // $('div#accordionExampleUserListQuestions').remove();
-                // $('div[id^="collapseExample"]').remove();
-                // $('#heading_question_' + id).after(html);
-                // $('#collapseExample' + id).append(html);
-                $(itemCollaps).append(html);
-                // $('#heading_question_' + id).next('#collapseExample' + id).slideToggle();
-                // $('#collapseExample' + id).addClass('show');
-                // $('#collapseExample' + id).collapse('toggle');
-
-                // $('#collapseExample' + id).collapse({ toggle: false });
-
-
-            }
-        });
-    });
-
-
-    // $('body').on('click', 'span.statistics-user', function () {
-    //     var id = $(this).data('user-id');
-    //     var url = $(this).data('url');
 
     //     $.ajax({
     //         type: 'POST',
     //         url: url,
     //         data: {
     //             'csrfmiddlewaretoken': csrftoken,
-    //             'pk': id,
+    //             'opros': opros,
+    //             'opros_id': id,
     //         },
     //         success: function (data) {
-    //             // console.log(data);
-    //             var datepassage = JSON.parse(data.date_passage);
-    //             var listquests = JSON.parse(data.list_quests);
+    //             let listquests = JSON.parse(data.list_quests);
+    //             let html = '';
 
-    //             // console.log(listquests);
 
-    //             var html = '<div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions">';
-    //             if (listquests.length == 0) {
-    //                 html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
-    //             } else {
-    //                 var dp = [];
-    //                 datepassage.forEach(function (el, i) {
-    //                     datepassage[i].date = new Date(el.date).toLocaleDateString();
-    //                     dp.push(datepassage[i].date);
-    //                 });
+    //             if (listquests.length != 0) {
+                    
+
     //                 for (i = 0; i < listquests.length; i++) {
-    //                     if (listquests[i].count == 0){
-    //                         html += '<div class="card border-0"><div class="" id="heading' + listquests[i].number_opros_id + '">';
-    //                         html += '<div class="row mt-1 mb-1"><div class="col-1"></div>';
-    //                         html += '<div class="col-11 pl-0">';
-    //                         html += '<div class="d-flex flex-row">';
-    //                         html += '<div class="align-middle pr-2">';
-    //                         html += '<a class="fa fa-trash btn btn-outline-success btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
-    //                         html += '<div class="pl-0 w-100">';
-    //                         html += '<button class="btn btn-outline-success btn-lg btn-block opros-user" data-url="oprosanswers/' + listquests[i].number_opros_id + '" data-opros-id="' + listquests[i].number_opros_id + '" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
-    //                         html += '<div class="row"><div class="col-1"></div>';
-    //                         html += '<div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div><div class="col-2"><span class="badge badge-light float-left m-1">' + new Date(listquests[i].date_passage).toLocaleDateString() + '</span></div>';
-    //                         html += '<div class="col-3"><span class="badge float-right m-1">Верные ответы получены на все: </span></div>';
-    //                         html += '<div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count_all_question + '</span></div>';
-    //                         html += '<div class="col-2"><span class="badge float-left m-1">вопроса(ов), а это</span></div>';
-    //                         html += '<div class="col-1"><span class="badge badge-light float-left w-100 m-1">100 %</span></div></div>';
-    //                         html += '</div></div></button></div></div></div></div>';
-    //                     }else{
-    //                         html += '<div class="card border-0"><div class="" id="heading' + listquests[i].number_opros_id + '">';
-    //                         html += '<div class="row mt-1 mb-1"><div class="col-1"></div>';
-    //                         html += '<div class="col-11 pl-0">';
-    //                         html += '<div class="d-flex flex-row">';
-    //                         html += '<div class="align-middle pr-2">';
-    //                         html += '<a class="fa fa-trash btn btn-outline-danger btn-lg h-100 delete-user-statics" style="font-size: x-large;" role="button" href="" aria-pressed="true" data-url="/statistics/' + listquests[i].number_opros_id + '/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></a></div>';
-    //                         html += '<div class="pl-0 w-100">';
-    //                         html += '<button class="btn btn-outline-danger btn-lg btn-block opros-user" data-url="oprosanswers/' + listquests[i].number_opros_id + '" data-opros-id="' + listquests[i].number_opros_id + '" type="button" data-toggle="collapse" data-target="#collapse' + listquests[i].number_opros_id + '" aria-expanded="false" aria-controls="collapse' + listquests[i].number_opros_id + '">';
-    //                         html += '<div class="row"><div class="col-1"></div>';
-    //                         html += '<div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div><div class="col-2"><span class="badge badge-light float-left m-1">' + new Date(listquests[i].date_passage).toLocaleDateString() + '</span></div>';
-    //                         html += '<div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>';
-    //                         html += '<div class="col-2 d-flex flex-row"><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count + '</span>';
-    //                         html += '<span class="badge m-1">из</span><span class="badge badge-light w-100 mb-1 mt-1">' + listquests[i].count_all_question + '</span></div>';
-    //                         html += '<div class="col-2"><span class="badge float-left m-1">вопроса(ов), а это</span></div>';
-    //                         html += '<div class="col-1"><span class="badge badge-light float-left w-100 m-1">' + listquests[i].percents + ' %</span></div></div>';
-    //                         html += '</div></button></div></div></div></div>';
-    //                         html += '<div id="collapse' + listquests[i].number_opros_id + '" style="transition: .6s;" class="collapse" aria-labelledby="heading' + listquests[i].number_opros_id + '" data-parent="#accordionExampleUserListQuestions"><div class="card-body">';
 
-    //                         for (j = 0; j < listquests[i].vop.length; j++) {
-    //                             html += '<div class="row"><div class="col-1"></div><div class="col-11"><h5 class="alert-heading">' + listquests[i].vop[j].question + '</h5><hr></div></div>';
-    //                             html += '<div class="row mb-5"><div class="col-1"></div><div class="list-group col-11 disabled">';
+    //                     html += '<div class="row">';
+    //                     html += '<div class="col-1"></div>';
+    //                     html += '<div class="col-11"><h5 class="alert-heading">' + listquests[i].question + '</h5><hr></div>';
+    //                     html += '</div>';
+    //                     html += '<div class="row mb-5">';
+    //                     html += '<div class="col-1"></div>';
+    //                     html += '<div class="list-group col-11 disabled">';
 
-
-    //                             for (jj = 0; jj < listquests[i].vop[j].new_answ.length; jj++) {
-    //                                 html += '<button type="button" class="list-group-item list-group-item-action';
-    //                                 if (listquests[i].vop[j].new_answ[jj].approved === true) {
-    //                                     html += ' list-group-item-success"';
+    //                                 for (j = 0; j < listquests[i].new_answ.length; j++) {
+    //                                     html += '<button type="button" class="list-group-item list-group-item-action';
+    //                                     if (listquests[i].new_answ[j].approved === true) {
+    //                                         html += ' list-group-item-success"';
+    //                                     }
+    //                                     if (contains(listquests[i].otv, listquests[i].new_answ[j].id) == true) {
+    //                                         html += ' list-group-item-danger"';
+    //                                     }
+    //                                     html += ' data-id="' + listquests[i].new_answ[j].id + '">' + listquests[i].new_answ[j].description + '</button>';
     //                                 }
-    //                                 if (contains(listquests[i].vop[j].otv, listquests[i].vop[j].new_answ[jj].id) == true) {
-    //                                     html += ' list-group-item-danger"';
-    //                                 }
-    //                                 html += ' data-id="' + listquests[i].vop[j].new_answ[jj].id + '">' + listquests[i].vop[j].new_answ[jj].description + '</button>';
-    //                             }
-    //                             html += '</div></div>';
-    //                         }
-    //                         html += '</div></div></div>';
-    //                     }
+
+    //                     html += '</div>';
+    //                     html += '</div>';
+
     //                 }
-    //             };
-    //             html += '</div>';
-    //             $('div#accordionExampleUserListQuestions').remove();
-    //             // parent.empty();
-    //             $('div#containerAllAnswerUser_' + data.user_id).after(html);
-    //             // parent.empty();
 
+    //                 // html += '</div>';
+
+    //             } else {
+    //                 html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
+    //             };
+                
+    //             $(itemCollaps).append(html);
     //         }
     //     });
-
     // });
 
 
 
-    $('body').on('click', 'a.delete-user-statics', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var url = $(this).data('url');
-        var id = $(this).data('id');
-        var parent = $(this).parent().parent().parent().parent();
-
-        confirm_box = confirm("Удалить данную запись?");
-
-        if (confirm_box == true) {
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    'csrfmiddlewaretoken': csrftoken,
-                    'pk': id,
-                },
-                success: function (data) {
-                    var msg = JSON.parse(data.message);
-                    var title = JSON.parse(data.title);
-                    parent.remove();
-                    message_title.empty();
-                    message_title.append(title);
-                    message.empty();
-                    message.append('<p class="text-secondary pt-2">' + msg + '</p>');
-                    $('#exampleModalMessages').modal({show: true});
-                }
-            });
-        } else {
-
-        }
-
-    });
+ 
 
     // Выделить всех пользователей
     $('body').on('click', '.list-group .check-all-user', function () {
@@ -374,6 +231,14 @@ $(document).ready(function () {
         }
     );
 
+    // $("button.btn-settings").hover(
+    //     function() {
+    //         $(this).find("span.childrens").removeClass('d-none');
+    //     }, function() {
+    //         $(this).find("span.childrens").addClass('d-none');
+    //     }
+    // );
+
     $('.action-list').on('click', 'a.question-active', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -395,11 +260,7 @@ $(document).ready(function () {
             }
         });
     });
-
-
-    // $('form#user_edit_form').find('a.password_user').attr('href');
-    // console.log($('form#user_edit_form').find('a.password_user').attr('href'));
-
+  
 
     $('#editUserModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
@@ -423,9 +284,6 @@ $(document).ready(function () {
         var container = $(this).find('.modal-user-change-pass');
         container.html('');
 
-        console.log(url);
-        console.log(id);
-
         $.ajax({
             url: url,
             id: id
@@ -448,16 +306,18 @@ $(document).ready(function () {
         });
     });
 
-    $('#messageModalCenter').on('hidden.bs.modal', function (e) {
-        $('#messageModalCenter .custom-message-modal h5').empty();
+    $('#deleteGroupUserModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-group-user-delete');
+        container.html('');
 
-        // console.log('Окно закрыто');
-        // window.setTimeout(function () {
-        //     $('#messageModalCenter').modal('show');
-        // }, 1000);
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        });
     });
-
-
 
     $('#exampleAddUserModalCenter').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
@@ -471,6 +331,50 @@ $(document).ready(function () {
             container.html(data);
         }).fail(function (jqXHR, textStatus) {
             console.log(textStatus);
+        });
+    });
+
+
+    $('#exampleAddGroupUserModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-add-group-user');
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        }).fail(function (jqXHR, textStatus) {
+            console.log(textStatus);
+        });
+    });
+
+    $('#editGroupUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-group-user-edit');
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
+        }).fail(function (jqXHR, textStatus) {
+            console.log(textStatus);
+        });
+    });
+
+
+    $('#createQuestionModalCenter').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var url = button.data('url');
+        var container = $(this).find('.modal-create-question');
+
+        // console.log(container);
+        container.html('');
+        $.ajax({
+            url: url,
+        }).done(function (data) {
+            container.html(data);
         });
     });
 
@@ -520,8 +424,6 @@ $(document).ready(function () {
         var url = button.data('url');
         var container = $(this).find('.modal-edit-groups-question');
         container.html('');
-
-        console.log(button);
         $.ajax({
             url: url,
         }).done(function (data) {
@@ -569,24 +471,476 @@ $(document).ready(function () {
 //        $('#imgclear').remove();
 //    });
 
+    $('#messageModalCenter').on('hidden.bs.modal', function (e) {
+        $('#messageModalCenter .message-join h5').empty();  
+    });
+
+    $('body').on('click', 'a.delete-user-statics', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var url = $(this).data('url');
+        var id = $(this).data('id');
+        var parent = $(this).parent().parent().parent().parent();
+
+        confirm_box = confirm("Удалить данную запись?");
+
+        if (confirm_box == true) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'pk': id,
+                },
+                success: function (data) {
+                    var msg = JSON.parse(data.message);
+                    var title = JSON.parse(data.title);
+                    parent.remove();
+                    message_title.empty();
+                    message_title.append(title);
+                    message.empty();
+                    message.append('<p class="text-secondary pt-2">' + msg + '</p>');
+                    $('#exampleModalMessages').modal({show: true});
+                }
+            });
+        } else {
+
+        }
+
+    });
+
 
 });
 
-function messagesInference(){
-    const messageModalWin = new bootstrap.Modal(document.querySelector('#messageModalCenter'));
-    const messageText = document.querySelector('#messageModalCenter .custom-message-modal h5').innerHTML
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-outline-info mr-2',
+      cancelButton: 'btn btn-outline-danger'
+    },
+    buttonsStyling: false
+  })
 
-    if (messageText.length != 0){
-        messageModalWin.show()
+if(document.querySelector('#accordExample')){
+    document.querySelector('#accordExample').addEventListener('click', function(elem) {
+        
+        if(!elem.target.dataset.delete){
+            return
+        }
+
+        let textContentCount = elem.target.closest('div[id^="heading_"]').querySelector('span.badge[data-count]')
+        let collapsedContent = elem.target.closest('div[id^="heading_"]').querySelector('div[id^="collapse_"]')
+
+        swalWithBootstrapButtons.fire({
+            title: 'Внимание',
+            text: 'Вы действительно хотите удалить данную статистику?',
+            icon: 'error',
+            iconHtml: '?',
+            showCancelButton: true,
+            confirmButtonText: 'Да',
+            cancelButtonText: 'Отмена',
+        }).then((result) =>{
+            if(result.isConfirmed){
+                $.ajax({
+                    type: 'POST',
+                    url: elem.target.dataset.url,
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'pk': elem.target.dataset.delete,
+                    },
+                    success: function (data) {                    
+                        let data_keys = JSON.parse(data.key)
+                        let lists = JSON.parse(localStorage.getItem('lists_answer')) || []
+                        
+                        localStorage.removeItem(data_keys)
+                        document.getElementById('heading' + elem.target.dataset.delete).remove() 
+                        
+                        if(lists.lenght != 0){
+                            let index = lists.indexOf(data_keys)
+                            
+                            lists.splice(index, 1)
+                            localStorage.setItem('lists_answer', JSON.stringify(lists))
+                        }
+
+                        textCount = Number(textContentCount.textContent) - 1
+                        textContentCount.textContent = textCount
+
+                        let closetCount = textContentCount.closest('div[class^="col"')
+                        let nextElCount = closetCount.nextElementSibling
+
+                        if(textCount === 0){
+                            closetCount.classList.add('col-4')
+                            closetCount.classList.remove('col-2')
+                            closetCount.innerHTML = '<small class="text-center text-wrap">Опрос не проходил(а)</small>'
+                            nextElCount.remove()
+                            collapsedContent.remove()
+                            
+                        }                        
+                        swalWithBootstrapButtons.fire(
+                            "Удалено!",
+                            "Выбранная статистика успешно удалёна.",
+                            "success"
+                        )
+                    }
+                });
+                
+                
+                
+            }
+        })
+        
+    })
+}
+
+
+
+
+
+
+const formLoginErrors = () => {
+    if(document.querySelector('#user-logining ul') !== null){
+        document.querySelector('#user-logining ul').classList.add('list-unstyled')
+    }else{
+        return
+    }   
+}
+formLoginErrors()
+
+function selectClass(elem, classes=[]){
+    if(elem.classList.contains(...classes)){
+        elem.classList.remove(...classes);
+    }else {
+        elem.classList.add(...classes);
+    }
+}
+
+let messagesInference = (text=null, tags=null) => {
+    const messageModalWin = new bootstrap.Modal(document.querySelector('#messageModalCenter'))
+    const messageModalView = document.querySelector('#messageModalCenter .modal-header') 
+    const messageModalBtn = document.querySelector('#messageModalCenter .modal-footer button') 
+    const messageModalIcon = document.querySelector('#messageModalCenter .message-join i')
+    let messageText = document.querySelector('#messageModalCenter .message-join h5')
+  
+    switch (tags) {
+        case 'success':
+            selectClass(messageModalView,['bg-info'])
+            selectClass(messageModalBtn,['btn-outline-info']) 
+            selectClass(messageModalIcon,['fa-check-circle-o', 'text-info'])      
+            break
+        case 'error':
+            selectClass(messageModalView,['bg-danger'])
+            selectClass(messageModalBtn,['btn-outline-danger']) 
+            selectClass(messageModalIcon,['fa-exclamation', 'text-danger'])          
+            break    
+        default:
+            break;
     }
 
+    if(text){
+        messageText.innerHTML = text
+
+        if (messageText.length != 0){
+            messageModalWin.show()
+        }
+    }
+
+
 }
+
+const collapseOtvet = (id, oprosed, user=null) => {
+    // console.log(id)
+    // console.log(oprosed)
+    let opros = oprosed
+    let button = document.getElementById('heading' + id)
+    let url = button.getAttribute('data-url')
+    let lists_answer
+
+    if(!user){
+        lists_answer = 'lists_answer'
+    }else{
+        lists_answer = 'lists_answer_' + user
+    }
+
+    let lists = JSON.parse(localStorage.getItem(lists_answer)) || []
+
+    if(lists.indexOf(opros) == -1){
+        lists.push(opros)
+    }    
+    
+    localStorage.setItem(lists_answer, JSON.stringify(lists))
+
+    if(!localStorage.getItem(opros)){
+     
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'opros_id': id,
+                'val': opros
+            },
+            cache: false,
+            dataType: 'json',
+            success: function (data) {
+                // console.log(data)
+                localStorage.setItem(opros, JSON.stringify(data))
+                viewListsQuestion(id, opros)
+            }
+        });
+        
+    }else{
+        viewListsQuestion(id, opros)
+    }
+    
+}
+
+const viewListsQuestion = (id=None, row=None) => {
+    let collapsed = document.getElementById('collapse' + id) 
+    collapsed.innerHTML = ''   
+
+    if(!collapsed.classList.contains('show')){
+        let dataRow = JSON.parse(localStorage.getItem(row))        
+
+        for (let i=0; i<dataRow['answers'].length; i++){
+            collapsed.insertAdjacentHTML('beforeend', `
+                <div class="flex-row mt-2 mb-3 item-question" data-vop="${dataRow['answers'][i]['vop_id']}">
+                    <h5 class="alert-heading pt-2 pb-2 pl-3 pl-3">${dataRow['answers'][i]['vop__description']}</h5>
+                </div>               
+            `) 
+
+            let answers = ''
+            answers = document.querySelector(`[data-vop="${dataRow['answers'][i]['vop_id']}"]`)
+
+            for (let j=0; j<dataRow['answers'][i]['otv'].length; j++){
+                let success = ''
+                 
+                let id = Number(dataRow['answers'][i]['otv'][j]['id'])               
+                if(dataRow['answers'][i]['otv'][j]['approved']){
+                    success = 'list-group-item-success'
+                }   
+                
+                let danger = ''
+                if(!dataRow['answers'][i]['correct'] && (dataRow['answers'][i]['otv_id'] == id)){                
+                    danger = 'list-group-item-danger'
+                }
+                answers.insertAdjacentHTML('beforeend', `
+                <button type="button" class="list-group-item list-group-item-action ${success} ${danger}"
+                    data-id="${dataRow['answers'][i]['otv'][j]['id']}">${dataRow['answers'][i]['otv'][j]['description']}</button>
+                `)
+            }
+        }
+
+    }else{
+        console.log('Закрыт')
+    }
+}
+
+
+const userLogout = () => {
+    let lists = JSON.parse(localStorage.getItem('lists_answer')) || []
+    if(lists.lenght != 0){
+        lists.forEach(function(item, i) {
+            localStorage.removeItem(item)
+        })
+        localStorage.removeItem('lists_answer')
+    } else {
+        localStorage.removeItem('lists_answer')
+    }   
+}
+
+const groupsUser = () => {
+    const listGroupUsers = document.getElementById('list-group-users')
+    const url = listGroupUsers.dataset.url
+
+    $.ajax({
+        type: 'GET',
+        url: url,        
+        success: function (data) {             
+            let groupUsers = JSON.parse(data.groups_user)  
+            
+            if(groupUsers.length != 0){
+                for(let i=0; i<groupUsers.length; i++){
+                    let is_boss = ''
+                    if (groupUsers[i]['is_boss']){
+                        is_boss = '<i class="fa fa-user-secret" aria-hidden="true"></i>'
+                    }
+
+                    listGroupUsers.insertAdjacentHTML('beforeend', `
+                    <button class="btn-settings btn btn-outline-info btn-lg btn-block" type="button" data-hover="hover">
+                        <div class="row">
+                            <div class="col-1 pl-0 pr-0">${is_boss}</div>
+                            <div class="col-7 pl-0 text-left">
+                                <span class="badge m-1">${groupUsers[i]['name']}</span>
+                            </div>
+                            <div class="col-4 text-right">
+                                
+                                <span class="childrens p-0">
+                                    <span class="fa fa-pencil btn btn-sm btn-light p-1 edit-group-user"
+                                        style="width: 29x; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-toggle="modal"                                    
+                                        data-url="${groupUsers[i]['url']}"
+                                        data-target="#editGroupUserModal"
+                                        title="Редактировать группу пользователей">
+                                    </span>
+                                    
+
+                                    <span class="fa fa-trash delete-group-user btn btn-sm btn-danger p-1"
+                                        style="width: 29px; height: 29px;"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-url="${groupUsers[i]['url']}"
+                                        data-toggle="modal"
+                                        data-target="#deleteGroupUserModalCenter"
+                                        title="Удалить группу пользователей">
+                                    </span>
+                                </span>
+                                
+                            </div>
+                            
+                        </div>
+                    </button>
+                    `)
+                }
+            }           
+            
+        }
+    })
+    // const elements = dataHover()
+    // console.log(elements)
+}
+
+
+
+
+
+// function dataHoverOver(){
+//     document.querySelector('#list-group-users').addEventListener('mouseover', function(e) {    
+//         const hover = e.target.dataset.hover
+//         if(hover === 'hover'){
+//             console.log(hover.currentTarget)
+//             const node = e.target.querySelector('.childrens')
+//             node.classList.remove('d-none') 
+//         }
+//     })   
+// }
+
+// function dataHoverOut(){
+//     document.querySelector('#list-group-users').addEventListener('mouseout', function(e) {    
+//         const hover = e.target.dataset.hover
+//         if(hover === 'hover'){
+//             console.log(hover.currentTarget)
+//             const node = e.target.querySelector('.childrens')
+//             node.classList.add('d-none') 
+//         }
+//     })   
+// }
+
+
+
+// window.addEventListener("load", (event) => {
+//     console.log("page is fully loaded");
+//     dataHoverOver()
+//     dataHoverOout()
+//   });
+
+
+// 
+
+// const el = document.getElementById('list-group-users');
+
+// const dataAttrs = el.getAttributeNames().reduce((obj, name) => {
+//   if (name.startsWith('data-')) {
+//     return {...obj, [name.slice(name.indexOf('-') + 1)]: el.getAttribute(name)};
+//   }
+//   return obj;
+// }, {});
+
+// console.log(dataAttrs)
+
+
+
+
+// const btnEnter = document.getElementsByClassName('btn-settings')
+
+
+
+// btnEnter.forEach(function(element) {
+//     console.log(element)
+//  });
+
+// document.getElementById('list-group-users').addEventListener('mouseenter', function(e) {    
+//     const hover = e.target.dataset.hover
+//     console.log(hover)
+//     if(hover === 'hover'){
+//         console.log(hover)
+//         const node = e.target.querySelector('span.childrens')
+//         node.classList.toggle('d-none')  
+        
+//         // if(node.classList.contains("d-none")) {
+//         //     node.classList.remove("d-none");
+//         // }
+//         // else {
+//         //     node.classList.add("d-none");
+//         // }       
+
+//     }      
+    
+// })
+// function bounce(letter) {
+//     console.log(letter)
+//     if (!letter.classList.contains("d-none")) {
+//         letter.style.classList.add("d-none");
+//         setTimeout(
+//             function () {
+//                 letter.classList.remove("d-none");
+//             },
+//             200
+//         );
+//     }
+// }
+
+// const container = document.querySelector("#list-group-users");
+// const matches = container.querySelectorAll("span.childrens")
+
+// console.log(matches.typeNode)
+
+
+// document.querySelectorAll("button.btn-settings>span.childrens").forEach((element) => {
+//     console.log(element)
+//     element.addEventListener("mouseover", (e) => bounce(e.target));
+// });
+  
+
+
+
+
+
+
+
+// document.getElementById('list-group-users').addEventListener('mouseleave', (e) => {    
+//     const hover = e.target.dataset.hover
+//     if(hover === 'hover'){
+//         const node = e.target.querySelector('span.childrens')
+//         node.classList.add('d-none')        
+//     }
+// })
+
+// $("button.btn-settings").hover(
+//     function() {
+//         $(this).find("span.childrens").removeClass('d-none');
+//     }, function() {
+//         $(this).find("span.childrens").addClass('d-none');
+//     }
+// );
 
 
 function deleteSRCimages(){
     const img_src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iMTQwIj48cmVjdCB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk1IiB5PSI3MCIgc3R5bGU9ImZpbGw6I2FhYTtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjE5MHgxNDA8L3RleHQ+PC9zdmc+';
     return img_src;
 }
+
+
 
 function contains(arr, elem) {
     // console.log(arr);

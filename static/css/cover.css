@@ -129,6 +129,23 @@ small{
     color: #ffae00;
 }
 
+.item-question{
+  border: 1px solid #484646;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 3px rgb(96 94 94 / 18%) inset;
+}
+
+
+.childrens{
+  display: none;
+}
+
+button.btn-settings:hover .childrens{
+  display: block!important;
+}
+
+
+
 /*
 * Forms
  */
@@ -319,7 +336,7 @@ Font-Awesome
 }
 
 .fa-3 {
-  font-size: 4em
+  font-size: 3em
 }
 
 .fa-4 {
