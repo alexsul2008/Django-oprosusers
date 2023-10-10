@@ -1,5 +1,6 @@
 import json
 from random import shuffle
+from typing import Any
 
 
 from braces.views import GroupRequiredMixin
@@ -14,6 +15,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.cache import cache
+from django.db import models
 from django.db.models import Count, Max, Q, F
 from django.http import HttpResponseRedirect, request, JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
@@ -60,7 +62,7 @@ def usedGroup(user):
     else:
         """Для зарегистрированного user определяем список вопросов согласно групповой принадлежности"""
         current_user_group = user_group.filter(user=user).values_list('id', flat=True)[0]
-        user_list_questions_groups = GroupsQuestions.objects.filter(groups=current_user_group).values_list('id', flat=True)
+        user_list_questions_groups = GroupsQuestions.objects.filter(groups=current_user_group, in_active=True).values_list('id', flat=True)
         arrayQuestions = Questions.objects.filter(in_active=True, groups_questions__in=list(user_list_questions_groups)) \
             .values_list('id', flat=True).distinct()
         arrayQuestions = random_question(list(arrayQuestions))
@@ -86,29 +88,59 @@ def settingsViews(request):
     return render(request, template, context)
 
 @login_required
+def group_question_activate(request, pk):
+    if request.POST['activate'] == 'activate':
+        active = request.POST['active'].title()
+        if active == 'True':
+            active = False
+        else:
+            active = True
+        GroupsQuestions.objects.filter(id=pk).update(in_active=active)
+    data={}
+    data['active'] = active
+    data['status'] = 200
+    return JsonResponse(data, safe=False)
+
+
+
+@login_required
 def listGroupUsersView(request):
     list_group_user = Group.objects.all().values()
+    list_group_questions = GroupsQuestions.objects.all()
+
+    # print(list_group_questions)
     data={}
+    groups_question = []
+    for item in list_group_questions:
+        # print(item.name, item.groups.all().values('id', 'name'))
+        # print(index, value)
+        lists = {
+            'url': reverse_lazy('group_question_edit', kwargs={'pk': item.id}),
+            'url-activate': reverse_lazy('group_question_activate', kwargs={'pk': item.id}),
+            'id': item.id,
+            'name': item.name,
+            'in_active': item.in_active,
+            'group_user': list(item.groups.all().values('id', 'name'))
+        }
+        groups_question.append(lists)
+
+    # print(groups_question)
+    data['groups_question'] = json.dumps(groups_question, cls=DjangoJSONEncoder)
+
     groups_user = []
-    for index, value in enumerate(list_group_user): 
+    for index, value in enumerate(list_group_user):
         lists = {
             'url': reverse_lazy('group_user_edit', kwargs={'pk': value['id']}),
             'id': value['id'],
             'name': value['name'],
             'is_boss': value['is_boss'],
-        }       
+        }
         groups_user.append(lists)
-        
-    print (groups_user)   
+
+
     data['groups_user'] = json.dumps(groups_user, cls=DjangoJSONEncoder)
-    #
 
-    
-    # data['groups_user'] = json.dumps(list(list_group_user), cls=DjangoJSONEncoder)
-    return JsonResponse(data)
-
-                    # serializers.serialize('json', answers_list, indent=2, ensure_ascii=False,
-                    #                             fields=('description', 'approved'))
+    return JsonResponse(data, safe=False)
 
 
 @login_required
@@ -117,7 +149,7 @@ def questionsViews(request):
     global global_total_questions
     """Если список вопросв в сессии пуст, то определяем список из usedGroup"""
     if not 'listQuestionsCook' in request.session:
-        user_groups, arrayQuestions = usedGroup(request.user)        
+        user_groups, arrayQuestions = usedGroup(request.user)
 
     if global_total_questions > 0:
         """Перезагрузка сессии"""
@@ -148,8 +180,8 @@ def questionsViews(request):
 
         """Проверка наличия ответа на вопрос (если user обновил браузер после ответа на вопрос"""
         is_answered = UsersAnswer.objects.filter(session_key=session_key, vop_id=arrayQuestions[0]).exists()
-        print(f'is_answered: {is_answered}')
-        print(f'Вопрос - {arrayQuestions[0]} из массива вопросов: {arrayQuestions}')
+        # print(f'is_answered: {is_answered}')
+        # print(f'Вопрос - {arrayQuestions[0]} из массива вопросов: {arrayQuestions}')
 
         """Выборка вопроса и ответов по первому ID из списка"""
         questions_list = Questions.objects.get(id=arrayQuestions[0])
@@ -317,10 +349,10 @@ def addUsersForGroup(request):
 
         print(data['status'])
 
-    
+
     # return HttpResponseRedirect(reverse("statistics"))
     return JsonResponse(data)
-   
+
 
 @login_required
 def oprosanswers_list(request):
@@ -335,9 +367,9 @@ def oprosanswers_list(request):
     data['status'] = 200
     data['answers'] = list(answers)
 
-    for index, value in enumerate(answers): 
-        data['answers'][index]['otv'] = list(Answers.objects.filter(question=value['vop_id']).values())        
-    
+    for index, value in enumerate(answers):
+        data['answers'][index]['otv'] = list(Answers.objects.filter(question=value['vop_id']).values())
+
     return JsonResponse(data, safe=False)
 
 
@@ -461,7 +493,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             .annotate(permit_count=Count('user_permit')) \
             .annotate(date_last_answ=Max('user_permit__date_passage')) \
             .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name').order_by('last_name')
-        
+
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs
@@ -479,6 +511,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             del query['page']
         context['queries'] = query
         return context
+
 
 
 @csrf_protect
@@ -553,9 +586,40 @@ def total_questions(request):
 # Иззменение статуса разрешения пользователя на прохождение опроса из True/False
 @csrf_protect
 def user_checked(request):
-    User.objects.filter(id=request.POST.get('user_id')).update(is_permits=request.POST.get('val'))
+
     data = {}
-    data['is_permits'] = request.POST.get('val')
+
+    print(request.POST)
+    lists = request.POST['user_id'].split(',')
+    print(lists)
+    print(len(lists))
+    print(type(lists))
+    # print(type(request.POST))
+
+    if len(lists) > 1:
+        ids = lists
+        print(lists)
+        is_permits = request.POST['val']
+
+        if is_permits == 'True':
+            is_permits = False
+        else:
+            is_permits = True
+
+        User.objects.filter(id__in=ids).update(is_permits=is_permits)
+        data['is_permits'] = is_permits
+    else:
+        id = request.POST['user_id']
+        is_permits = request.POST['val']
+
+        if is_permits == 'True':
+            is_permits = False
+        else:
+            is_permits = True
+
+        User.objects.filter(id=id).update(is_permits=is_permits)
+
+        data['is_permits'] = is_permits
     return JsonResponse(data)
 
 
@@ -565,7 +629,7 @@ def new_statisticsuser(request):
             .annotate(percents=(F('total_not_correct') * 100 / F('total_questions'))) \
             .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'percents') \
                 .order_by('-date_passage', '-id')
- 
+
     list_quests = []
 
     for items in all_answers_user:
@@ -578,7 +642,7 @@ def new_statisticsuser(request):
             'oprosed': items['session_key'],
         }
 
-        list_quests.append(list_vop_count)   
+        list_quests.append(list_vop_count)
 
     context = {
             'user_stat': list_quests,
@@ -777,12 +841,12 @@ def statistics_for_user(request):
 # Иззменение статуса активности вопроса из True/False
 @csrf_protect
 def question_inactive(request):
-    id = request.POST.get('id')
-    inactive = request.POST.get('in_active')
-    in_active = None
-    if inactive == 'True':
+    id = request.POST['id']
+    in_active = request.POST['in_active']
+
+    if in_active == 'True':
         in_active = False
-    if inactive == 'False':
+    else:
         in_active = True
 
     Questions.objects.filter(id=id).update(in_active=in_active)
@@ -833,26 +897,26 @@ class UserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     def get_success_message(self, cleaned_data):
         # return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
         return self.success_message % dict(cleaned_data, name= self.object.first_name + ' ' + self.object.last_name)
-    
-    # def get_error_message(self, form): 
+
+    # def get_error_message(self, form):
     #     # return self.error_message % dict(form.cleaned_data)
     #     return dict(form.errors.as_data())
 
-    
+
     def form_valid(self, form):
         instance = form.save(commit=False)
         instance.save()
         form.save_m2m()
         return super().form_valid(form)
-    
+
 
     def form_invalid(self, form):
         error = form.errors
-        error_message =list(error.as_data()["password2"][0])        
-        messages.error(self.request, error_message[0])            
+        error_message =list(error.as_data()["password2"][0])
+        messages.error(self.request, error_message[0])
         return HttpResponseRedirect(self.error_url, error_message[0])
 
-       
+
 
 
 
@@ -874,11 +938,11 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def get_success_message(self, cleaned_data):
         # return f'Для пользователя: {self.object.first_name} {self.object.last_name} - данные успешно изменены.'
         return self.success_message % dict(cleaned_data, name= self.object.first_name + ' ' + self.object.last_name)
-    
-    def get_error_message(self, cleaned_data): 
+
+    def get_error_message(self, cleaned_data):
         return self.error_message % dict(cleaned_data)
 
-    
+
     def form_valid(self, form):
         self.object = form.save()
         # form.save_m2m()
@@ -888,7 +952,7 @@ class UserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def form_invalid(self, form):
         error_message = self.get_error_message(form.cleaned_data)
         if self.error_message:
-            messages.error(self.request, error_message)            
+            messages.error(self.request, error_message)
         return HttpResponseRedirect(self.error_url, error_message)
 
 
@@ -912,7 +976,7 @@ class UserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         return f'Пользователь: {self.object.first_name} {self.object.last_name} - успешно удален.'
 
 
-  
+
 class GroupUserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Group
     form_class = GroupsUserForm
@@ -922,19 +986,19 @@ class GroupUserCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     success_message = "Группа пользователей: %(name)s - добавлена."
     error_message = "Группа пользователей: %(name)s - уже существует."
 
-    def get_success_message(self, cleaned_data):  
+    def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
-    
-    def get_error_message(self, form):  
+
+    def get_error_message(self, form):
         return self.error_message % dict(name=form["name"].data)
 
     def form_invalid(self, form):
         error_message = self.get_error_message(form)
         if self.error_message:
             messages.error(self.request, error_message)
-            
+
         return HttpResponseRedirect(self.error_url, error_message)
-    
+
 
 class GroupUserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Group
@@ -945,7 +1009,7 @@ class GroupUserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
-  
+
 
 class GroupUserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Group
@@ -955,7 +1019,7 @@ class GroupUserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
 
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
-    
+
 
 
 class GroupsQuestionsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -967,7 +1031,7 @@ class GroupsQuestionsCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateV
 
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
-    
+
 
 
 class GroupsQuestionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -976,6 +1040,11 @@ class GroupsQuestionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateV
     template_name = 'questions/groups_question_update_form.html'
     success_url = reverse_lazy('settings')
     success_message = "Группа вопросов: %(name)s - успешно обновлена"
+
+    def post(self, request, *args, **kwargs):
+        print(self, request, args, kwargs)
+        self.object = self.get_object()
+        return super(GroupsQuestionsUpdateView, self).post(request, *args, **kwargs)
 
     def get_success_message(self, cleaned_data):
         return self.success_message % dict(cleaned_data, name=self.object.name)
@@ -1060,5 +1129,3 @@ class QuestionsDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'questions/question_confirm_delete.html'
     success_url = reverse_lazy('filter')
     success_message = 'Вопрос успешно удален.'
-
-

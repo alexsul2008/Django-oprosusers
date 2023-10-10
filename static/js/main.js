@@ -23,8 +23,6 @@ let csrftoken = getCookie('csrftoken');
 
 
 
-// window.addEventListener('load', dataHover)
-
 
 $(document).ready(function () {
     var ok = 0;
@@ -142,7 +140,7 @@ $(document).ready(function () {
 
 
     //             if (listquests.length != 0) {
-                    
+
 
     //                 for (i = 0; i < listquests.length; i++) {
 
@@ -175,7 +173,7 @@ $(document).ready(function () {
     //             } else {
     //                 html += '<div class="row"><div class="col-1"></div><div class="col-11 align-middle"><p class="mt-3 bg-transparent text-info text-center ">Опрос не проходил(а)</p></div></div>';
     //             };
-                
+
     //             $(itemCollaps).append(html);
     //         }
     //     });
@@ -183,53 +181,53 @@ $(document).ready(function () {
 
 
 
- 
+
 
     // Выделить всех пользователей
-    $('body').on('click', '.list-group .check-all-user', function () {
-        $('.list-group input[name=user-check]').prop('checked', 'checked');
-        $('.list-group input[name=user-check]').val('true');
-        var userCheck = [];
-        $('.list-group input[name=user-check]').each(function (i) {
-            userCheck[i] = userAccess($(this).attr('data-user'), 1, $(this).attr('data-url'));
-        });
-        $(this).addClass('uncheck-all-user');
-        $(this).removeClass('check-all-user');
-    });
+    // $('body').on('click', '.list-group .check-all-user', function () {
+    //     $('.list-group input[name=user-check]').prop('checked', 'checked');
+    //     $('.list-group input[name=user-check]').val('true');
+    //     var userCheck = [];
+    //     $('.list-group input[name=user-check]').each(function (i) {
+    //         userCheck[i] = userAccess($(this).attr('data-user'), 1, $(this).attr('data-url'));
+    //     });
+    //     $(this).addClass('uncheck-all-user');
+    //     $(this).removeClass('check-all-user');
+    // });
 
-        // Снять выделение со всех  пользователей.
-    $('body').on('click', '.list-group .uncheck-all-user', function () {
-        $('.list-group input[name=user-check]').prop('checked', false);
-        $('.list-group input[name=user-check]').val('false');
+    //     // Снять выделение со всех  пользователей.
+    // $('body').on('click', '.list-group .uncheck-all-user', function () {
+    //     $('.list-group input[name=user-check]').prop('checked', false);
+    //     $('.list-group input[name=user-check]').val('false');
 
-        var userUnCheck = [];
-        $('.list-group input[name=user-check]').each(function (i) {
-            userUnCheck[i] = userAccess($(this).attr('data-user'), 0, $(this).attr('data-url'));
-        });
-        $(this).addClass('check-all-user');
-        $(this).removeClass('uncheck-all-user');
-    });
+    //     var userUnCheck = [];
+    //     $('.list-group input[name=user-check]').each(function (i) {
+    //         userUnCheck[i] = userAccess($(this).attr('data-user'), 0, $(this).attr('data-url'));
+    //     });
+    //     $(this).addClass('check-all-user');
+    //     $(this).removeClass('uncheck-all-user');
+    // });
 
-    $('body').on('click', '.list-group input[name=user-check]', function () {
-        var user_id = $(this).attr('data-user');
-        var url = $(this).attr('data-url');
+    // $('body').on('click', '.list-group input[name=user-check]', function () {
+    //     var user_id = $(this).attr('data-user');
+    //     var url = $(this).attr('data-url');
 
-        if ($(this).prop('checked')) {
-            $(this).val('true');
-            userAccess(user_id, 1, url);
-        } else {
-            $(this).val('false');
-            userAccess(user_id, 0, url);
-        }
-    });
+    //     if ($(this).prop('checked')) {
+    //         $(this).val('true');
+    //         userAccess(user_id, 1, url);
+    //     } else {
+    //         $(this).val('false');
+    //         userAccess(user_id, 0, url);
+    //     }
+    // });
 
-    $("button.btn-statistics-user").hover(
-        function() {
-            $(this).find("span.childrens").removeClass('d-none');
-        }, function() {
-            $(this).find("span.childrens").addClass('d-none');
-        }
-    );
+    // $("button.btn-statistics-user").hover(
+    //     function() {
+    //         $(this).find("span.childrens").removeClass('d-none');
+    //     }, function() {
+    //         $(this).find("span.childrens").addClass('d-none');
+    //     }
+    // );
 
     // $("button.btn-settings").hover(
     //     function() {
@@ -239,28 +237,6 @@ $(document).ready(function () {
     //     }
     // );
 
-    $('.action-list').on('click', 'a.question-active', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var elem = $(this);
-        var url = elem.attr('href');
-        var in_active = elem.data('in_active');
-        var id = elem.data('id');
-
-        $.ajax({
-            type: 'POST',
-            url: url,
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'id': id,
-                'in_active': in_active,
-            },
-            success: function (data) {
-                location.reload();
-            }
-        });
-    });
-  
 
     $('#editUserModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget);
@@ -472,7 +448,7 @@ $(document).ready(function () {
 //    });
 
     $('#messageModalCenter').on('hidden.bs.modal', function (e) {
-        $('#messageModalCenter .message-join h5').empty();  
+        $('#messageModalCenter .message-join h5').empty();
     });
 
     $('body').on('click', 'a.delete-user-statics', function (e) {
@@ -510,6 +486,29 @@ $(document).ready(function () {
     });
 
 
+    // $('.action-list').on('click', 'a.question-active', function (e) {
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     var elem = $(this);
+    //     var url = elem.attr('href');
+    //     var in_active = elem.data('in_active');
+    //     var id = elem.data('id');
+
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: url,
+    //         data: {
+    //             'csrfmiddlewaretoken': csrftoken,
+    //             'id': id,
+    //             'in_active': in_active,
+    //         },
+    //         success: function (data) {
+    //             location.reload();
+    //         }
+    //     });
+    // });
+
+
 });
 
 const swalWithBootstrapButtons = Swal.mixin({
@@ -518,11 +517,11 @@ const swalWithBootstrapButtons = Swal.mixin({
       cancelButton: 'btn btn-outline-danger'
     },
     buttonsStyling: false
-  })
+})
 
 if(document.querySelector('#accordExample')){
     document.querySelector('#accordExample').addEventListener('click', function(elem) {
-        
+
         if(!elem.target.dataset.delete){
             return
         }
@@ -547,16 +546,16 @@ if(document.querySelector('#accordExample')){
                         'csrfmiddlewaretoken': csrftoken,
                         'pk': elem.target.dataset.delete,
                     },
-                    success: function (data) {                    
+                    success: function (data) {
                         let data_keys = JSON.parse(data.key)
                         let lists = JSON.parse(localStorage.getItem('lists_answer')) || []
-                        
+
                         localStorage.removeItem(data_keys)
-                        document.getElementById('heading' + elem.target.dataset.delete).remove() 
-                        
+                        document.getElementById('heading' + elem.target.dataset.delete).remove()
+
                         if(lists.lenght != 0){
                             let index = lists.indexOf(data_keys)
-                            
+
                             lists.splice(index, 1)
                             localStorage.setItem('lists_answer', JSON.stringify(lists))
                         }
@@ -573,8 +572,8 @@ if(document.querySelector('#accordExample')){
                             closetCount.innerHTML = '<small class="text-center text-wrap">Опрос не проходил(а)</small>'
                             nextElCount.remove()
                             collapsedContent.remove()
-                            
-                        }                        
+
+                        }
                         swalWithBootstrapButtons.fire(
                             "Удалено!",
                             "Выбранная статистика успешно удалёна.",
@@ -582,17 +581,14 @@ if(document.querySelector('#accordExample')){
                         )
                     }
                 });
-                
-                
-                
+
+
+
             }
         })
-        
+
     })
 }
-
-
-
 
 
 
@@ -601,7 +597,7 @@ const formLoginErrors = () => {
         document.querySelector('#user-logining ul').classList.add('list-unstyled')
     }else{
         return
-    }   
+    }
 }
 formLoginErrors()
 
@@ -615,22 +611,22 @@ function selectClass(elem, classes=[]){
 
 let messagesInference = (text=null, tags=null) => {
     const messageModalWin = new bootstrap.Modal(document.querySelector('#messageModalCenter'))
-    const messageModalView = document.querySelector('#messageModalCenter .modal-header') 
-    const messageModalBtn = document.querySelector('#messageModalCenter .modal-footer button') 
+    const messageModalView = document.querySelector('#messageModalCenter .modal-header')
+    const messageModalBtn = document.querySelector('#messageModalCenter .modal-footer button')
     const messageModalIcon = document.querySelector('#messageModalCenter .message-join i')
     let messageText = document.querySelector('#messageModalCenter .message-join h5')
-  
+
     switch (tags) {
         case 'success':
             selectClass(messageModalView,['bg-info'])
-            selectClass(messageModalBtn,['btn-outline-info']) 
-            selectClass(messageModalIcon,['fa-check-circle-o', 'text-info'])      
+            selectClass(messageModalBtn,['btn-outline-info'])
+            selectClass(messageModalIcon,['fa-check-circle-o', 'text-info'])
             break
         case 'error':
             selectClass(messageModalView,['bg-danger'])
-            selectClass(messageModalBtn,['btn-outline-danger']) 
-            selectClass(messageModalIcon,['fa-exclamation', 'text-danger'])          
-            break    
+            selectClass(messageModalBtn,['btn-outline-danger'])
+            selectClass(messageModalIcon,['fa-exclamation', 'text-danger'])
+            break
         default:
             break;
     }
@@ -646,8 +642,8 @@ let messagesInference = (text=null, tags=null) => {
 
 }
 
-const collapseOtvet = (id, oprosed, user=null) => {
-    // console.log(id)
+const collapseOtvet = (id, oprosed, user=null, event) => {
+    console.log(event)
     // console.log(oprosed)
     let opros = oprosed
     let button = document.getElementById('heading' + id)
@@ -664,12 +660,12 @@ const collapseOtvet = (id, oprosed, user=null) => {
 
     if(lists.indexOf(opros) == -1){
         lists.push(opros)
-    }    
-    
+    }
+
     localStorage.setItem(lists_answer, JSON.stringify(lists))
 
     if(!localStorage.getItem(opros)){
-     
+
         $.ajax({
             type: "POST",
             url: url,
@@ -686,40 +682,40 @@ const collapseOtvet = (id, oprosed, user=null) => {
                 viewListsQuestion(id, opros)
             }
         });
-        
+
     }else{
         viewListsQuestion(id, opros)
     }
-    
+
 }
 
 const viewListsQuestion = (id=None, row=None) => {
-    let collapsed = document.getElementById('collapse' + id) 
-    collapsed.innerHTML = ''   
+    let collapsed = document.getElementById('collapse' + id)
+    collapsed.innerHTML = ''
 
     if(!collapsed.classList.contains('show')){
-        let dataRow = JSON.parse(localStorage.getItem(row))        
+        let dataRow = JSON.parse(localStorage.getItem(row))
 
         for (let i=0; i<dataRow['answers'].length; i++){
             collapsed.insertAdjacentHTML('beforeend', `
                 <div class="flex-row mt-2 mb-3 item-question" data-vop="${dataRow['answers'][i]['vop_id']}">
                     <h5 class="alert-heading pt-2 pb-2 pl-3 pl-3">${dataRow['answers'][i]['vop__description']}</h5>
-                </div>               
-            `) 
+                </div>
+            `)
 
             let answers = ''
             answers = document.querySelector(`[data-vop="${dataRow['answers'][i]['vop_id']}"]`)
 
             for (let j=0; j<dataRow['answers'][i]['otv'].length; j++){
                 let success = ''
-                 
-                let id = Number(dataRow['answers'][i]['otv'][j]['id'])               
+
+                let id = Number(dataRow['answers'][i]['otv'][j]['id'])
                 if(dataRow['answers'][i]['otv'][j]['approved']){
                     success = 'list-group-item-success'
-                }   
-                
+                }
+
                 let danger = ''
-                if(!dataRow['answers'][i]['correct'] && (dataRow['answers'][i]['otv_id'] == id)){                
+                if(!dataRow['answers'][i]['correct'] && (dataRow['answers'][i]['otv_id'] == id)){
                     danger = 'list-group-item-danger'
                 }
                 answers.insertAdjacentHTML('beforeend', `
@@ -744,49 +740,46 @@ const userLogout = () => {
         localStorage.removeItem('lists_answer')
     } else {
         localStorage.removeItem('lists_answer')
-    }   
+    }
 }
 
 const groupsUser = () => {
     const listGroupUsers = document.getElementById('list-group-users')
+    const listGroupQuestions = document.getElementById('list-group-questions')
     const url = listGroupUsers.dataset.url
 
     $.ajax({
         type: 'GET',
-        url: url,        
-        success: function (data) {             
-            let groupUsers = JSON.parse(data.groups_user)  
-            
+        url: url,
+        success: function (data) {
+            let groupUsers = JSON.parse(data.groups_user)
+            let groupQuestions = JSON.parse(data.groups_question)
+
             if(groupUsers.length != 0){
                 for(let i=0; i<groupUsers.length; i++){
-                    let is_boss = ''
-                    if (groupUsers[i]['is_boss']){
-                        is_boss = '<i class="fa fa-user-secret" aria-hidden="true"></i>'
-                    }
+                    let is_boss = groupUsers[i]['is_boss'] ? '<i class="fa fa-user-secret text-success" aria-hidden="true"></i>' : '<i class="fa fa-users text-muted" aria-hidden="true"></i>'
 
                     listGroupUsers.insertAdjacentHTML('beforeend', `
-                    <button class="btn-settings btn btn-outline-info btn-lg btn-block" type="button" data-hover="hover">
-                        <div class="row">
-                            <div class="col-1 pl-0 pr-0">${is_boss}</div>
-                            <div class="col-7 pl-0 text-left">
-                                <span class="badge m-1">${groupUsers[i]['name']}</span>
+                    <button class="btn-settings btn btn-outline-info btn-lg btn-block position-relative" type="button" >
+                        <div class="d-flex flex-row align-items-center">
+                            <div class="wh40">${is_boss}</div>
+                            <div class="text-left text-white">
+                                <span class="p-2">${groupUsers[i]['name']}</span>
                             </div>
-                            <div class="col-4 text-right">
-                                
-                                <span class="childrens p-0">
-                                    <span class="fa fa-pencil btn btn-sm btn-light p-1 edit-group-user"
-                                        style="width: 29x; height: 29px;"
+                            <div class="button-overflow justify-content-end">
+
+                                <span class="childrens pr-0">
+                                    <span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light edit-group-user"
                                         role="button"
                                         aria-pressed="true"
-                                        data-toggle="modal"                                    
+                                        data-toggle="modal"
                                         data-url="${groupUsers[i]['url']}"
                                         data-target="#editGroupUserModal"
                                         title="Редактировать группу пользователей">
                                     </span>
-                                    
 
-                                    <span class="fa fa-trash delete-group-user btn btn-sm btn-danger p-1"
-                                        style="width: 29px; height: 29px;"
+
+                                    <span class="wh40 p-0 fa fa-trash delete-group-user btn btn-sm btn-danger"
                                         role="button"
                                         aria-pressed="true"
                                         data-url="${groupUsers[i]['url']}"
@@ -795,144 +788,178 @@ const groupsUser = () => {
                                         title="Удалить группу пользователей">
                                     </span>
                                 </span>
-                                
+
                             </div>
-                            
+
                         </div>
                     </button>
                     `)
                 }
-            }           
-            
+            }
+
+            if(groupQuestions.length != 0){
+                for(let i=0; i<groupQuestions.length; i++){
+                    let in_active = groupQuestions[i]['in_active'] ? 'text-warning' : 'text-muted'
+                    let active = groupQuestions[i]['in_active'] ? 'Деактивировать группу' : 'Активировать группу'
+                    let bg_btn = groupQuestions[i]['in_active'] ? 'btn-outline-info' : 'btn-outline-secondary'
+                    let btn_active_hover = groupQuestions[i]['in_active'] ? 'btn-outline-warning' : 'btn-outline-secondary'
+
+                    listGroupQuestions.insertAdjacentHTML('beforeend', `
+                    <button class="btn-settings btn ${bg_btn} btn-lg btn-block position-relative" type="button" style="min-width: 900px;">
+                        <div class="d-flex flex-row justify-content-between align-items-center">
+                            <span class="wh40 p-0 fa fa-lightbulb-o ${in_active}" title="${active}"
+                                role="button"
+                                data-type="activate"
+                                data-id="${groupQuestions[i]['id']}"
+                                data-secondary></span>
+                            <div class="text-left text-white" style="min-width: 200px;">
+                                <span class="p-2">${groupQuestions[i]['name']}</span>
+                            </div>
+                            <div class="button-overflow">
+                                <span class="childrens">
+                                    <span class="wh40 p-0 fa fa-lightbulb-o btn ${btn_active_hover}" title="${active}"
+                                        role="button"
+                                        data-type="activate"
+                                        data-active="${groupQuestions[i]['in_active']}"
+                                        data-id="${groupQuestions[i]['id']}"
+                                        data-url-activate="${groupQuestions[i]['url-activate']}"></span>
+                                    <span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light p-1 edit-group-questions"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-toggle="modal"
+                                        data-url="${groupQuestions[i]['url']}"
+                                        data-target="#editGroupQuestions"
+                                        title="Редактировать группу вопросов">
+                                    </span>
+
+                                    <span class="wh40 p-0 fa fa-trash delete-group-user btn btn-sm btn-danger p-1"
+                                        role="button"
+                                        aria-pressed="true"
+                                        data-url="${groupQuestions[i]['url']}"
+                                        data-toggle="modal"
+                                        data-target="#deleteGroupUserModalCenter"
+                                        title="Удалить группу вопросов">
+                                    </span>
+                                </span>
+
+                            </div>
+                            <div class="ml-auto text-right" style="min-width: 550px; max-width: 550px;">
+                                <span class="list-user-groups" data-group="${groupQuestions[i]['id']}"></span>
+                            </div>
+                        </div>
+                    </button>
+                    `)
+                    for(let j=0; j<groupQuestions[i]['group_user'].length; j++){
+                        let listUserGroups = document.querySelector(`.list-user-groups[data-group="${groupQuestions[i]['id']}"`)
+                        listUserGroups.insertAdjacentHTML('beforeend', `
+                            <span type="button" class="btn btn-outline-light">${groupQuestions[i]['group_user'][j]['name']}</span>
+                        `)
+                    }
+                }
+            }
         }
     })
-    // const elements = dataHover()
-    // console.log(elements)
 }
 
+document.addEventListener('click', (event) => {
+    const type = event.target.dataset.type
+    // console.log(type)
+    if(type === 'activate'){
+        const icon_secondary = event.target.closest('button').querySelector('span[data-secondary]')
+        $.ajax({
+            type: "POST",
+            url: event.target.dataset.urlActivate,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'activate': 'activate',
+                'id': event.target.dataset.id,
+                'active': event.target.dataset.active,
+            },
+            cache: false,
+            dataType: 'json',
+            success: function (data) {
+                let active = JSON.parse(data.active)
+
+                event.target.dataset.active = active
+
+                event.target.classList.remove(active ? 'btn-outline-secondary' : 'btn-outline-warning')
+                event.target.classList.add(active ? 'btn-outline-warning' : 'btn-outline-secondary')
+
+                event.target.setAttribute('title', active ? 'Деактивировать группу' : 'Активировать группу')
+                event.target.closest('button').classList.remove(active ? 'btn-outline-secondary' : 'btn-outline-info')
+                event.target.closest('button').classList.add(active ? 'btn-outline-info' : 'btn-outline-secondary')
+
+                icon_secondary.setAttribute('title', active ? 'Деактивировать группу' : 'Активировать группу')
+                icon_secondary.classList.remove(active ? 'text-muted' : 'text-warning')
+                icon_secondary.classList.add(active ? 'text-warning' : 'text-muted')
 
 
 
+            }
+        });
+    } else if(type === 'questions'){
+        const icon_secondary = event.target.closest('button').querySelector('span[data-secondary]')
+        $.ajax({
+            type: 'POST',
+            url: event.target.dataset.url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'id': event.target.dataset.id,
+                'in_active': event.target.dataset.in_active,
+            },
+            success: function (data) {
+                console.log(data)
+                let in_active = JSON.parse(data.in_active)
+                event.target.dataset.in_active = in_active
 
-// function dataHoverOver(){
-//     document.querySelector('#list-group-users').addEventListener('mouseover', function(e) {    
-//         const hover = e.target.dataset.hover
-//         if(hover === 'hover'){
-//             console.log(hover.currentTarget)
-//             const node = e.target.querySelector('.childrens')
-//             node.classList.remove('d-none') 
-//         }
-//     })   
-// }
+                event.target.classList.remove(in_active ? 'btn-outline-secondary' : 'btn-outline-warning')
+                event.target.classList.add(in_active ? 'btn-outline-warning' : 'btn-outline-secondary')
 
-// function dataHoverOut(){
-//     document.querySelector('#list-group-users').addEventListener('mouseout', function(e) {    
-//         const hover = e.target.dataset.hover
-//         if(hover === 'hover'){
-//             console.log(hover.currentTarget)
-//             const node = e.target.querySelector('.childrens')
-//             node.classList.add('d-none') 
-//         }
-//     })   
-// }
+                event.target.setAttribute('title', in_active ? 'Деактивировать вопрос' : 'Активировать вопрос')
+                event.target.closest('button').classList.remove(in_active ? 'btn-outline-secondary' : 'btn-outline-info')
+                event.target.closest('button').classList.add(in_active ? 'btn-outline-info' : 'btn-outline-secondary')
 
+                icon_secondary.setAttribute('title', in_active ? 'Деактивировать группу' : 'Активировать группу')
+                icon_secondary.classList.remove(in_active ? 'text-muted' : 'text-warning')
+                icon_secondary.classList.add(in_active ? 'text-warning' : 'text-muted')
 
-
-// window.addEventListener("load", (event) => {
-//     console.log("page is fully loaded");
-//     dataHoverOver()
-//     dataHoverOout()
-//   });
-
-
-// 
-
-// const el = document.getElementById('list-group-users');
-
-// const dataAttrs = el.getAttributeNames().reduce((obj, name) => {
-//   if (name.startsWith('data-')) {
-//     return {...obj, [name.slice(name.indexOf('-') + 1)]: el.getAttribute(name)};
-//   }
-//   return obj;
-// }, {});
-
-// console.log(dataAttrs)
+                formFilterInQuestions()
+            }
+        });
+    } else if(type === 'user-check'){
+        // console.log(event.target.dataset)
+        let dataUnChackedUser = ''
+        const check = event.target
+        const user_id = []
+        user_id.push(Number(check.dataset.user))
 
 
 
+        $.ajax({
+            type: "POST",
+            url: check.dataset.url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'user_id': user_id.toString(),
+                'val': check.value
+            },
+            cache: false,
+            dataType: 'json',
+            success: function (data) {
+                let is_permits = JSON.parse(data.is_permits)
+                check.setAttribute('value', is_permits)
+                check.dataset.permits = is_permits
+                formFilterInUsers()
 
-// const btnEnter = document.getElementsByClassName('btn-settings')
+            }
+        });
 
+        dataUnChackedUser = checkUserAccess()
 
+        console.log(dataUnChackedUser)
+    }
+})
 
-// btnEnter.forEach(function(element) {
-//     console.log(element)
-//  });
-
-// document.getElementById('list-group-users').addEventListener('mouseenter', function(e) {    
-//     const hover = e.target.dataset.hover
-//     console.log(hover)
-//     if(hover === 'hover'){
-//         console.log(hover)
-//         const node = e.target.querySelector('span.childrens')
-//         node.classList.toggle('d-none')  
-        
-//         // if(node.classList.contains("d-none")) {
-//         //     node.classList.remove("d-none");
-//         // }
-//         // else {
-//         //     node.classList.add("d-none");
-//         // }       
-
-//     }      
-    
-// })
-// function bounce(letter) {
-//     console.log(letter)
-//     if (!letter.classList.contains("d-none")) {
-//         letter.style.classList.add("d-none");
-//         setTimeout(
-//             function () {
-//                 letter.classList.remove("d-none");
-//             },
-//             200
-//         );
-//     }
-// }
-
-// const container = document.querySelector("#list-group-users");
-// const matches = container.querySelectorAll("span.childrens")
-
-// console.log(matches.typeNode)
-
-
-// document.querySelectorAll("button.btn-settings>span.childrens").forEach((element) => {
-//     console.log(element)
-//     element.addEventListener("mouseover", (e) => bounce(e.target));
-// });
-  
-
-
-
-
-
-
-
-// document.getElementById('list-group-users').addEventListener('mouseleave', (e) => {    
-//     const hover = e.target.dataset.hover
-//     if(hover === 'hover'){
-//         const node = e.target.querySelector('span.childrens')
-//         node.classList.add('d-none')        
-//     }
-// })
-
-// $("button.btn-settings").hover(
-//     function() {
-//         $(this).find("span.childrens").removeClass('d-none');
-//     }, function() {
-//         $(this).find("span.childrens").addClass('d-none');
-//     }
-// );
 
 
 function deleteSRCimages(){
@@ -941,11 +968,7 @@ function deleteSRCimages(){
 }
 
 
-
 function contains(arr, elem) {
-    // console.log(arr);
-    // console.log(elem);
-    // console.log('*****************************');
     for (let i = 0; i < arr.length; i++) {
         if (arr[i] === elem) {
             return true;
@@ -973,24 +996,108 @@ function answerInQuestion(vop, otv, url, correct, answered) {
     });
 }
 
+function checkUserAccess() {
+    let data = []
+    const allPermits = document.querySelector('input#allpermits')
+    const inputs = document.querySelectorAll('input[name=user-check]')
+    const allUsers = Array.from(inputs)
+    // const allUsers = inputs
+    allUsers.forEach(function(item, i){
+        // item.addEventListener('click', userAccess)
+
+        if(item.dataset.permits.toLowerCase() === 'false'){
+            data.push(Number(item.dataset.user))
+        }
+        if(data.length === 0){
+            allPermits.setAttribute('checked', 'checked')
+            allPermits.dataset.permits = true
+        }else{
+            allPermits.removeAttribute('checked')
+            allPermits.dataset.permits = false
+        }
+
+    })
+
+    console.log('Data из checkUserAccess', data)
+    // console.log(typeof data)
+
+    return data
+}
+
+// // document.addEventListener("DOMContentLoaded", function() {
+// //     checkUserAccess()
+// // })
+// checkUserAccess()
+
+
+
+// document.querySelector('input#allpermits').addEventListener('click', function(event){
+//     let check = checkUserAccess()
+//     // console.log('All checker: ', event.target.dataset, check, typeof check)
+//     allUserAccess(event, check)
+// })
+
+
+// function allUserAccess(event, listId) {
+//     let allCheck = event.target.dataset.permits
+
+//     $.ajax({
+//         type: "POST",
+//         url: event.target.dataset.url,
+//         data: {
+//             'csrfmiddlewaretoken': csrftoken,
+//             'user_id': listId.toString(),
+//             'val': allCheck
+//         },
+//         cache: false,
+//         dataType: 'json',
+//         success: function (data) {
+//             allCheck = JSON.parse(data.is_permits)
+//             listId.forEach(function(item, i){
+//                 // console.log(i, item, allCheck)
+//                 let input = document.querySelector(`input[data-user="${item}"]`)
+//                 input.dataset.permits = allCheck
+//                 input.setAttribute('value', allCheck)
+//                 input.setAttribute('checked', 'checked')
+//             })
+//             formFilterInUsers()
+//             checkUserAccess()
+//         }
+//     });
+// }
+
+
+
     /*
      * Переключатель доступа пользователя
      */
-function userAccess(user_id, val, url) {
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-            'csrfmiddlewaretoken': csrftoken,
-            'user_id': user_id,
-            'val': val
-        },
-        cache: false,
-        dataType: 'json',
-        success: function (data) {
-        }
-    });
-}
+// function userAccess(user_id, val, url) {
+// function userAccess(event) {
+//     console.log(event)
+//     const check = event.target
+//     const user_id = []
+//     user_id.push(Number(check.dataset.user))
+
+
+//     $.ajax({
+//         type: "POST",
+//         url: check.dataset.url,
+//         data: {
+//             'csrfmiddlewaretoken': csrftoken,
+//             'user_id': user_id.toString(),
+//             'val': check.value
+//         },
+//         cache: false,
+//         dataType: 'json',
+//         success: function (data) {
+//             let is_permits = JSON.parse(data.is_permits)
+//             check.setAttribute('value', is_permits)
+//             check.dataset.permits = is_permits
+//             formFilterInUsers()
+//             // checkUserAccess()
+//         }
+//     });
+// }
 
 function formFilterInUsers() {
     let forma = $('form#filters-in-users')
@@ -1081,213 +1188,5 @@ function formFilterInQuestions() {
         }
     });
 
-
-}
-
-
-
-
-
-
-
-function chartitInUsers() {
-    let chart = $('#container-highcharts-ajax1')
-    let url = chart.data('url');
-    // console.log(url);
-
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: {
-            'csrfmiddlewaretoken': csrftoken,
-        },
-        success: function (data) {
-            // console.log(data);
-            let totalusers = JSON.parse(data.total_users_groups);
-            let totalquestions = JSON.parse(data.total_questions_groups);
-
-            // console.log(totalusers);
-            // console.log(totalquestions);
-            Highcharts.chart('container-highcharts-ajax1', {
-                chart: {
-                    backgroundColor: 'transparent',
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    marginRight: 200,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Количественный состав групп',
-                    style: {"color": "#f8f9fa", "fontSize": "18px", "text-transform": "uppercase"}
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:11px">{series.name} </span>',
-                    pointFormat: '<span style="font-size: 14px; font-weight: bold">{point.name}</span>: <b>{point.y} чел.</b><br/>'
-                },
-                // отключает ссылку на Hightchart.com
-                credits: {enabled: false},
-                legend: {
-                    enabled: true,
-                    align: 'right',
-                    verticalAlign: 'top',
-                    layout: 'vertical',
-                    x: 0,
-                    y: 50,
-                    itemStyle: {
-                        "color": "#f8f9fa",
-                        "cursor": "pointer",
-                        "fontSize": "16px",
-                        "textOverflow": "ellipsis"
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    padding: 15,
-                    borderRadius: 5,
-                    borderWidth: 2,
-                    labelFormat: '<span style="font-size: 13px;">{name}</span>: <b>{y} чел.</b><br/>',
-                    itemStyle: {
-                        color: '#E0E0E3'
-                    },
-                    itemHoverStyle: {
-                        color: '#F6F6F6'
-                    },
-                    itemHiddenStyle: {
-                        color: '#606063'
-                    },
-                    title: {
-                        style: {
-                            color: '#f8f9fa'
-                        }
-                    }
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                },
-                exporting: {
-                    buttons: {
-                        contextButton: {
-                            // enabled: false
-                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadPNG", "downloadJPEG", "separator", "downloadPDF", "downloadXLS", "downloadCSV"],
-                            symbolStroke: "#333333"
-                        }
-                    }
-                },
-                lang: {
-                    contextButtonTitle: "Дополнительные действия",
-                    viewFullscreen: "На весь экран",
-                    printChart: "Распечатать график",
-                    downloadCSV: "Выгрузить в формате CSV",
-                    downloadJPEG: "Выгрузить в формате JPEG",
-                    downloadPNG: "Выгрузить в формате PNG",
-                    downloadPDF: "Выгрузить в формате PDF",
-                    downloadXLS: "Выгрузить в формате XLS",
-                    exitFullscreen: "Выйти из полноэкранного режима"
-                },
-                series: [{
-                    name: 'Группа',
-                    colorByPoint: true,
-                    data: totalusers
-                }]
-            });
-
-
-            Highcharts.chart('container-highcharts-ajax2', {
-                chart: {
-                    backgroundColor: 'transparent',
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    marginRight: 200,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Количество вопросов по группам',
-                    style: {"color": "#f8f9fa", "fontSize": "18px", "text-transform": "uppercase"}
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:11px">{series.name} </span>',
-                    pointFormat: '<span style="color:{point.color}"><b>{point.name}</b></span>: <b>{point.y} вопросов.</b><br/>'
-                },
-                // отключает ссылку на Hightchart.com
-                credits: {enabled: false},
-                legend: {
-                    enabled: true,
-                    align: 'right',
-                    verticalAlign: 'top',
-                    layout: 'vertical',
-                    x: 0,
-                    y: 50,
-                    itemStyle: {
-                        "color": "#f8f9fa",
-                        "cursor": "pointer",
-                        "fontSize": "16px",
-                        "textOverflow": "ellipsis"
-                    },
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    padding: 15,
-                    borderRadius: 5,
-                    borderWidth: 2,
-                    labelFormat: '<span style="font-size: 13px">{name}</span>: <b>{y} вопр.</b><br/>',
-                    itemStyle: {
-                        color: '#E0E0E3'
-                    },
-                    itemHoverStyle: {
-                        color: '#F6F6F6'
-                    },
-                    itemHiddenStyle: {
-                        color: '#606063'
-                    },
-                    title: {
-                        style: {
-                            color: '#C0C0C0'
-                        }
-                    }
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                },
-                exporting: {
-                    buttons: {
-                        contextButton: {
-                            // enabled: false
-                            menuItems: ["viewFullscreen", "printChart", "separator", "downloadPNG", "downloadJPEG", "separator", "downloadPDF", "downloadXLS", "downloadCSV"],
-                            symbolStroke: "#333333"
-                        }
-                    }
-                },
-                lang: {
-                    contextButtonTitle: "Дополнительные действия",
-                    viewFullscreen: "На весь экран",
-                    printChart: "Распечатать график",
-                    downloadCSV: "Выгрузить в формате CSV",
-                    downloadJPEG: "Выгрузить в формате JPEG",
-                    downloadPNG: "Выгрузить в формате PNG",
-                    downloadPDF: "Выгрузить в формате PDF",
-                    downloadXLS: "Выгрузить в формате XLS",
-                    exitFullscreen: "Выйти из полноэкранного режима"
-                },
-                series: [{
-                    name: 'Группа',
-                    colorByPoint: true,
-                    data: totalquestions
-
-                }]
-            });
-        }
-    });
 
 }

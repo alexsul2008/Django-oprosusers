@@ -17,6 +17,7 @@ urlpatterns = [
         path('group-questions/create/', GroupsQuestionsCreateView.as_view(), name='group_question_creat'),
         path('group-questions/<int:pk>/', GroupsQuestionsUpdateView.as_view(), name='group_question_edit'),
         path('group-questions/<int:pk>/delete/', GroupsQuestionsDeleteView.as_view(), name='group_question_delete'),
+        path('group-questions/<int:pk>/activate/', group_question_activate, name='group_question_activate'),
 
         path('questionajax/', question_ajax, name='questionajax'),
         path('nextquestion/', next_question, name='nextquestion'),
@@ -24,12 +25,12 @@ urlpatterns = [
 
         path('statistics-user/', statisticsuser, name='statistics_user'),
 
-        path('new-statistics-user/', new_statisticsuser, name='new_statistics_user'), 
+        path('new-statistics-user/', new_statisticsuser, name='new_statistics_user'),
 
         path('statistics/', UsersGroupListsNew.as_view(), name='statistics'),
         path('statistics/<int:pk>/delete/', statisticsUserDeleteView, name='statisticsuserdelete'),
 
-        path('user/add/', UserCreateView.as_view(), name='user_add'),        
+        path('user/add/', UserCreateView.as_view(), name='user_add'),
         path('user/<int:pk>/delete/', UserDeleteView.as_view(), name='user_delete'),
         path('user/<int:pk>/', UserEditView.as_view(), name='user_edit'),
         path('user/<int:pk>/password-change/', UserPasswordChangeView.as_view(), name='user_pass_change'),
@@ -43,7 +44,7 @@ urlpatterns = [
         path('totalusers/', total_users, name='totalusers'),
         path('userchecked/', user_checked, name='userchecked'),
         path('statisticsforuser/', statistics_for_user, name='statistics_for_user'),
-        
+
         path('oprosanswers/', oprosanswers, name='oprosanswers'),
         path('oprosanswers-list/', oprosanswers_list, name='oprosanswers_list'),
 

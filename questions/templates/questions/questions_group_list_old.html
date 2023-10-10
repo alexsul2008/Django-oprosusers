@@ -160,53 +160,90 @@
 
 
                 {% for list_question in object_list %}
-                <button class="btn-settings btn btn-outline-info btn-lg btn-block position-relative" type="button">
-                    <div class="d-flex flex-row justify-content-between align-items-center">
-                        <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active == True %}text-warning{% else %}text-muted{% endif %} question-active"
-                            data-secondary
-                            role="button"></span>
-                        <div class="text-left text-white" style="min-width: 200px;">
-                            <span class="p-2">{{ list_question.description|truncatechars_html:50 }}</span>
-                        </div>
-                        <div class="button-overflow">
-                            <span class="childrens btn-overflow-childrens">
-                                <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active"
-                                   role="button"
-                                   data-in_active="{{ list_question.in_active }}"
-                                   data-type="questions"
-                                   data-id="{{ list_question.id }}"
-                                   type="{{ list_question.in_active }}"
-                                   data-url="{% url 'questioninactive' %}"></span>
+                    <div class="card  border-info mb-2">
+                        <div class="row no-gutters">
+                            <div class="card-body w-100 pt-1 pb-1">
+                                <div class="row" style="min-height: 50px;">
+
+                                    <div class="col-12">
+                                        <p class="card-text">{{ list_question.description|truncatechars_html:200 }}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card-footer border-info w-100 pt-1 pb-1">
+                                <div class="row">
+                                    <div class="col-12 action-list">
+
+                                        <div class="d-flex">
+                                            <div class="flex-fill">
+
+                                                <a href=""
+                                                   class="p-0 btn btn-outline-info disabled"
+                                                   aria-disabled="true" role="button" aria-pressed="true"
+                                                   aria-hidden="true" data-url="" title="">
+
+                                                    <img class="card-img" style="height: 36px; width: auto;" alt=""
+                                                            {% if not list_question.image %}
+                                                         src="{{ no_img }}">
+                                                            {% else %}
+                                                                src="{{ MEDIA_URL }}{{ list_question.image }}">
+                                                            {% endif %}
 
 
-                                <span class="wh40 p-0 fa fa-pencil btn btn-light" role="button"
-                                   aria-pressed="true"
-                                   data-toggle="modal"
-                                   data-url="{% url 'question_edit' list_question.id %}"
-                                   data-target="#editQuestionModalCenter"
-                                   title="Редактировать"></span>
+                                                </a>
+
+                                                <a href="
+                                                        {% if list_question.doc_url %}{{ list_question.doc_url }}{% endif %}"
+                                                   class="fa btn{% if not list_question.doc_url %} fa-folder btn-outline-info disabled"
+                                                   aria-disabled="true"
+                                                   {% else %} fa-folder-open
+                                                   btn-info"{% endif %} role="button" aria-pressed="true"
+                                                aria-hidden="true" data-url="" title="Ссылка на документ"></a>
 
 
+                                                <a href="" class="fa fa-pencil btn btn-outline-info" role="button"
+                                                   aria-pressed="true"
+                                                   data-toggle="modal"
+                                                   data-url="{% url 'question_edit' list_question.id %}"
+                                                   data-target="#editQuestionModalCenter"
+                                                   title="Редактировать"></a>
 
 
-                                <span class="wh40 p-0 fa fa-trash btn btn-danger" role="button"
-                                   aria-pressed="true"
-                                   data-url="{% url 'question_delete' list_question.id %}"
-                                   data-toggle="modal"
-                                   data-target="#deleteQuestionModalCenter"
-                                   title="Удалить"></span>
-                            </span>
+                                                <a class="fa fa-lightbulb-o {% if list_question.in_active == True %}active{% endif %} btn btn-outline-info question-active"
+                                                   role="button"
+                                                   data-in_active="{{ list_question.in_active }}"
+                                                   data-id="{{ list_question.id }}"
+                                                   type="{{ list_question.in_active }}"
+                                                   href="{% url 'questioninactive' %}"></a>
 
-                        </div>
-                        <div class="ml-auto text-right" style="">
-                            {% for gq in list_question.groups_questions.all %}
+                                                <a class="fa fa-trash btn btn-outline-danger" role="button" href=""
+                                                   aria-pressed="true"
+                                                   data-url="{% url 'question_delete' list_question.id %}"
+                                                   data-toggle="modal"
+                                                   data-target="#deleteQuestionModalCenter"
+                                                   title="Удалить"></a>
 
-                                        <span class="btn btn-outline-light disabled">{{ gq.name }}</span>
+                                            </div>
 
-                            {% endfor %}
+                                            <div data-id="{{ list_question.id }}" class="align-self-end d-inline-flex">
+                                                {% for gq in list_question.groups_questions.all %}
+
+
+                                                        <div class="mr-1">
+                                                        <span class="btn btn-outline-info disabled">{{ gq.name }}</span>
+                                                        </div>
+
+
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </button>
 
 
 

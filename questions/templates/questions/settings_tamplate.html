@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 
-{% if user.is_authenticated %}  
+{% if user.is_authenticated %}
 
     {% block content %}
-        <div class="container pt-0">
+        <div class="container-fluid pt-0">
             <h1 class="mb-3">Настройки</h1>
             <div class="row">
-                <div class="col-5">
+                <div class="col-1"></div>
+                <div class="col-3">
                     <div class="d-flex align-items-center mb-3">
                         <h3 class="w-100 pl-0">Группы пользователей</h3>
 
@@ -18,18 +19,18 @@
                                             data-url="{% url 'group_user_creat' %}"
                                             data-target="#exampleAddGroupUserModalCenter"
                                             title="Добавить группу пользователей"><i class="fa fa-users" aria-hidden="true"></i>
-                                    
+
                         </button>
                     </div>
                     <div id="list-group-users" data-url="{% url 'list-group-users' %}" ></div>
 
-                   
+
                 </div>
-                <div class="col-2"></div>
-                <div class="col-5">
+                <div class="col-1"></div>
+                <div class="col-6">
                     <div class="d-flex align-items-center mb-3">
                         <h3 class="w-100 pl-0">Группы вопросов</h3>
-                        
+
                         <button class="flex-grow-1 btn btn-outline-info btn-lg btn-add_group_questions" type="button"
                             role="button"
                             aria-pressed="true"
@@ -37,18 +38,19 @@
                             data-url="{% url 'group_question_creat' %}"
                             data-target="#addGroupQuestinModalCenter"
                             title="Добавить группу вопросов"><i class="fa fa-qrcode" aria-hidden="true"></i>
-                
+
                         </button>
-                        
+
                     </div>
 
-                    <div id="list-group-questions"></div>                   
-                    
+                    <div id="list-group-questions"></div>
+
                 </div>
+                <div class="col-1"></div>
             </div>
-            
-                
-            
+
+
+
         </div>
 
 
@@ -180,20 +182,20 @@
             </div>
         </div>
 
-        
+
         {% if messages %}
-       
+
             {% for message in messages %}
-                <script>document.addEventListener("DOMContentLoaded", function(event) { 
+                <script>document.addEventListener("DOMContentLoaded", function(event) {
                     messagesInference('{{message}}', '{{message.tags}}');
                 });</script>
 
-                <!-- 
+                <!--
                 {%if message.tags %}{{ message.tags }}{% endif %}>
                 {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
                 {{ message.level }} -->
-           
-            {% endfor %}        
+
+            {% endfor %}
         {% endif %}
 
     {% endblock content %}
@@ -203,7 +205,7 @@
 
 
 {% block javascript %}
-    <script>document.addEventListener("DOMContentLoaded", function(event) { 
+    <script>document.addEventListener("DOMContentLoaded", function(event) {
         groupsUser();
     })</script>
 
