@@ -8,9 +8,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('auth', '0013_group_is_boss_group_is_group_user_is_permits'),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(

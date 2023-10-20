@@ -48,4 +48,8 @@ urlpatterns = [
         path('oprosanswers/', oprosanswers, name='oprosanswers'),
         path('oprosanswers-list/', oprosanswers_list, name='oprosanswers_list'),
 
+        # path('import-exel/', import_exel, name='import_exel'),
+        path('import-exel-form/', importExelForm, name='import_exel_form'),
+        path('import-exel-test/', read_exel, name='import_exel_test'),
+
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

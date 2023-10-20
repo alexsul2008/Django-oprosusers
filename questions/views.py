@@ -1,6 +1,12 @@
 import json
+import os
 from random import shuffle
 from typing import Any
+from core.settings import MEDIA_ROOT
+
+import numpy as np
+import pandas as pd
+
 
 
 from braces.views import GroupRequiredMixin
@@ -15,6 +21,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.cache import cache
+from django.core.files.storage import default_storage
 from django.db import models
 from django.db.models import Count, Max, Q, F
 from django.http import HttpResponseRedirect, request, JsonResponse, HttpResponse
@@ -22,7 +29,8 @@ from django.shortcuts import redirect, render
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.urls import reverse, reverse_lazy
-from django.views.decorators.csrf import csrf_protect
+from django.views import View
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 from django_filters.views import FilterView
 from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
@@ -31,11 +39,46 @@ from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInli
 
 
 from questions.filters import UsersGroupsFilter, QuestionsFilter
-from questions.forms import UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
+from questions.forms import UploadExcelForm, UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
 from questions.models import Questions, GroupsQuestions, Answers, UsersAnswer, WorkPermitUsers
 from questions.mixins import MessageMixin
 
 global_total_questions = 0
+
+def read_exel(request):
+
+    # print(os.listdir(MEDIA_ROOT))
+
+    df = pd.read_excel(MEDIA_ROOT + 'data.xlsx', header=1)
+    print(df)
+    print('*'*15)
+    print(df.size)
+    print(len(df))
+    print('*'*15)
+    print(df.info())
+    print('*'*15)
+    print(df.shape)
+    print('*'*15)
+    print(df.columns)
+    print('*'*15)
+
+    for i in len(df):
+        print(df.iloc[1:i])
+    
+
+
+
+
+
+    context = {
+           
+        }
+    template = 'questions/import_tamplate.html'
+    return render(request, template, context) 
+
+
+
+
 
 
 def random_question(array):
@@ -492,8 +535,8 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             .exclude(is_superuser=True) \
             .annotate(permit_count=Count('user_permit')) \
             .annotate(date_last_answ=Max('user_permit__date_passage')) \
-            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name').order_by('last_name')
-
+            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name', 'groups__is_boss').order_by('last_name')
+        
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs
@@ -583,43 +626,124 @@ def total_questions(request):
     return JsonResponse(data)
 
 
+# def import_exel(request):
+#     data = {}
+
+#     question_groups = GroupsQuestions.objects.all().values()
+
+
+#     data['status'] = 200
+#     # data['question_groups'] = json.dumps(list(question_groups), cls=DjangoJSONEncoder)
+#     data['question_groups'] = list(question_groups)
+
+#     return JsonResponse(data)
+
+
+@csrf_exempt
+def importExelForm(request):  
+
+    print(request.method) 
+    if request.method == 'POST':
+        form = UploadExcelForm(request.POST, request.FILES)
+        print(request.POST)
+        print(request.FILES)
+        upload_file = request.FILES['import-exel']
+
+        file_suffix = upload_file.name[upload_file.name.rfind('.'):]
+        new_name_file = 'data' + file_suffix
+
+        filename = default_storage.save(new_name_file, upload_file)        
+
+        print('Загружаемый файл: ', filename)
+
+        
+
+        # print(file)
+        # print(file_url)
+
+        # df = pd.read_excel(file_url)
+
+        # print(df)
+
+        # fs = FileSystemStorage()
+        # fs.save('media/' + upload_file.name, upload_file)
+
+
+        # print('Форма валидна')
+        data = {}
+        data['status'] = 200
+        return JsonResponse(data)
+        # else:
+        #     form = UploadExcelForm()
+
+    return JsonResponse({'status': 201})
+
+
+    # print(request.content_type)  
+    # print(request.body)   
+    # print(request.body.File )  
+
+    # json_object = json.loads(request.body)
+    
+    # print(json_object)
+    # # print(type(json_object))
+
+    # for item in request.body:
+    #     print(item)
+    
+    # groups_questions = json_object['groups_questions']
+
+    # print(groups_questions)
+
+    # data = {}
+
+    # data['status'] = 200
+
+    # return JsonResponse(data)
+
+
+
+
+
+
+
+
 # Иззменение статуса разрешения пользователя на прохождение опроса из True/False
 @csrf_protect
 def user_checked(request):
 
     data = {}
+    # data['is_permits'] = ''
 
-    print(request.POST)
+    # print(request.POST)
     lists = request.POST['user_id'].split(',')
-    print(lists)
-    print(len(lists))
-    print(type(lists))
-    # print(type(request.POST))
+    is_permits = request.POST['val'].title()
 
-    if len(lists) > 1:
-        ids = lists
-        print(lists)
-        is_permits = request.POST['val']
+    # print(f'Is_permits : {is_permits} - тип : {type(is_permits)}')
 
-        if is_permits == 'True':
-            is_permits = False
-        else:
-            is_permits = True
-
-        User.objects.filter(id__in=ids).update(is_permits=is_permits)
-        data['is_permits'] = is_permits
+    if is_permits == 'True':
+        is_permits = False
     else:
-        id = request.POST['user_id']
-        is_permits = request.POST['val']
+        is_permits = True
 
-        if is_permits == 'True':
-            is_permits = False
+    if 'unchekced' in request.POST:
+        unchekced = request.POST['unchekced']
+        User.objects.exclude(is_superuser=True).exclude(groups__is_boss=True).update(is_permits=is_permits)       
+        data['unchekced'] = unchekced
+
+    else:
+
+        if len(lists) > 1:
+            ids = lists
+            User.objects.filter(id__in=ids).update(is_permits=is_permits)
         else:
-            is_permits = True
+            id = lists[0] 
+            User.objects.filter(id=id).update(is_permits=is_permits)
 
-        User.objects.filter(id=id).update(is_permits=is_permits)
+    data['is_permits'] = is_permits
 
-        data['is_permits'] = is_permits
+    # print(f'data["is_permits"] : {data["is_permits"]}')
+
     return JsonResponse(data)
 
 
@@ -1086,6 +1210,7 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
+        context['question_groups'] = GroupsQuestions.objects.all()
 
         query = self.request.GET.copy()
         if 'page' in query:

@@ -136,6 +136,10 @@
                                              data-toggle="modal"
                                              data-target="#createQuestionModalCenter">Добавить вопрос</a></div>
 
+                        <div class="mr-2"><button href="" class="btn btn-info btn-lg mb-3 import-exel" role="button"
+                                            
+                                            aria-pressed="true">Импортировать вопросы</button></div>
+
 
 
                     </div>
@@ -209,13 +213,58 @@
                 </button>
 
 
-
+                
 
                 {% endfor %}
 
 
 
                 {% include 'include/paginator.html' %}
+
+
+                <div class="modal fade" id="importExelCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="importExelCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="importExelCenterTitle">Импорт вопросов</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body bg-transparent text-dark">
+
+
+                                <div class="modal-import-exel">
+
+                                   <form method="POST" action="{% url 'import_exel_form' %}" id="import_exel_form" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <span class="d-flex text-info mb-3">Выберите группу(ы) к которой(ым) относятся вопросы:</span>
+                                       <select multiple class="custom-select" name="groups_questions">
+                                            {% for field in filterset.form.groups_questions %}
+                                                <option value="{{field.data.value}}">{{ field.choice_label }}</option>                                                
+                                            {% endfor %}
+                                        
+                                        </select>
+                                       <span class="d-flex text-info mb-3 mt-3">Выберите файл для загрузки вопросов:</span>
+                                        <label class="input-file">
+                                            <input type="file" name="import-exel" accept=".xlx, .xlsx">
+                                            <span class="btn btn-outline-success">Выберите файл</span>           
+                                            <span class="input-file-text">Максимум 5 Мб</span>
+                                        </label>
+
+                                    </form>
+
+                                    <div class="info-list mt-2"></div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light text-white">
+                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                                <button type="submit" form="import_exel_form" class="btn btn-outline-success btn-submit" data-type="submit">Импортировать</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
                 <div class="modal fade" id="createQuestionModalCenter" tabindex="-1" role="dialog"
@@ -321,6 +370,7 @@
 
     </div>
 
+   
 
     {% if messages %}
 
@@ -349,7 +399,9 @@
         window.onload = function () {
             formFilterInQuestions();
         };
-
+        const myModal = new bootstrap.Modal(document.getElementById('importExelCenter'), {
+            keyboard: false
+        })
 
     </script>
 

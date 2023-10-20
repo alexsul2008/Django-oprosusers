@@ -6,6 +6,9 @@ from django.contrib.auth.models import User, Group
 
 from questions.models import GroupsQuestions, Answers, Questions
 
+class UploadExcelForm(forms.Form):
+    file = forms.FileField()
+    
 
 class UserPasswordChangeForm(SetPasswordForm):
     """
@@ -70,6 +73,12 @@ class UserAddForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email', 'username', 'groups']
+
+
+# class ImportExelForm(forms.ModelForm):
+#     class Meta:
+#         model = GroupsQuestions
+#         fields = '__all__'
 
 
 class UserEditForm(UserChangeForm):

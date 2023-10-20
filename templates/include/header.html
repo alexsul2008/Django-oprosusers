@@ -48,6 +48,10 @@
                                         <a class="nav-link {% if settings == request.path %}active{% endif %}"
                                         href="{% url 'settings' %}">Настройки</a>
                                     </li>
+                                    <li class="nav-item ">{% url 'import_exel_test' as import_exel_test %}
+                                        <a class="nav-link {% if import_exel_test == request.path %}active{% endif %}"
+                                        href="{% url 'import_exel_test' %}">Импорт</a>
+                                    </li>
                                    
                                 {% else %}
                                     <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}

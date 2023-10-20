@@ -511,9 +511,10 @@ $(document).ready(function () {
 
 });
 
+
 const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
-      confirmButton: 'btn btn-outline-info mr-2',
+      confirmButton: 'btn btn-outline-info mr-2 pl-4 pr-4',
       cancelButton: 'btn btn-outline-danger'
     },
     buttonsStyling: false
@@ -588,6 +589,166 @@ if(document.querySelector('#accordExample')){
         })
 
     })
+}
+
+
+
+
+
+const element = (tag, classes = [], content) => {
+    const node = document.createElement(tag)
+
+    if (classes.length){
+        node.classList.add(...classes)
+    }
+
+    if(content){
+        node.textContent = content
+    }
+    return node
+}
+
+// function noop() {}
+
+// const upload = (selector, options={}) => {
+//     const onUpload = options.onUpload ?? noop
+//     const input = document.querySelector(selector)
+
+//     const openBtn = element('button', ['btn', 'btn-outline-info'], 'Открыть')
+//     const spanFilesName = element('span', ['w-100', 'text-left', 'p-1', 'span-file-name'], 'Файл для загрузки не выбран')
+
+//     if (options.accept && Array.isArray(options.accept)){
+//         input.setAttribute('accept', options.accept.join(', '))
+//     }
+    
+//     input.insertAdjacentElement('afterend', spanFilesName)
+//     input.insertAdjacentElement('afterend', openBtn)
+
+//     const triggerInput = (event) => {
+//         input.click()  
+//         event.preventDefault()
+//     }  
+
+//     // const changeHandler = event => {
+//     //     console.log(event.target.files.length)
+        
+//     //     if(!event.target.files.length){
+//     //         return
+//     //     }
+        
+//     //     spanFilesName.textContent = event.target.files[0].name
+
+//     //     const filesExel = event.target.files
+        
+//     //     // const reader = new FileReader()
+
+//     //     // console.log(filesExel)
+//     //     // console.log(reader)
+        
+//     //     // reader.onload = ev => {
+//     //     //     console.log(ev.target)
+//     //     //     console.log(filesExel)
+
+//     //     // }
+        
+        
+//     // }  
+
+
+//     openBtn.addEventListener('click', triggerInput)
+//     // input.addEventListener('change', changeHandler)
+    
+
+// }
+
+// upload('#file', {
+//     accept: ['.xlx', '.xlsx']
+// })
+
+// let loadFile
+
+// document.getElementById('file').addEventListener('change', function(event){ 
+//     console.log('Changeeeeeeee!')
+//     const spanFilesName = document.querySelector('.span-file-name')       
+//     if(!event.target.files.length){
+//         return
+//     }        
+//     spanFilesName.textContent = event.target.files[0].name
+//     loadFile = event.target.files    
+// })
+
+
+
+
+
+document.getElementById('importExelCenter') && document.querySelector('.import-exel').addEventListener('click', () => {
+    
+
+    myModal.show()   
+
+    const myForm = document.getElementById('import_exel_form')
+    const endpoint = myForm.action
+    const btnSubmit = document.querySelector('.btn-submit')
+    const btnInputFile = document.querySelector('.input-file input[type=file]')
+    const ulInfoList = document.querySelector('.info-list')
+
+    ulInfoList.innerHTML = ''
+
+    
+    btnInputFile.addEventListener('change', function(){
+        let file = btnInputFile.files[0]
+        btnInputFile.closest('.input-file').querySelector('.input-file-text').innerHTML = file.name
+        if(!validateSize(btnInputFile, 5)){
+            // alert("Файл должен быть не более 5 мегабайт");            
+            ulInfoList.insertAdjacentHTML('beforeend', `
+            <p class="text-danger">
+                    <i class="fa fa-exclamation pr-1" aria-hidden="true"></i>Файл должен быть не более 5 мегабайт</p>
+            `)
+            btnInputFile.value=""
+        }
+    })
+    
+    
+    btnSubmit.addEventListener('click', function(e){
+    // myForm.addEventListener('submit', function(e) {   
+        e.preventDefault()
+
+        let formData = new FormData(myForm)
+       
+        fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            // console.log(response)
+            response.json()
+        })
+        .then(data => {
+            console.log(data)
+            ulInfoList.insertAdjacentHTML('beforeend', `
+                <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Файл загружен. Идет обработка...</p>
+            `)
+        }).catch(error => {
+            console.error(error);
+            alert('Error uploading file');
+        })      
+    })
+})
+
+function validateSize(fileInput,size) {
+    let fileObj, oSize
+
+    if ( typeof ActiveXObject == "function" ) { // IE
+        fileObj = (new ActiveXObject("Scripting.FileSystemObject")).getFile(fileInput.value);
+    }else {
+        fileObj = fileInput.files[0];
+    }
+    
+    oSize = fileObj.size; // Size returned in bytes.
+    if(oSize > size * 1024 * 1024){
+        return false
+    }
+    return true;
 }
 
 
@@ -908,7 +1069,7 @@ document.addEventListener('click', (event) => {
                 'in_active': event.target.dataset.in_active,
             },
             success: function (data) {
-                console.log(data)
+                // console.log(data)
                 let in_active = JSON.parse(data.in_active)
                 event.target.dataset.in_active = in_active
 
@@ -926,14 +1087,10 @@ document.addEventListener('click', (event) => {
                 formFilterInQuestions()
             }
         });
-    } else if(type === 'user-check'){
-        // console.log(event.target.dataset)
-        let dataUnChackedUser = ''
+    } else if(type === 'user-check'){        
         const check = event.target
         const user_id = []
-        user_id.push(Number(check.dataset.user))
-
-
+        user_id.push(+check.dataset.user)
 
         $.ajax({
             type: "POST",
@@ -946,21 +1103,68 @@ document.addEventListener('click', (event) => {
             cache: false,
             dataType: 'json',
             success: function (data) {
-                let is_permits = JSON.parse(data.is_permits)
+                let is_permits = Boolean(JSON.parse(data.is_permits))
                 check.setAttribute('value', is_permits)
                 check.dataset.permits = is_permits
+                is_permits === true ? check.checked = true : check.checked = false
+
                 formFilterInUsers()
+                checkUserAccess()
+            }
+        })        
+    } else if(type === 'allpermits'){
+        let user_id = dataUsers
+        const checks = event.target
+        const allUsers = Array.from(document.querySelectorAll('input[name=user-check]'))
+        let unchekced = false
+
+        if(checks.dataset.permits){
+            unchekced = true            
+        }        
+        
+        $.ajax({
+            type: "POST",
+            url: checks.dataset.url,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'user_id': user_id.toString(),
+                'val': checks.dataset.permits,
+                'unchekced': unchekced
+            },
+            cache: false,
+            dataType: 'json',
+            success: function (data) {
+                let unchekc = Boolean(JSON.parse(data.unchekced))
+                let is_permits = Boolean(JSON.parse(data.is_permits))
+
+                is_permits === true ? checks.checked = true : checks.checked = false
+                
+
+                for (let item of allUsers) { 
+                    if(unchekc && item.dataset.master === 'false'){                                            
+                        item.checked = is_permits
+                        item.dataset.permits = is_permits
+                    }else{
+                        if(user_id.includes(+item.dataset.user) ){ 
+                            item.setAttribute('value', is_permits)
+                            item.dataset.permits = is_permits
+                            is_permits === true ? item.checked = true : item.checked = false
+                        }
+                    }
+                }                
+                formFilterInUsers()
+                checkUserAccess()
 
             }
-        });
+        })    
 
-        dataUnChackedUser = checkUserAccess()
-
-        console.log(dataUnChackedUser)
     }
 })
 
+let dataUsers = []
+let masterUser = []
 
+// checkUserAccess()
 
 function deleteSRCimages(){
     const img_src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOTAiIGhlaWdodD0iMTQwIj48cmVjdCB3aWR0aD0iMTkwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk1IiB5PSI3MCIgc3R5bGU9ImZpbGw6I2FhYTtmb250LXdlaWdodDpib2xkO2ZvbnQtc2l6ZToxMnB4O2ZvbnQtZmFtaWx5OkFyaWFsLEhlbHZldGljYSxzYW5zLXNlcmlmO2RvbWluYW50LWJhc2VsaW5lOmNlbnRyYWwiPjE5MHgxNDA8L3RleHQ+PC9zdmc+';
@@ -968,14 +1172,14 @@ function deleteSRCimages(){
 }
 
 
-function contains(arr, elem) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] === elem) {
-            return true;
-        }
-    }
-    return false;
-}
+// function contains(arr, elem) {
+//     for (let i = 0; i < arr.length; i++) {
+//         if (arr[i] === elem) {
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 function answerInQuestion(vop, otv, url, correct, answered) {
     let data = {};
@@ -997,36 +1201,35 @@ function answerInQuestion(vop, otv, url, correct, answered) {
 }
 
 function checkUserAccess() {
-    let data = []
-    const allPermits = document.querySelector('input#allpermits')
-    const inputs = document.querySelectorAll('input[name=user-check]')
-    const allUsers = Array.from(inputs)
-    // const allUsers = inputs
-    allUsers.forEach(function(item, i){
-        // item.addEventListener('click', userAccess)
 
-        if(item.dataset.permits.toLowerCase() === 'false'){
-            data.push(Number(item.dataset.user))
+    dataUsers = []
+    masterUser = []
+    
+    const allPermits = document.querySelector('input#allpermits')
+    const allUsers = Array.from(document.querySelectorAll('input[name=user-check]'))
+
+    for (const item of allUsers) {
+        if(item.dataset.master === 'true' ){
+            masterUser.push(+item.dataset.user)
         }
-        if(data.length === 0){
-            allPermits.setAttribute('checked', 'checked')
+       
+        if(item.dataset.permits === 'false' && item.dataset.master === 'false'){
+            dataUsers.push(+item.dataset.user)
+        }
+        
+        if(dataUsers.length === 0 ){
+            allPermits.checked = true
             allPermits.dataset.permits = true
         }else{
-            allPermits.removeAttribute('checked')
+            allPermits.checked = false
             allPermits.dataset.permits = false
         }
-
-    })
-
-    console.log('Data из checkUserAccess', data)
-    // console.log(typeof data)
-
-    return data
+    }
 }
 
-// // document.addEventListener("DOMContentLoaded", function() {
-// //     checkUserAccess()
-// // })
+document.addEventListener("DOMContentLoaded", function() {
+    checkUserAccess()
+})
 // checkUserAccess()
 
 

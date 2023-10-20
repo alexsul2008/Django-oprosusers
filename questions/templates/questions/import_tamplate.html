@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% if user.is_authenticated %}
+
+    {% block content %}
+        <div class="container-fluid pt-0">
+            <h1 class="mb-3">Импорт</h1>
+            
+
+
+        
+
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}
+
+
+{% block javascript %}
+   
+
+{% endblock javascript %}

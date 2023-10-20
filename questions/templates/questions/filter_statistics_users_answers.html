@@ -133,7 +133,7 @@
                                              data-url="{% url 'user_add' %}"
                                              aria-pressed="true"
                                              data-toggle="modal"
-                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>
+                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>                       
 
 
                     </div>
@@ -148,7 +148,8 @@
                                 <div class="w-5">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input check-all-user"
-                                            data-permits="false"
+                                            data-permits=""
+                                            data-type="allpermits"
                                             data-url="{% url 'userchecked' %}"
                                             id="allpermits">
                                         <label class="custom-control-label" for="allpermits">Все</label>
@@ -174,13 +175,14 @@
                                             <div class="custom-control custom-switch text-center">
                                                 <input name="user-check" type="checkbox"
                                                        class="custom-control-input"
-                                                       value="{{ list_answer_user.is_permits }}"
+                                                       value="{{ list_answer_user.is_permits|lower }}"
                                                        data-type="user-check"
                                                        {% if list_answer_user.is_permits %}checked{% endif %}
                                                        id="userpermits_{{ list_answer_user.id }}"
                                                        data-user="{{ list_answer_user.id }}"
+                                                       data-master="{{ list_answer_user.groups__is_boss|lower }}"
                                                        data-url="{% url 'userchecked' %}"
-                                                       data-permits="{{ list_answer_user.is_permits }}">
+                                                       data-permits="{{ list_answer_user.is_permits|lower }}">
                                                 <label class="custom-control-label align-middle"
                                                        for="userpermits_{{ list_answer_user.id }}"></label>
 
@@ -251,12 +253,14 @@
                                             <div class="custom-control custom-switch text-center">
                                                 <input name="user-check" type="checkbox"
                                                        class="custom-control-input"
-                                                       value="{{ list_answer_user.is_permits }}"
+                                                       value="{{ list_answer_user.is_permits|lower }}"
+                                                       data-type="user-check"
                                                        {% if list_answer_user.is_permits == True %}checked{% endif %}
                                                        id="userpermits_{{ list_answer_user.id }}"
                                                        data-user="{{ list_answer_user.id }}"
+                                                       data-master="{{ list_answer_user.groups__is_boss|lower }}"
                                                        data-url="{% url 'userchecked' %}"
-                                                       data-permits="{{ list_answer_user.is_permits }}">
+                                                       data-permits="{{ list_answer_user.is_permits|lower }}">
                                                 <label class="custom-control-label align-middle"
                                                        for="userpermits_{{ list_answer_user.id }}"></label>
 
@@ -272,7 +276,7 @@
                                                         data-toggle="collapse"
                                                         data-target="#collapse_{{ list_answer_user.id }}"
                                                         aria-expanded="false"
-                                                        aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }}</span>
+                                                        aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
                                                     </div>
 
 													<div class="w-15">
