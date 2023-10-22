@@ -4,11 +4,20 @@
 
     {% block content %}
         <div class="container-fluid pt-0">
-            <h1 class="mb-3">Импорт</h1>
-            
+            <h1 class="mb-3">Импорт</h1>{{data}}
+                {% for item in data %}
+                    <p>{{item.questions}}</p></br>
+                    <ul>
+                        {% for i in item.answers %}
+                            <li>{{i}}</li>
+                        {% endfor %}
+                    </ul>
 
 
-        
+                {% endfor %}
+
+
+
 
     {% endblock content %}
 {% else %}
@@ -17,6 +26,6 @@
 
 
 {% block javascript %}
-   
+
 
 {% endblock javascript %}

@@ -1,13 +1,10 @@
 import json
 import os
 from random import shuffle
-from typing import Any
+
+import pprint
+
 from core.settings import MEDIA_ROOT
-
-import numpy as np
-import pandas as pd
-
-
 
 from braces.views import GroupRequiredMixin
 from django.contrib import messages
@@ -43,38 +40,76 @@ from questions.forms import UploadExcelForm, UserAddForm, UserEditForm, GroupsQu
 from questions.models import Questions, GroupsQuestions, Answers, UsersAnswer, WorkPermitUsers
 from questions.mixins import MessageMixin
 
+import openpyxl
+import pandas
+
 global_total_questions = 0
 
 def read_exel(request):
 
-    # print(os.listdir(MEDIA_ROOT))
 
-    df = pd.read_excel(MEDIA_ROOT + 'data.xlsx', header=1)
-    print(df)
-    print('*'*15)
-    print(df.size)
-    print(len(df))
-    print('*'*15)
-    print(df.info())
-    print('*'*15)
-    print(df.shape)
-    print('*'*15)
-    print(df.columns)
-    print('*'*15)
+    df = pandas.read_excel(MEDIA_ROOT + 'data.xlsx')
+    data = df.to_dict(orient='records')
 
-    for i in len(df):
-        print(df.iloc[1:i])
-    
+    dataDict = [] # list
 
+    itemsQuestion = {
+        'questions': '',
+        'answers': {}
+    }
+
+    answerDict = []
+    for item in range(len(data)):
+
+        if(str(data[item]['Правильность ответа']) == 'nan'):
+            approvet = 0
+        else:
+            approvet = int(data[item]['Правильность ответа'])
+
+        if(str(data[item]['Вопрос']) != 'nan' and str(data[item]['Вопрос']).strip() != ''):
+            answerDict = []
+
+            itemsQuestion = {
+                'questions': str(data[item]['Вопрос']),
+                'answers': answerDict
+            }
+
+            dataDict.append(itemsQuestion)
+
+        answerDict.append({'answer': str(data[item]['Ответ']), 'approvet': approvet})
+
+    groups_questions = ['8', '9']
+    # Перевод list в int
+    groups_questions = list(map(int, groups_questions))
+
+    print(type(groups_questions), groups_questions)
+
+    # pprint.pprint(dataDict)
+    for index, value in enumerate(dataDict):
+        # print(f'Index: {index} - Value: {value}')
+        print(f'Вопрос: {dataDict[index]["questions"]}')
+
+        question = dataDict[index]["questions"]
+
+        question_id = Questions.objects.update_or_create(description=question)
+        print(type(question_id), question_id[0].id)
+
+        for id in groups_questions:
+            # print(f'ID in groups_questions: {id} - type {type(id)}')
+            question_id[0].groups_questions.add(id)
+
+        for item in dataDict[index]["answers"]:
+            print(f'Item answer: {item["answer"]} - правильность ответа: {item["approvet"]}')
+            answersItem = Answers.objects.update_or_create(description=item["answer"], approved=item["approvet"], question_id=question_id[0].id)
 
 
 
 
     context = {
-           
+            'data': dataDict
         }
     template = 'questions/import_tamplate.html'
-    return render(request, template, context) 
+    return render(request, template, context)
 
 
 
@@ -536,7 +571,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             .annotate(permit_count=Count('user_permit')) \
             .annotate(date_last_answ=Max('user_permit__date_passage')) \
             .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name', 'groups__is_boss').order_by('last_name')
-        
+
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs
@@ -640,9 +675,9 @@ def total_questions(request):
 
 
 @csrf_exempt
-def importExelForm(request):  
+def importExelForm(request):
 
-    print(request.method) 
+    print(request.method)
     if request.method == 'POST':
         form = UploadExcelForm(request.POST, request.FILES)
         print(request.POST)
@@ -652,11 +687,11 @@ def importExelForm(request):
         file_suffix = upload_file.name[upload_file.name.rfind('.'):]
         new_name_file = 'data' + file_suffix
 
-        filename = default_storage.save(new_name_file, upload_file)        
+        filename = default_storage.save(new_name_file, upload_file)
 
         print('Загружаемый файл: ', filename)
 
-        
+
 
         # print(file)
         # print(file_url)
@@ -679,18 +714,18 @@ def importExelForm(request):
     return JsonResponse({'status': 201})
 
 
-    # print(request.content_type)  
-    # print(request.body)   
-    # print(request.body.File )  
+    # print(request.content_type)
+    # print(request.body)
+    # print(request.body.File )
 
     # json_object = json.loads(request.body)
-    
+
     # print(json_object)
     # # print(type(json_object))
 
     # for item in request.body:
     #     print(item)
-    
+
     # groups_questions = json_object['groups_questions']
 
     # print(groups_questions)
@@ -728,7 +763,7 @@ def user_checked(request):
 
     if 'unchekced' in request.POST:
         unchekced = request.POST['unchekced']
-        User.objects.exclude(is_superuser=True).exclude(groups__is_boss=True).update(is_permits=is_permits)       
+        User.objects.exclude(is_superuser=True).exclude(groups__is_boss=True).update(is_permits=is_permits)
         data['unchekced'] = unchekced
 
     else:
@@ -737,7 +772,7 @@ def user_checked(request):
             ids = lists
             User.objects.filter(id__in=ids).update(is_permits=is_permits)
         else:
-            id = lists[0] 
+            id = lists[0]
             User.objects.filter(id=id).update(is_permits=is_permits)
 
     data['is_permits'] = is_permits

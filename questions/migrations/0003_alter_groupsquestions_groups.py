@@ -6,7 +6,6 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0016_group_is_group_alter_group_is_boss'),
         ('questions', '0002_alter_groupsquestions_groups'),
     ]
 
