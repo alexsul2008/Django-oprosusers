@@ -713,24 +713,56 @@ document.getElementById('importExelCenter') && document.querySelector('.import-e
     // myForm.addEventListener('submit', function(e) {   
         e.preventDefault()
 
+        btnSubmit.setAttribute("disabled", "disabled")
+
         let formData = new FormData(myForm)
+
+        console.log(formData)
+        console.log(endpoint)
        
         fetch(endpoint, {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            // console.log(response)
-            response.json()
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log(data)
+            console.log('1: ', data)
+            console.log('2: ', data['endpoint'])
+            console.log('3: ', data['groups_questions'])
             ulInfoList.insertAdjacentHTML('beforeend', `
                 <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Файл загружен. Идет обработка...</p>
             `)
-        }).catch(error => {
+            
+            groups = {'groups_questions': data['groups_questions']}
+
+            return fetch(data["endpoint"], {
+                method: 'POST',
+                headers: {'X-CSRFToken': csrftoken},
+                mode: 'same-origin',
+                body: JSON.stringify(groups)
+            })
+        })
+        .then(res => res.json())
+        .then(data2 => {
+            console.log(data2)
+            ulInfoList.insertAdjacentHTML('beforeend', `
+                <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Данные успешно загружены.</p>
+            `)
+            btnInputFile.value=""
+            btnSubmit.innerText = 'Ok'
+            btnSubmit.removeAttribute('disabled')
+            btnSubmit.removeAttribute('form')
+            btnSubmit.setAttribute("type", "button")
+            btnSubmit.setAttribute("data-dismiss", "modal")
+            btnSubmit.addEventListener('click', function(){
+                myModal.hide()
+            })
+        })        
+        .catch(error => {
             console.error(error);
-            alert('Error uploading file');
+            ulInfoList.insertAdjacentHTML('beforeend', `
+                <p class="text-secondary"><i class="fa fa-exclamation text-danger pr-1" aria-hidden="true"></i>${error}</p>
+            `)
         })      
     })
 })

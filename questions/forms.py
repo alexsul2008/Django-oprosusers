@@ -8,6 +8,13 @@ from questions.models import GroupsQuestions, Answers, Questions
 
 class UploadExcelForm(forms.Form):
     file = forms.FileField()
+    groups = forms.ModelChoiceField(
+        queryset=GroupsQuestions.objects.all(),
+        to_field_name='name',
+        required=True,
+        label = "Группа/Отдел пользователя",
+        widget=forms.SelectMultiple()
+    )
     
 
 class UserPasswordChangeForm(SetPasswordForm):

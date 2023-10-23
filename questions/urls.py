@@ -50,6 +50,6 @@ urlpatterns = [
 
         # path('import-exel/', import_exel, name='import_exel'),
         path('import-exel-form/', importExelForm, name='import_exel_form'),
-        path('import-exel-test/', read_exel, name='import_exel_test'),
+        path('import_exel_db/', read_exel, name='import_exel_db'),
 
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

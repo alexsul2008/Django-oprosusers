@@ -48,9 +48,9 @@
                                         <a class="nav-link {% if settings == request.path %}active{% endif %}"
                                         href="{% url 'settings' %}">Настройки</a>
                                     </li>
-                                    <li class="nav-item ">{% url 'import_exel_test' as import_exel_test %}
-                                        <a class="nav-link {% if import_exel_test == request.path %}active{% endif %}"
-                                        href="{% url 'import_exel_test' %}">Импорт</a>
+                                    <li class="nav-item ">{% url 'import_exel_db' as import_exel_db %}
+                                        <a class="nav-link {% if import_exel_db == request.path %}active{% endif %}"
+                                        href="{% url 'import_exel_db' %}">Импорт</a>
                                     </li>
                                    
                                 {% else %}

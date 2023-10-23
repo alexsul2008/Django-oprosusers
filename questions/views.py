@@ -47,62 +47,82 @@ global_total_questions = 0
 
 def read_exel(request):
 
+    # print(request.body)
 
-    df = pandas.read_excel(MEDIA_ROOT + 'data.xlsx')
-    data = df.to_dict(orient='records')
+    if request.method == 'POST':
 
-    dataDict = [] # list
+        json_groups = json.loads(request.body)
+        print(json_groups['groups_questions']) 
 
-    itemsQuestion = {
-        'questions': '',
-        'answers': {}
-    }
+        fileDataExcel = MEDIA_ROOT + 'data.xlsx'
+        df = pandas.read_excel(fileDataExcel)
+        data = df.to_dict(orient='records')
 
-    answerDict = []
-    for item in range(len(data)):
+        dataDict = [] # list
 
-        if(str(data[item]['Правильность ответа']) == 'nan'):
-            approvet = 0
+        itemsQuestion = {
+            'questions': '',
+            'answers': {}
+        }
+
+        answerDict = []
+        for item in range(len(data)):
+
+            if(str(data[item]['Правильность ответа']) == 'nan'):
+                approvet = 0
+            else:
+                approvet = int(data[item]['Правильность ответа'])
+
+            if(str(data[item]['Вопрос']) != 'nan' and str(data[item]['Вопрос']).strip() != ''):
+                answerDict = []
+
+                itemsQuestion = {
+                    'questions': str(data[item]['Вопрос']),
+                    'answers': answerDict
+                }
+
+                dataDict.append(itemsQuestion)
+
+            answerDict.append({'answer': str(data[item]['Ответ']), 'approvet': approvet})
+
+        # groups_questions = ['8', '9']
+        # Перевод list в int
+        groupsGuestions = list(map(int, json_groups['groups_questions']))
+
+        print('Группы для записи: ', type(groupsGuestions), groupsGuestions)
+
+        # pprint.pprint(dataDict)
+        for index, value in enumerate(dataDict):
+
+            question = dataDict[index]["questions"]
+            question_id = Questions.objects.update_or_create(description=question)
+
+            question_id[0].groups_questions.clear()
+
+
+            for id in groupsGuestions:
+                question_id[0].groups_questions.add(id)
+
+            Answers.objects.filter(question_id=question_id[0].id).delete()
+
+            for item in dataDict[index]["answers"]:
+                
+                answersItem = Answers.objects.create(description=item["answer"], approved=item["approvet"], question_id=question_id[0].id)
+                # print('ANSWERS: ', answersItem)
+
+
+
+        
+        if os.path.exists(fileDataExcel):
+            os.remove(fileDataExcel)
         else:
-            approvet = int(data[item]['Правильность ответа'])
+            print("File not found.")
 
-        if(str(data[item]['Вопрос']) != 'nan' and str(data[item]['Вопрос']).strip() != ''):
-            answerDict = []
-
-            itemsQuestion = {
-                'questions': str(data[item]['Вопрос']),
-                'answers': answerDict
-            }
-
-            dataDict.append(itemsQuestion)
-
-        answerDict.append({'answer': str(data[item]['Ответ']), 'approvet': approvet})
-
-    groups_questions = ['8', '9']
-    # Перевод list в int
-    groups_questions = list(map(int, groups_questions))
-
-    print(type(groups_questions), groups_questions)
-
-    # pprint.pprint(dataDict)
-    for index, value in enumerate(dataDict):
-        # print(f'Index: {index} - Value: {value}')
-        print(f'Вопрос: {dataDict[index]["questions"]}')
-
-        question = dataDict[index]["questions"]
-
-        question_id = Questions.objects.update_or_create(description=question)
-        print(type(question_id), question_id[0].id)
-
-        for id in groups_questions:
-            # print(f'ID in groups_questions: {id} - type {type(id)}')
-            question_id[0].groups_questions.add(id)
-
-        for item in dataDict[index]["answers"]:
-            print(f'Item answer: {item["answer"]} - правильность ответа: {item["approvet"]}')
-            answersItem = Answers.objects.update_or_create(description=item["answer"], approved=item["approvet"], question_id=question_id[0].id)
-
-
+        data = {}
+        data['status'] = 200
+        # data["groups_questions"] = groups_questions
+        # data['endpoint'] = reverse_lazy('import_exel_test')
+        return JsonResponse(data)
 
 
     context = {
@@ -112,6 +132,85 @@ def read_exel(request):
     return render(request, template, context)
 
 
+# def import_exel(request):
+#     data = {}
+
+#     question_groups = GroupsQuestions.objects.all().values()
+
+
+#     data['status'] = 200
+#     # data['question_groups'] = json.dumps(list(question_groups), cls=DjangoJSONEncoder)
+#     data['question_groups'] = list(question_groups)
+
+#     return JsonResponse(data)
+
+
+@csrf_exempt
+def importExelForm(request):
+
+    if request.method == 'POST':
+          
+        form = UploadExcelForm(request.POST, request.FILES)   
+
+        dictsGroup = dict(request.POST)
+
+        print('Список групп: ', dictsGroup['groups_questions'])
+
+        
+        # for key, value in dict(request.POST).items():
+        #     print('Key: ', key, ' Value: ', value)
+        #     if key == 'groups_questions':
+        #         groups = value
+
+        # print('GROUPS: ', groups, type(groups))
+
+     
+        upload_file = request.FILES['import-exel']
+
+        file_suffix = upload_file.name[upload_file.name.rfind('.'):]
+        new_name_file = 'data' + file_suffix
+
+        filename = default_storage.save(new_name_file, upload_file)
+
+        print('Загружаемый файл: ', filename)
+        data = {}
+        data['status'] = 200
+        data["groups_questions"] = dictsGroup['groups_questions']
+        data['endpoint'] = reverse_lazy('import_exel_db')
+        return JsonResponse(data)
+
+        # elif nextCase == 'uploadDb':
+        #     data = {}
+        #     data['status'] = 200
+        #     data['next'] = 'Cooooool'
+        #     return JsonResponse(data)
+
+   
+
+    return JsonResponse({'status': 201})
+
+
+    # print(request.content_type)
+    # print(request.body)
+    # print(request.body.File )
+
+    # json_object = json.loads(request.body)
+
+    # print(json_object)
+    # # print(type(json_object))
+
+    # for item in request.body:
+    #     print(item)
+
+    # groups_questions = json_object['groups_questions']
+
+    # print(groups_questions)
+
+    # data = {}
+
+    # data['status'] = 200
+
+    # return JsonResponse(data)
 
 
 
@@ -659,88 +758,6 @@ def total_questions(request):
     data['in_active'] = json.dumps(list(total_in_active), cls=DjangoJSONEncoder)
     data['doc_url'] = json.dumps(list(total_doc_url), cls=DjangoJSONEncoder)
     return JsonResponse(data)
-
-
-# def import_exel(request):
-#     data = {}
-
-#     question_groups = GroupsQuestions.objects.all().values()
-
-
-#     data['status'] = 200
-#     # data['question_groups'] = json.dumps(list(question_groups), cls=DjangoJSONEncoder)
-#     data['question_groups'] = list(question_groups)
-
-#     return JsonResponse(data)
-
-
-@csrf_exempt
-def importExelForm(request):
-
-    print(request.method)
-    if request.method == 'POST':
-        form = UploadExcelForm(request.POST, request.FILES)
-        print(request.POST)
-        print(request.FILES)
-        upload_file = request.FILES['import-exel']
-
-        file_suffix = upload_file.name[upload_file.name.rfind('.'):]
-        new_name_file = 'data' + file_suffix
-
-        filename = default_storage.save(new_name_file, upload_file)
-
-        print('Загружаемый файл: ', filename)
-
-
-
-        # print(file)
-        # print(file_url)
-
-        # df = pd.read_excel(file_url)
-
-        # print(df)
-
-        # fs = FileSystemStorage()
-        # fs.save('media/' + upload_file.name, upload_file)
-
-
-        # print('Форма валидна')
-        data = {}
-        data['status'] = 200
-        return JsonResponse(data)
-        # else:
-        #     form = UploadExcelForm()
-
-    return JsonResponse({'status': 201})
-
-
-    # print(request.content_type)
-    # print(request.body)
-    # print(request.body.File )
-
-    # json_object = json.loads(request.body)
-
-    # print(json_object)
-    # # print(type(json_object))
-
-    # for item in request.body:
-    #     print(item)
-
-    # groups_questions = json_object['groups_questions']
-
-    # print(groups_questions)
-
-    # data = {}
-
-    # data['status'] = 200
-
-    # return JsonResponse(data)
-
-
-
-
-
-
 
 
 # Иззменение статуса разрешения пользователя на прохождение опроса из True/False
