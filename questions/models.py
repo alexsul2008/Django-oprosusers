@@ -27,6 +27,7 @@ class GroupsQuestions(models.Model):
         return ", ".join([g.name for g in self.groups.all()])
     get_group.short_description = "Группа отдела"
 
+
     class Meta:
         verbose_name = "Группа вопросов"
         verbose_name_plural = "Группы вопросов"
@@ -51,9 +52,11 @@ class Questions(models.Model):
         if self.groups_questions:
             return ", ".join([gq.name for gq in self.groups_questions.all()])
 
-
-
     get_groups_questions.short_description = "Группа вопросов"
+
+    def get_answers(self):
+        return self.answer_questions.count()
+    get_answers.short_description = "Кол-во ответов"
 
     @property
     def image_url(self):

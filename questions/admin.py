@@ -183,7 +183,7 @@ class QuestionAdmin(ImportExportActionModelAdmin):
     resource_class = AnswersResource
     readonly_fields = ("get_image_tab", "get_image")
     #Поля выводимые в разделе Вопросы
-    list_display = ("id", "description", 'get_groups_questions', "get_image", "in_active")
+    list_display = ("id", "description", "get_answers", 'get_groups_questions', "get_image", "in_active")
     # list_filter = ("groups", "in_active",)
     # Фильтр только по вопросам групп (без Руководителя, Модератора)
     list_filter = (
@@ -328,9 +328,3 @@ class UserAnswerAdmin(admin.ModelAdmin):
     class Meta:
         model = UsersAnswer
         fields = "__all__"
-
-
-
-
-
-

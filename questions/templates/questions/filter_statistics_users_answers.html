@@ -119,33 +119,38 @@
 
                 </div>
                 <div class="col-9">
-                    {#    # Модальное окно http://sharelink.ru/blog/vyvod-tovara-v-modalnom-okne/#}
 
 
                     {% if success %}
                         <p style="color:red">Вопрос добавлен</p>
                     {% endif %}
 
+                    <div class="" id="users">
 
-					<div class="d-inline-flex">
 
-                        <div class="mr-2"><a href="" class="btn btn-primary btn-lg mb-3" role="button"
+
+					<div class="w-100">
+
+                        <div class="mr-2 position-absolute"><a href="" class="btn btn-primary btn-lg mb-3" role="button"
                                              data-url="{% url 'user_add' %}"
                                              aria-pressed="true"
                                              data-toggle="modal"
-                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>                       
+                                             data-target="#exampleAddUserModalCenter">Добавить пользователя</a></div>
+
+
+                        <div class="h40 mb-3 d-flex justify-content-center">{% include 'include/paginator.html' %}</div>
 
 
                     </div>
 
 
                     <div class="list-group">
-                        <button class="btn btn-info btn-block mt-2 pt-2 pb-2 disabled"
+                        <span class="btn btn-info btn-block mt-2 pt-2 pb-2 disabled"
                                 type="button"
                                 data-toggle="" data-target=""
                                 aria-expanded="false" aria-controls="">
                             <div class="d-flex flex-row justify-content-between align-items-center h40">
-                                <div class="w-5">
+                                <div class="w-7">
                                     <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input check-all-user"
                                             data-permits=""
@@ -156,309 +161,297 @@
 
                                     </div>
                                 </div>
-                                <div class="w-45"><span class="text-center">Фамилия Имя инженера</span></div>
-                                <div class="w-15"><span class="text-center">Группа</span></div>
+                                <div class="w-43">
+                                    <!-- <span class="text-center">Фамилия Имя инженера</span> -->
+                                    <div class="d-flex border border-light rounded-sm">
+                                        <input type="search" class="search h40" data-search placeholder="Фамилия Имя инженера" />
+                                        <button class="btn btn-info border-0 sort asc" data-sort="username"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                                <div class="w-15">
+                                    <span class="text-center">Группа</span>
+                                    <button class="btn btn-info sort asc" data-sort="groupsname"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
+                                </div>
                                 <div class="w-20"><span class="text-center">&sum; опросов</span></div>
                                 <div class="w-20"><span class="text-center">Дата прохождения </span></div>
                             </div>
-                        </button>
-
+                        </span>
 
 
                         <div class="accordion" id="accordExample">
-                            {% for list_answer_user in statistics_users %}
-                                {% if list_answer_user.permit_count == 0 %}
+                            <ul class="list">
+                                {% for list_answer_user in statistics_users %}
+                                    {% if list_answer_user.permit_count == 0 %}
+                                    <li>
+                                        <div class="">
+                                            <div class="d-inline-flex w-100 mt-2">
+                                                <div class="w-7">
+                                                    <div class="custom-control custom-switch text-center">
+                                                        <input name="user-check" type="checkbox"
+                                                            class="custom-control-input"
+                                                            value="{{ list_answer_user.is_permits|lower }}"
+                                                            data-type="user-check"
+                                                            {% if list_answer_user.is_permits %}checked{% endif %}
+                                                            id="userpermits_{{ list_answer_user.id }}"
+                                                            data-user="{{ list_answer_user.id }}"
+                                                            data-master="{{ list_answer_user.groups__is_boss|lower }}"
+                                                            data-url="{% url 'userchecked' %}"
+                                                            data-permits="{{ list_answer_user.is_permits|lower }}">
+                                                        <label class="custom-control-label align-middle"
+                                                            for="userpermits_{{ list_answer_user.id }}"></label>
 
-                                <div class="">
-                                    <div class="d-inline-flex w-100 mt-2">
-                                        <div class="w-5">
-                                            <div class="custom-control custom-switch text-center">
-                                                <input name="user-check" type="checkbox"
-                                                       class="custom-control-input"
-                                                       value="{{ list_answer_user.is_permits|lower }}"
-                                                       data-type="user-check"
-                                                       {% if list_answer_user.is_permits %}checked{% endif %}
-                                                       id="userpermits_{{ list_answer_user.id }}"
-                                                       data-user="{{ list_answer_user.id }}"
-                                                       data-master="{{ list_answer_user.groups__is_boss|lower }}"
-                                                       data-url="{% url 'userchecked' %}"
-                                                       data-permits="{{ list_answer_user.is_permits|lower }}">
-                                                <label class="custom-control-label align-middle"
-                                                       for="userpermits_{{ list_answer_user.id }}"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="w-93">
+                                                    <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" >
+                                                        <div class="d-flex flex-row justify-content-between align-items-center">
+                                                            <div class="w-30">
+                                                                <span class="username badge text-left p-1 w-100 statistics-user">{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                            </div>
 
+                                                            <div class="w-15">
+                                                                <span class="childrens ">
+                                                                    <span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light p-1 edit-user"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-toggle="modal"
+                                                                    data-edit-user="{{ list_answer_user.id }}"
+                                                                    data-url="{% url 'user_edit' list_answer_user.id %}"
+                                                                    data-target="#editUserModal"
+                                                                    title="Редактировать">
+                                                                    </span>
+                                                                {% if user.is_superuser %}
+                                                                    <span class="wh40 p-0 fa fa-key btn btn-sm btn-light p-1 edit-user-pass"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-toggle="modal"
+                                                                    data-user-id="{{ list_answer_user.id }}"
+                                                                    data-url="{% url 'user_pass_change' list_answer_user.id %}"
+                                                                    data-target="#changePasswordUserModal"
+                                                                    title="Изменить пароль">
+                                                                    </span>
+                                                                {% endif %}
+
+                                                                    <span class="wh40 p-0 fa fa-trash delete-user btn btn-sm btn-danger p-1"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-url="{% url 'user_delete' list_answer_user.id %}"
+                                                                    data-toggle="modal"
+                                                                    data-target="#deleteUserModalCenter"
+                                                                    title="Удалить">
+                                                                    </span>
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="w-15">
+                                                                <span class="groupsname badge badge-light p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
+                                                            </div>
+
+
+                                                            <div class="w-40">
+                                                                <small class="text-center text-wrap">Опрос не проходил(а)</small>
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="w-95">
-                                            <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" >
-                                                <div class="d-flex flex-row justify-content-between align-items-center">
-                                                    <div class="w-30">
-                                                        <span class="username badge text-left p-1 w-100 statistics-user">{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li>
+                                        <div class="" id="heading_{{ list_answer_user.id }}" data-heading-user="{{ list_answer_user.id }}">
+
+                                            <div class="d-inline-flex w-100 mt-2">
+                                                <div class="w-7">
+                                                    <div class="custom-control custom-switch text-center">
+                                                        <input name="user-check" type="checkbox"
+                                                            class="custom-control-input"
+                                                            value="{{ list_answer_user.is_permits|lower }}"
+                                                            data-type="user-check"
+                                                            {% if list_answer_user.is_permits == True %}checked{% endif %}
+                                                            id="userpermits_{{ list_answer_user.id }}"
+                                                            data-user="{{ list_answer_user.id }}"
+                                                            data-master="{{ list_answer_user.groups__is_boss|lower }}"
+                                                            data-url="{% url 'userchecked' %}"
+                                                            data-permits="{{ list_answer_user.is_permits|lower }}">
+                                                        <label class="custom-control-label align-middle"
+                                                            for="userpermits_{{ list_answer_user.id }}"></label>
+
                                                     </div>
-
-													<div class="w-15">
-														<span class="childrens ">
-															<span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light p-1 edit-user"
-															   role="button"
-															   aria-pressed="true"
-															   data-toggle="modal"
-															   data-edit-user="{{ list_answer_user.id }}"
-                                                               data-url="{% url 'user_edit' list_answer_user.id %}"
-															   data-target="#editUserModal"
-															   title="Редактировать">
-															</span>
-                                                        {% if user.is_superuser %}
-                                                            <span class="wh40 p-0 fa fa-key btn btn-sm btn-light p-1 edit-user-pass"
-															   role="button"
-															   aria-pressed="true"
-															   data-toggle="modal"
-															   data-user-id="{{ list_answer_user.id }}"
-                                                               data-url="{% url 'user_pass_change' list_answer_user.id %}"
-															   data-target="#changePasswordUserModal"
-															   title="Изменить пароль">
-															</span>
-                                                        {% endif %}
-
-															<span class="wh40 p-0 fa fa-trash delete-user btn btn-sm btn-danger p-1"
-															   role="button"
-															   aria-pressed="true"
-															   data-url="{% url 'user_delete' list_answer_user.id %}"
-															   data-toggle="modal"
-															   data-target="#deleteUserModalCenter"
-															   title="Удалить">
-															</span>
-														</span>
-                                                    </div>
-
-                                                    <div class="w-15">
-                                                        <span class="badge badge-light text-left p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
-                                                    </div>
-
-
-                                                    <div class="w-40">
-                                                        <small class="text-center text-wrap">Опрос не проходил(а)</small>
-                                                    </div>
-
-
                                                 </div>
+                                                <div class="w-93">
+                                                    <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" >
+                                                        <div class="d-flex flex-row justify-content-between align-items-center">
+                                                            <div class="w-30">
+                                                                <span class="username badge text-left p-1 w-100 statistics-user"
+                                                                data-user-id="{{ list_answer_user.id }}"
+                                                                data-url="{% url 'statistics_for_user' %}"
+                                                                data-toggle="collapse"
+                                                                data-target="#collapse_{{ list_answer_user.id }}"
+                                                                aria-expanded="false"
+                                                                aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                            </div>
 
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="" id="heading_{{ list_answer_user.id }}" data-heading-user="{{ list_answer_user.id }}">
+                                                            <div class="w-15">
+                                                                <span class="childrens ">
+                                                                    <span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light p-1 edit-user"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-toggle="modal"
+                                                                    data-edit-user="{{ list_answer_user.id }}"
+                                                                    data-url="{% url 'user_edit' list_answer_user.id %}"
+                                                                    data-target="#editUserModal"
+                                                                    title="Редактировать">
+                                                                    </span>
+                                                                {% if user.is_superuser %}
+                                                                    <span class="wh40 p-0 fa fa-key btn btn-sm btn-light p-1 edit-user-pass"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-toggle="modal"
+                                                                    data-user-id="{{ list_answer_user.id }}"
+                                                                    data-url="{% url 'user_pass_change' list_answer_user.id %}"
+                                                                    data-target="#changePasswordUserModal"
+                                                                    title="Изменить пароль">
+                                                                    </span>
+                                                                {% endif %}
 
-                                    <div class="d-inline-flex w-100 mt-2">
-                                        <div class="w-5">
-                                            <div class="custom-control custom-switch text-center">
-                                                <input name="user-check" type="checkbox"
-                                                       class="custom-control-input"
-                                                       value="{{ list_answer_user.is_permits|lower }}"
-                                                       data-type="user-check"
-                                                       {% if list_answer_user.is_permits == True %}checked{% endif %}
-                                                       id="userpermits_{{ list_answer_user.id }}"
-                                                       data-user="{{ list_answer_user.id }}"
-                                                       data-master="{{ list_answer_user.groups__is_boss|lower }}"
-                                                       data-url="{% url 'userchecked' %}"
-                                                       data-permits="{{ list_answer_user.is_permits|lower }}">
-                                                <label class="custom-control-label align-middle"
-                                                       for="userpermits_{{ list_answer_user.id }}"></label>
+                                                                    <span class="wh40 p-0 fa fa-trash delete-user btn btn-sm btn-danger p-1"
+                                                                    role="button"
+                                                                    aria-pressed="true"
+                                                                    data-url="{% url 'user_delete' list_answer_user.id %}"
+                                                                    data-toggle="modal"
+                                                                    data-target="#deleteUserModalCenter"
+                                                                    title="Удалить">
+                                                                    </span>
+                                                                </span>
+                                                            </div>
 
-                                            </div>
-                                        </div>
-                                        <div class="w-95">
-                                            <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" >
-                                                <div class="d-flex flex-row justify-content-between align-items-center">
-                                                    <div class="w-30">
-                                                        <span class="username badge text-left p-1 w-100 statistics-user"
-                                                        data-user-id="{{ list_answer_user.id }}"
-                                                        data-url="{% url 'statistics_for_user' %}"
-                                                        data-toggle="collapse"
-                                                        data-target="#collapse_{{ list_answer_user.id }}"
-                                                        aria-expanded="false"
-                                                        aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
-                                                    </div>
+                                                            <div class="w-15">
+                                                                <span class="groupsname badge badge-light text-left p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
+                                                            </div>
 
-													<div class="w-15">
-														<span class="childrens ">
-															<span class="wh40 p-0 fa fa-pencil btn btn-sm btn-light p-1 edit-user"
-															   role="button"
-															   aria-pressed="true"
-															   data-toggle="modal"
-															   data-edit-user="{{ list_answer_user.id }}"
-                                                               data-url="{% url 'user_edit' list_answer_user.id %}"
-															   data-target="#editUserModal"
-															   title="Редактировать">
-															</span>
-                                                        {% if user.is_superuser %}
-                                                            <span class="wh40 p-0 fa fa-key btn btn-sm btn-light p-1 edit-user-pass"
-															   role="button"
-															   aria-pressed="true"
-															   data-toggle="modal"
-															   data-user-id="{{ list_answer_user.id }}"
-                                                               data-url="{% url 'user_pass_change' list_answer_user.id %}"
-															   data-target="#changePasswordUserModal"
-															   title="Изменить пароль">
-															</span>
-                                                        {% endif %}
-
-															<span class="wh40 p-0 fa fa-trash delete-user btn btn-sm btn-danger p-1"
-															   role="button"
-															   aria-pressed="true"
-															   data-url="{% url 'user_delete' list_answer_user.id %}"
-															   data-toggle="modal"
-															   data-target="#deleteUserModalCenter"
-															   title="Удалить">
-															</span>
-														</span>
-                                                    </div>
-
-                                                    <div class="w-15">
-                                                        <span class="badge badge-light text-left p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
-                                                    </div>
-
-                                                    {% if list_answer_user.permit_count != 0 %}
-                                                        <div class="w-20">
-                                                            <span class="badge badge-light text-center p-2 w-50 h40 justify-content-center align-items-center" data-count="{{ list_answer_user.permit_count }}">{{ list_answer_user.permit_count }}</span>
-                                                        </div>
-                                                        <div class="w-20">
-                                                            <span class="badge badge-light text-center p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
-                                                        </div>
-
-                                                    {% else %}
-                                                        <div class="w-40">
-                                                            <small class="text-center text-wrap">Опрос не проходил(а)</small>
-
-                                                        </div>
-                                                    {% endif %}
-
-
-                                                </div>
-
-                                            </button>
-                                        </div>
-                                    </div>
-
-
-                                    <div id="collapse_{{ list_answer_user.id }}" class="collapse"  style="transition: .6s;" data-collapse-user="{{ list_answer_user.id }}"
-                                        aria-labelledby="heading_{{ list_answer_user.id }}" data-parent="#accordExample">
-
-
-                                        <div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions_{{ list_answer_user.id }}">
-
-                                        {% for sess in  user_session %}
-                                            {% if sess.user_id == list_answer_user.id %}
-                                                <div class="" id="heading{{sess.id}}" data-heading-question="{{sess.id}}" data-url = "{% url 'oprosanswers_list' %}">
-                                                    <div class="d-flex mt-1 mb-2">
-                                                        <div class="w-5"></div>
-                                                        <div class="w-95">
-                                                            <div class="d-flex flex-row">
-                                                                <div class="align-middle pr-2">
-                                                                    <button class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" data-delete="{{sess.id}}" style="font-size: x-large;" data-url="{% url 'statisticsuserdelete' sess.id %}" title="Удалить"></button>
+                                                            {% if list_answer_user.permit_count != 0 %}
+                                                                <div class="w-20">
+                                                                    <span class="badge badge-light text-center p-2 w-50 h40 justify-content-center align-items-center" data-count="{{ list_answer_user.permit_count }}">{{ list_answer_user.permit_count }}</span>
                                                                 </div>
-                                                                <div class="pl-0 w-100" onclick="collapseOtvet('{{ sess.id }}', '{{sess.session_key}}',);" >
+                                                                <div class="w-20">
+                                                                    <span class="badge badge-light text-center p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
+                                                                </div>
 
-                                                                    <button class="btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg btn-block pt-1 pb-1 user-opros"
-                                                                        data-url="{% url 'oprosanswers' %}"
-                                                                        type="button"
-                                                                        data-toggle="collapse"
-                                                                        data-target="#collapse{{sess.id}}"
-                                                                        aria-expanded="false"
-                                                                        aria-controls="collapse{{sess.id}}"
-                                                                        data-opros-user="{{sess.session_key}}"
-                                                                        data-id="{{sess.id}}">
-                                                                        <div class="row">
-                                                                            {% if sess.total_not_correct != 0 %}
-                                                                            <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.id}}</span></div>
-                                                                            <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
-                                                                            <div class="col-2"><span class="badge badge-light float-left m-1 pt-2 pb-2">{{sess.date_passage}}</span></div>
-                                                                            <div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>
-                                                                            <div class="col-2 d-flex flex-row">
-                                                                                <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_not_correct}}</span>
-                                                                                <span class="badge m-1">из</span>
-                                                                                <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_questions}}</span>
-                                                                            </div>
-                                                                            <div class="col-2">
-                                                                                <span class="badge float-left m-1">вопроса(ов), а это</span>
-                                                                            </div>
-                                                                            <div class="col-1"><span class="badge badge-light float-left w-100 m-1 pt-2 pb-2">{{sess.persents}} %</span></div>
-                                                                            {% else %}
-                                                                            <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.id}}</span></div>
-                                                                            <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
-                                                                            <div class="col-2"><span class="badge badge-light float-left m-1 pt-2 pb-2">{{sess.date_passage}}</span></div>
-                                                                            <div class="col-2"><span class="badge float-right m-1">Вы верно ответили на все: </span></div>
-                                                                            <div class="col-2 d-flex flex-row">
-                                                                                <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_questions}}</span>
-                                                                            </div>
-                                                                            <div class="col-3">
-                                                                                <span class="badge float-left m-1">вопроса(ов).</span></div>
-                                                                            {% endif %}
+                                                            {% else %}
+                                                                <div class="w-40">
+                                                                    <small class="text-center text-wrap">Опрос не проходил(а)</small>
+
+                                                                </div>
+                                                            {% endif %}
+
+
+                                                        </div>
+
+                                                    </button>
+                                                </div>
+                                            </div>
+
+
+                                            <div id="collapse_{{ list_answer_user.id }}" class="collapse"  style="transition: .6s;" data-collapse-user="{{ list_answer_user.id }}"
+                                                aria-labelledby="heading_{{ list_answer_user.id }}" data-parent="#accordExample">
+
+
+                                                <div class="accordion mb-3 mt-2" id="accordionExampleUserListQuestions_{{ list_answer_user.id }}">
+
+                                                {% for sess in  user_session %}
+                                                    {% if sess.user_id == list_answer_user.id %}
+                                                        <div class="" id="heading{{sess.id}}" data-heading-question="{{sess.id}}" data-url = "{% url 'oprosanswers_list' %}">
+                                                            <div class="d-flex mt-1 mb-2">
+                                                                <div class="w-7"></div>
+                                                                <div class="w-93">
+                                                                    <div class="d-flex flex-row">
+                                                                        <div class="align-middle pr-2">
+                                                                            <button class="fa fa-trash btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg h-100 delete-user-statics" data-delete="{{sess.id}}" style="font-size: x-large;" data-url="{% url 'statisticsuserdelete' sess.id %}" title="Удалить"></button>
                                                                         </div>
-                                                                    </button>
+                                                                        <div class="pl-0 w-100" onclick="collapseOtvet('{{ sess.id }}', '{{sess.session_key}}',);" >
 
+                                                                            <button class="btn btn-outline-{% if sess.total_not_correct != 0 %}danger{% else %}success{% endif %} btn-lg btn-block pt-1 pb-1 user-opros"
+                                                                                data-url="{% url 'oprosanswers' %}"
+                                                                                type="button"
+                                                                                data-toggle="collapse"
+                                                                                data-target="#collapse{{sess.id}}"
+                                                                                aria-expanded="false"
+                                                                                aria-controls="collapse{{sess.id}}"
+                                                                                data-opros-user="{{sess.session_key}}"
+                                                                                data-id="{{sess.id}}">
+                                                                                <div class="row">
+                                                                                    {% if sess.total_not_correct != 0 %}
+                                                                                    <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.id}}</span></div>
+                                                                                    <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
+                                                                                    <div class="col-2"><span class="badge badge-light float-left m-1 pt-2 pb-2">{{sess.date_passage}}</span></div>
+                                                                                    <div class="col-2"><span class="badge float-right m-1">Не верных ответов на: </span></div>
+                                                                                    <div class="col-2 d-flex flex-row">
+                                                                                        <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_not_correct}}</span>
+                                                                                        <span class="badge m-1">из</span>
+                                                                                        <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_questions}}</span>
+                                                                                    </div>
+                                                                                    <div class="col-2">
+                                                                                        <span class="badge float-left m-1">вопроса(ов), а это</span>
+                                                                                    </div>
+                                                                                    <div class="col-1"><span class="badge badge-light float-left w-100 m-1 pt-2 pb-2">{{sess.persents}} %</span></div>
+                                                                                    {% else %}
+                                                                                    <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.id}}</span></div>
+                                                                                    <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
+                                                                                    <div class="col-2"><span class="badge badge-light float-left m-1 pt-2 pb-2">{{sess.date_passage}}</span></div>
+                                                                                    <div class="col-2"><span class="badge float-right m-1">Вы верно ответили на все: </span></div>
+                                                                                    <div class="col-2 d-flex flex-row">
+                                                                                        <span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.total_questions}}</span>
+                                                                                    </div>
+                                                                                    <div class="col-3">
+                                                                                        <span class="badge float-left m-1">вопроса(ов).</span></div>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            </button>
+
+
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                <div id="collapse{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent="#accordionExampleUserListQuestions_{{ list_answer_user.id }}">
 
                                                                 </div>
                                                             </div>
 
-
-                                                        <div id="collapse{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent="#accordionExampleUserListQuestions_{{ list_answer_user.id }}">
-
                                                         </div>
                                                     </div>
 
+
+
+
+
+
+
+                                                    {% endif %}
+
+                                                {% endfor %}
                                                 </div>
-                                            </div>
 
 
 
 
-
-
-
-                                            {% endif %}
-
-                                        {% endfor %}
-                                        </div>
-
-
-
-
-                                    </div>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-
-                                <div class="modal fade show" id="succesDeleteModalCenter" tabindex="-1" role="dialog"
-                                     aria-labelledby="succesDeleteModalCenterTitle" aria-modal="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-danger">
-                                                <h5 class="modal-title" id="succesDeleteModalCenterTitle">Права
-                                                    доступа</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <h5 class="text-secondary text-center">У вас нет прав на удаление
-                                                    записи.<br/>Со
-                                                    всеми вопросами
-                                                    обратитесь к РГ Зотову С.В.</h5>
-
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-outline-danger"
-                                                        data-dismiss="modal">
-                                                    Закрыть
-                                                </button>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
 
+                            </ul>
                         </div>
                     </div>
+                </div>
+
+                    <div class="d-flex m-2 w-100"></div>
+
                     {% include 'include/paginator.html' %}
                 </div>
 
@@ -615,8 +608,15 @@
             formFilterInUsers();
         });
 
-        document.addEventListener("DOMContentLoaded", function(event) {
+        document.addEventListener("DOMContentLoaded", function() {
+            let options = {
+                valueNames: [ 'username', 'groupsname' ]
+            };
 
+            let usernameList = new List('users', options);
+
+            const btnDataSort = document.querySelectorAll('[data-sort]')
+            arrowDataSort(btnDataSort)
         });
 
 

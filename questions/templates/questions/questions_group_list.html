@@ -1,408 +1,582 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags crispy_forms_field %}
+{% extends 'base.html' %} {% load crispy_forms_tags crispy_forms_field %} {%
+block content %}
 
-{% block content %}
+<div class="container-fluid">
+  <h1 class="mb-4 pb-3 text-center">Редактирование вопросов</h1>
+  <div class="row">
+    <div class="col-3">
+      <form
+        method="get"
+        id="filters-in-questions"
+        data-url="{% url 'totalquestions' %}"
+      >
+        <div class="list-group">
+          <div class="card border border-info">
+            <div class="card-header pl-0 pr-0">
+              <div class="d-flex flex-row align-items-center">
+                <div class="col-7"><span class="text-center"></span></div>
+                <div class="col-5">
+                  <a
+                    href="{% url 'filter' %}"
+                    data-auto-id="clear"
+                    class="btn btn-outline-info btn-block pt-2 pb-2 text-light"
+                    data-toggle=""
+                    data-target=""
+                    aria-expanded="false"
+                    aria-controls=""
+                    data-filter-toggle="true"
+                    >Очистить
+                  </a>
+                </div>
+              </div>
+            </div>
 
+            <div class="filter-groups" data-filter-dropdown="true">
+              <header class="header align-items-center bg-info">
+                <div class="">
+                  <p class="mb-0 h-50 d-block">
+                    <small>Выбрано </small
+                    ><small class="totalSelectedGroupsQuestionsValues"></small
+                    ><small> групп(ы) вопросов</small>
+                  </p>
+                  <p
+                    class="selectedGroupsQuestionsValueList mb-0 h-50 d-inline-block"
+                  >
+                    &nbsp;
+                  </p>
+                </div>
+              </header>
+              <div class="col-12 mt-3">
+                <span class="text-center">Группа вопросов:</span>
+              </div>
+              <div class="">
+                <ul>
+                  {% for field in filterset.form.groups_questions %}
+                  <li>
+                    <div
+                      class="btn-group-toggle mt-2 position-relative"
+                      data-toggle="buttons"
+                      data-auto-id="refinementItem"
+                    >
+                      <label
+                        class="btn btn-outline-info w-100 text-left text-light"
+                        for="{{ field.id_for_label }}"
+                        data-value="{{ field.choice_label }}"
+                      >
+                        {{ field.tag }} {{ field.choice_label }}
 
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3">
-
-
-                <form method="get" id="filters-in-questions" data-url="{% url 'totalquestions' %}">
-                    <div class="list-group">
-
-
-                        <div class="card  border border-info">
-                            <div class="card-header pl-0 pr-0">
-                                <div class="d-flex flex-row align-items-center">
-                                    <div class="col-7"><span class="text-center"></span></div>
-                                    <div class="col-5">
-                                        <a href="{% url 'filter' %}" data-auto-id="clear"
-                                           class="btn btn-outline-info btn-block pt-2 pb-2 text-light"
-                                           data-toggle="" data-target=""
-                                           aria-expanded="false" aria-controls="" data-filter-toggle="true">Очистить
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                            </div>
-
-
-                            <div class="filter-groups " data-filter-dropdown="true">
-
-                                <header class="header align-items-center bg-info">
-                                    <div class="">
-                                        <p class=" mb-0 h-50 d-block"><small>Выбрано </small><small
-                                                class="totalSelectedGroupsQuestionsValues"></small><small> групп(ы)
-                                            вопросов</small></p>
-                                        <p class="selectedGroupsQuestionsValueList mb-0 h-50 d-inline-block">&nbsp;</p>
-                                    </div>
-
-                                </header>
-                                <div class="col-12 mt-3"><span class="text-center">Группа вопросов:</span></div>
-                                <div class="">
-
-
-                                    <ul>
-                                        {% for field in filterset.form.groups_questions %}
-                                            <li>
-                                                <div class="btn-group-toggle mt-2 position-relative"
-                                                     data-toggle="buttons" data-auto-id="refinementItem">
-                                                    <label class="btn btn-outline-info w-100 text-left text-light "
-                                                           for="{{ field.id_for_label }}"
-                                                           data-value="{{ field.choice_label }}">
-                                                        {{ field.tag }}
-                                                        {{ field.choice_label }}
-
-                                                        <span class="{{ field.data.name }}_id_{{ field.data.value }} badge-info float-right rounded-lg pl-2 pr-2"
-                                                              data-auto-id="refinementItemCount">0</span>
-                                                    </label>
-
-                                                </div>
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-
-
-                                </div>
-
-                                <div class="col-12 mt-3"><span class="text-center">Активность вопроса:</span></div>
-                                <div class="">
-                                    <div class="btn-group btn-group-toggle d-block mt-2 pl-0"
-                                         data-toggle="buttons" data-auto-id="refinementItemInActive">
-                                        <ul>
-                                            {% for field_active in filterset.form.in_active %}
-                                                <li>
-
-                                                    <label class="btn btn-outline-info w-100 text-left text-light "
-                                                           for="{{ field_active.id_for_label }}">
-                                                        {{ field_active.tag }}
-                                                        {{ field_active.choice_label }}
-                                                        <span class="{{ field_active.data.name }}_id_{{ field_active.data.index }} badge-info float-right rounded-lg pl-2 pr-2"
-                                                              data-auto-id="refinementItemCount">0</span>
-                                                    </label>
-
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 mt-3"><span class="text-center">Ссылка на документацию:</span></div>
-                                <div class="">
-                                    <div class="btn-group btn-group-toggle d-block mt-2 pl-0"
-                                         data-toggle="buttons" data-auto-id="refinementItemInActive">
-
-                                        <ul>
-                                            {% for field_doc in filterset.form.doc_url %}
-                                                <li>
-                                                    <label class="btn btn-outline-info w-100 text-left text-light "
-                                                           for="{{ field_doc.id_for_label }}">
-                                                        {{ field_doc.tag }}
-                                                        {{ field_doc.choice_label }}
-                                                        <span class="{{ field_doc.data.name }}_id_{{ field_doc.data.index }} badge-info float-right rounded-lg pl-2 pr-2"
-                                                              data-auto-id="refinementItemCount">0</span>
-                                                    </label>
-
-                                                </li>
-
-
-                                            {% endfor %}
-                                        </ul>
-
-                                    </div>
-                                </div>
-
-
-                            </div>
-                        </div>
+                        <span
+                          class="{{ field.data.name }}_id_{{ field.data.value }} badge-info float-right rounded-lg pl-2 pr-2"
+                          data-auto-id="refinementItemCount"
+                          >0</span
+                        >
+                      </label>
                     </div>
-                    <button type="submit" class="btn btn-outline-info btn-block pt-2 pb-2 mt-3 text-light">Вывести
-                    </button>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+
+              <div class="col-12 mt-3">
+                <span class="text-center">Активность вопроса:</span>
+              </div>
+              <div class="">
+                <div
+                  class="btn-group btn-group-toggle d-block mt-2 pl-0"
+                  data-toggle="buttons"
+                  data-auto-id="refinementItemInActive"
+                >
+                  <ul>
+                    {% for field_active in filterset.form.in_active %}
+                    <li>
+                      <label
+                        class="btn btn-outline-info w-100 text-left text-light"
+                        for="{{ field_active.id_for_label }}"
+                      >
+                        {{ field_active.tag }} {{ field_active.choice_label }}
+                        <span
+                          class="{{ field_active.data.name }}_id_{{ field_active.data.index }} badge-info float-right rounded-lg pl-2 pr-2"
+                          data-auto-id="refinementItemCount"
+                          >0</span
+                        >
+                      </label>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="col-12 mt-3">
+                <span class="text-center">Ссылка на документацию:</span>
+              </div>
+              <div class="">
+                <div
+                  class="btn-group btn-group-toggle d-block mt-2 pl-0"
+                  data-toggle="buttons"
+                  data-auto-id="refinementItemInActive"
+                >
+                  <ul>
+                    {% for field_doc in filterset.form.doc_url %}
+                    <li>
+                      <label class="btn btn-outline-info w-100 text-left text-light" for="{{ field_doc.id_for_label }}">
+                        {{ field_doc.tag }} {{ field_doc.choice_label }}
+                        <span class="{{ field_doc.data.name }}_id_{{ field_doc.data.index }} badge-info float-right rounded-lg pl-2 pr-2"
+                          data-auto-id="refinementItemCount">0</span>
+                      </label>
+                    </li>
+
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline-info btn-block pt-2 pb-2 mt-3 text-light">Вывести</button>
+      </form>
+    </div>
+    <div class="col-9">
+      <div class="row">
+        <div class="col d-inline-flex">
+          <div class="mr-2">
+            <a
+              href=""
+              class="btn btn-primary btn-lg mb-3"
+              role="button"
+              data-url="{% url 'question_creat' %}"
+              aria-pressed="true"
+              data-toggle="modal"
+              data-target="#createQuestionModalCenter"
+              >Добавить вопрос</a
+            >
+          </div>
+
+          <div class="mr-2">
+            <button
+              href=""
+              class="btn btn-info btn-lg mb-3 import-exel"
+              role="button"
+              aria-pressed="true"
+            >
+              Импортировать вопросы
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-info mb-1">
+        <div class="row no-gutters">
+          <div class="card-body w-100">
+            <div
+              class="text-white d-flex justify-content-start align-items-center"
+              data-button
+            >
+              <span class="wh40 p-0"></span>
+              <p class="h40 m-0 p-0 align-items-center" data-button-text>
+                Вопросы опроса
+              </p>
+              <span class="h40 p-0 w80" data-button-badge>&sum; ответов</span>
+              <p class="h-40 m-0 ml-auto" style="padding-right: 4rem">
+                Группы вопросв
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% for list_question in object_list %}
+      <button
+        class="btn-settings btn btn-outline-info btn-lg btn-block position-relative"
+        type="button"
+        data-button
+      >
+        <div class="d-flex flex-row justify-content-between align-items-center">
+          <span
+            class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active == True %}text-warning{% else %}text-muted{% endif %} question-active"
+            data-secondary
+            role="button"
+          ></span>
+          <div
+            class="text-white d-flex justify-content-start align-items-center"
+          >
+            <span class="text-left mr-2" data-button-text
+              >{{ list_question.description|truncatechars_html:60 }}</span
+            >
+            <span
+              class="btn-settings--badge p-0 h40 w80 justify-content-center align-items-center"
+              data-button-badge
+              >{{list_question.answers_count}}</span
+            >
+          </div>
+
+          <div class="button-overflow">
+            <span class="childrens btn-overflow-childrens">
+              <span
+                class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active"
+                role="button"
+                data-in_active="{{ list_question.in_active }}"
+                data-type="questions"
+                data-id="{{ list_question.id }}"
+                type="{{ list_question.in_active }}"
+                data-url="{% url 'questioninactive' %}"
+              ></span>
+
+              <span
+                class="wh40 p-0 fa fa-pencil btn btn-light"
+                role="button"
+                aria-pressed="true"
+                data-toggle="modal"
+                data-url="{% url 'question_edit' list_question.id %}"
+                data-target="#editQuestionModalCenter"
+                title="Редактировать"
+              ></span>
+
+              <span
+                class="wh40 p-0 fa fa-trash btn btn-danger"
+                role="button"
+                aria-pressed="true"
+                data-url="{% url 'question_delete' list_question.id %}"
+                data-toggle="modal"
+                data-target="#deleteQuestionModalCenter"
+                title="Удалить"
+              ></span>
+            </span>
+          </div>
+          <div class="ml-auto text-right" style="">
+            {% for gq in list_question.groups_questions.all %}
+
+            <span class="btn btn-outline-light disabled">{{ gq.name }}</span>
+
+            {% endfor %}
+          </div>
+        </div>
+      </button>
+
+      {% endfor %} {% include 'include/paginator.html' %}
+
+      <div
+        class="modal fade"
+        id="importExelCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="importExelCenterTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="importExelCenterTitle">
+                Импорт вопросов
+              </h5>
+            </div>
+            <div class="modal-body bg-transparent text-dark">
+              <div class="modal-import-exel">
+                <form
+                  method="POST"
+                  action="{% url 'import_exel_form' %}"
+                  id="import_exel_form"
+                  enctype="multipart/form-data"
+                >
+                  {% csrf_token %}
+                  <span class="d-flex text-info mb-3"
+                    >Выберите группу(ы) к которой(ым) относятся вопросы:</span
+                  >
+                  <select
+                    name="groups_questions"
+                    class="custom-select selectmultiple form-control"
+                    required=""
+                    id="groups_questions"
+                    multiple=""
+                  >
+                    {% for field in filterset.form.groups_questions %}
+                    <option value="{{field.data.value}}">
+                      {{ field.choice_label }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <span class="d-flex text-info mb-3 mt-3"
+                    >Выберите файл для загрузки вопросов:</span
+                  >
+                  <label class="input-file">
+                    <input
+                      type="file"
+                      name="import_exel"
+                      class="clearablefileinput form-control-file"
+                      required=""
+                      id="import_exel"
+                      accept=".xlx, .xlsx"
+                    />
+                    <span class="btn btn-outline-success">Выберите файл</span>
+                    <span class="input-file-text">Максимум 5 Мб</span>
+                  </label>
                 </form>
 
+                <div class="info-list mt-2"></div>
 
-            </div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col d-inline-flex">
-
-                        <div class="mr-2"><a href="" class="btn btn-primary btn-lg mb-3" role="button"
-                                             data-url="{% url 'question_creat' %}"
-                                             aria-pressed="true"
-                                             data-toggle="modal"
-                                             data-target="#createQuestionModalCenter">Добавить вопрос</a></div>
-
-                        <div class="mr-2"><button href="" class="btn btn-info btn-lg mb-3 import-exel" role="button"
-                                            
-                                            aria-pressed="true">Импортировать вопросы</button></div>
-
-
-
-                    </div>
-                </div>
-
-
-                <div class="card  border-info mb-1">
-                    <div class="row no-gutters">
-
-                        <div class="card-body w-100">
-                            <div class="row">
-
-                                <div class="col-12">
-                                    <p class="card-text">Вопрос</p>
-                                </div>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                {% for list_question in object_list %}
-                <button class="btn-settings btn btn-outline-info btn-lg btn-block position-relative" type="button">
-                    <div class="d-flex flex-row justify-content-between align-items-center">
-                        <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active == True %}text-warning{% else %}text-muted{% endif %} question-active"
-                            data-secondary
-                            role="button"></span>
-                        <div class="text-left text-white" style="min-width: 200px;">
-                            <span class="p-2">{{ list_question.description|truncatechars_html:50 }}</span>
-                        </div>
-                        <div class="button-overflow">
-                            <span class="childrens btn-overflow-childrens">
-                                <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active"
-                                   role="button"
-                                   data-in_active="{{ list_question.in_active }}"
-                                   data-type="questions"
-                                   data-id="{{ list_question.id }}"
-                                   type="{{ list_question.in_active }}"
-                                   data-url="{% url 'questioninactive' %}"></span>
-
-
-                                <span class="wh40 p-0 fa fa-pencil btn btn-light" role="button"
-                                   aria-pressed="true"
-                                   data-toggle="modal"
-                                   data-url="{% url 'question_edit' list_question.id %}"
-                                   data-target="#editQuestionModalCenter"
-                                   title="Редактировать"></span>
-
-
-
-
-                                <span class="wh40 p-0 fa fa-trash btn btn-danger" role="button"
-                                   aria-pressed="true"
-                                   data-url="{% url 'question_delete' list_question.id %}"
-                                   data-toggle="modal"
-                                   data-target="#deleteQuestionModalCenter"
-                                   title="Удалить"></span>
-                            </span>
-
-                        </div>
-                        <div class="ml-auto text-right" style="">
-                            {% for gq in list_question.groups_questions.all %}
-
-                                        <span class="btn btn-outline-light disabled">{{ gq.name }}</span>
-
-                            {% endfor %}
-                        </div>
-                    </div>
-                </button>
-
-
-                
-
-                {% endfor %}
-
-
-
-                {% include 'include/paginator.html' %}
-
-
-                <div class="modal fade" id="importExelCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="importExelCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="importExelCenterTitle">Импорт вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-
-
-                                <div class="modal-import-exel">
-
-                                   <form method="POST" action="{% url 'import_exel_form' %}" id="import_exel_form" enctype="multipart/form-data">
+                <!-- <form method="POST" action="{% url 'import_exel_form' %}" id="import_exel_form" enctype="multipart/form-data">
                                         {% csrf_token %}
                                         <span class="d-flex text-info mb-3">Выберите группу(ы) к которой(ым) относятся вопросы:</span>
-                                       <select multiple class="custom-select" name="groups_questions">
-                                            {% for field in filterset.form.groups_questions %}
-                                                <option value="{{field.data.value}}">{{ field.choice_label }}</option>                                                
-                                            {% endfor %}
-                                        
-                                        </select>
-                                       <span class="d-flex text-info mb-3 mt-3">Выберите файл для загрузки вопросов:</span>
-                                        <label class="input-file">
-                                            <input type="file" name="import-exel" accept=".xlx, .xlsx">
-                                            <span class="btn btn-outline-success">Выберите файл</span>           
-                                            <span class="input-file-text">Максимум 5 Мб</span>
-                                        </label>
 
-                                    </form>
+                                       {{form_import|crispy}}
 
-                                    <div class="info-list mt-2"></div>
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-white">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button type="submit" form="import_exel_form" class="btn btn-outline-success btn-submit" data-type="submit">Импортировать</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="createQuestionModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="createQuestionModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="createQuestionModalCenterTitle">Добавление вопроса</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-create-question"></div>
-                            </div>
-                            <div class="modal-footer bg-light text-white">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="add_question_form" type="submit" class="btn btn-outline-success">Добавить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal fade" id="editQuestionModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="editQuestionModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="editQuestionModalCenterTitle">Редактирование вопроса</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="edit-modal-question jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-dark">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="update_form" type="submit" class="btn btn-outline-danger">Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="deleteQuestionModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="deleteQuestionModalCenterTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="deleteQuestionModalCenterTitle">Удаление вопроса</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-question-delete jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-dark">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="delete_question_form" type="submit" class="btn btn-outline-danger">Удалить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="modal fade" id="groupQuestions" tabindex="-1" role="dialog"
-                     aria-labelledby="groupQuestionsTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-info text-white">
-                                <h5 class="modal-title" id="groupQuestionsTitle">Добавление группы вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-groups-question jq-product-wrapper">
-
-
-                                </div>
-                            </div>
-                            <div class="modal-footer bg-light text-white">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="add_form" type="submit" class="btn btn-outline-success">Сохранить</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                                    </form> -->
+              </div>
             </div>
-
+            <div class="modal-footer bg-light text-white">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button
+                type="submit"
+                form="import_exel_form"
+                class="btn btn-outline-success btn-submit"
+                data-type="submit"
+              >
+                Импортировать
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
 
+      <div
+        class="modal fade"
+        id="createQuestionModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="createQuestionModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="createQuestionModalCenterTitle">
+                Добавление вопроса
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body bg-transparent text-dark">
+              <div class="modal-create-question"></div>
+            </div>
+            <div class="modal-footer bg-light text-white">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button
+                form="add_question_form"
+                type="submit"
+                class="btn btn-outline-success"
+              >
+                Добавить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div
+        class="modal fade"
+        id="editQuestionModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="editQuestionModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="editQuestionModalCenterTitle">
+                Редактирование вопроса
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body bg-transparent text-dark">
+              <div class="edit-modal-question jq-product-wrapper"></div>
+            </div>
+            <div class="modal-footer bg-light text-dark">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button
+                form="update_form"
+                type="submit"
+                class="btn btn-outline-danger"
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="deleteQuestionModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="deleteQuestionModalCenterTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="deleteQuestionModalCenterTitle">
+                Удаление вопроса
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body bg-transparent text-dark">
+              <div class="modal-question-delete jq-product-wrapper"></div>
+            </div>
+            <div class="modal-footer bg-light text-dark">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button
+                form="delete_question_form"
+                type="submit"
+                class="btn btn-outline-danger"
+              >
+                Удалить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="groupQuestions"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="groupQuestionsTitle"
+        aria-hidden="true"
+      >
+        <div
+          class="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title" id="groupQuestionsTitle">
+                Добавление группы вопросов
+              </h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body bg-transparent text-dark">
+              <div class="modal-groups-question jq-product-wrapper"></div>
+            </div>
+            <div class="modal-footer bg-light text-white">
+              <button
+                type="button"
+                class="btn btn-outline-info"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button
+                form="add_form"
+                type="submit"
+                class="btn btn-outline-success"
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-   
+{% if messages %} {% for message in messages %}
+<script>
+  document.addEventListener("DOMContentLoaded", function (event) {
+    messagesInference("{{message}}", "{{message.tags}}");
+  });
+</script>
 
-    {% if messages %}
-
-        {% for message in messages %}
-            <script>document.addEventListener("DOMContentLoaded", function(event) {
-                messagesInference('{{message}}', '{{message.tags}}');
-            });</script>
-
-            <!--
+<!--
             {%if message.tags %}{{ message.tags }}{% endif %}>
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
             {{ message.level }} -->
 
-        {% endfor %}
-    {% endif %}
+{% endfor %} {% endif %} {% endblock content %} {% block javascript %}
+<script>
+  const btnSetings = document.querySelector("[data-button]");
+  // const btnSetingsBadge = document.querySelectorAll('[data-button-badge]')
+  const btnSetingsText = document.querySelectorAll("[data-button-text]");
 
-
-
-
-{% endblock content %}
-
-{% block javascript %}
-    <script>
-
-
-        window.onload = function () {
-            formFilterInQuestions();
-        };
-        const myModal = new bootstrap.Modal(document.getElementById('importExelCenter'), {
-            keyboard: false
-        })
-
-    </script>
+  window.onload = function () {
+    calculateWidthAndPositionBadge(btnSetings, [], btnSetingsText);
+    formFilterInQuestions();
+  };
+  window.addEventListener("resize", (event) => {
+    // console.log(event)
+    calculateWidthAndPositionBadge(btnSetings, [], btnSetingsText);
+  });
+  const myModal = new bootstrap.Modal(
+    document.getElementById("importExelCenter"),
+    {
+      keyboard: false,
+    }
+  );
+</script>
 
 {% endblock javascript %}
