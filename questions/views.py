@@ -156,14 +156,6 @@ def importExelForm(request):
 
         print('Список групп: ', dictsGroup['groups_questions'])
 
-        
-        # for key, value in dict(request.POST).items():
-        #     print('Key: ', key, ' Value: ', value)
-        #     if key == 'groups_questions':
-        #         groups = value
-
-        # print('GROUPS: ', groups, type(groups))
-
      
         upload_file = request.FILES['import-exel']
 
@@ -179,39 +171,17 @@ def importExelForm(request):
         data['endpoint'] = reverse_lazy('import_exel_db')
         return JsonResponse(data)
 
-        # elif nextCase == 'uploadDb':
-        #     data = {}
-        #     data['status'] = 200
-        #     data['next'] = 'Cooooool'
-        #     return JsonResponse(data)
-
+      
    
 
-    return JsonResponse({'status': 201})
+    
 
 
-    # print(request.content_type)
-    # print(request.body)
-    # print(request.body.File )
-
-    # json_object = json.loads(request.body)
-
-    # print(json_object)
-    # # print(type(json_object))
-
-    # for item in request.body:
-    #     print(item)
-
-    # groups_questions = json_object['groups_questions']
-
-    # print(groups_questions)
-
-    # data = {}
-
-    # data['status'] = 200
-
-    # return JsonResponse(data)
-
+    context = {
+            'data': dataDict
+        }
+    template = 'questions/import_tamplate.html'
+    return render(request, template, context)
 
 
 
@@ -1263,6 +1233,9 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         context['question_groups'] = GroupsQuestions.objects.all()
+        context['form_import'] = UploadExcelForm
+
+        print(context)
 
         query = self.request.GET.copy()
         if 'page' in query:
