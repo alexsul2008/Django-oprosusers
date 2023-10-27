@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="../../../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../../../static/css/font-awesome.css" rel="stylesheet">
+    <link href="../../../static/css/cover.css" rel="stylesheet">
+</head>
+<body>
+    <button class="parent-btn btn-settings btn btn-outline-info btn-lg btn-block position-relative" type="button" data-button="">        
+        <span class="wh40 fa fa-lightbulb-o " data-secondary="" role="button"></span>
+        <span class="text-left" data-button-text="">Какую оперную партию Ф. Шаляпин не исполнял?</span>
+        <span class="btn-settings--badge p-0 h40 w80" data-button-badge="">4</span>         
+
+        <div class="button-overflow">
+            <span class="childrens btn-overflow-childrens">
+                <span class="wh40 p-0 fa fa-lightbulb-o btn btn-outline-warning question-active" role="button" data-in_active="True" data-type="questions" data-id="1" type="True" data-url="/questioninactive/"></span>
+                <span class="wh40 p-0 fa fa-pencil btn btn-light" role="button" aria-pressed="true" data-toggle="modal" data-url="/questions/1/" data-target="#editQuestionModalCenter" title="Редактировать"></span>
+                <span class="wh40 p-0 fa fa-trash btn btn-danger" role="button" aria-pressed="true" data-url="/questions/1/delete/" data-toggle="modal" data-target="#deleteQuestionModalCenter" title="Удалить"></span>
+            </span>
+        </div>
+        <div class="text-right">               
+
+            <span class="btn btn-outline-light disabled">Общие</span>
+            
+        </div>        
+    </button>
+
+    <button class="parent-btn btn-settings btn btn-outline-info btn-lg btn-block position-relative" type="button" data-button="">        
+        <span class="wh40 fa fa-lightbulb-o {% if list_question.in_active == True %}text-warning{% else %}text-muted{% endif %} question-active" data-secondary="" role="button"></span>
+        <span class="text-left" data-button-text="">{{ list_question.description|truncatechars_html:60 }}</span>
+        <span class="btn-settings--badge p-0 h40 w80" data-button-badge="">{{list_question.answers_count}}</span> 
+        <div class="button-overflow">
+            <span class="childrens btn-overflow-childrens">
+                <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active" 
+                    role="button" 
+                    data-in_active="{{ list_question.in_active }}" 
+                    data-type="questions" 
+                    data-id="{{ list_question.id }}" 
+                    type="{{ list_question.in_active }}" 
+                    data-url="{% url 'questioninactive' %}"></span>
+                <span class="wh40 p-0 fa fa-pencil btn btn-light" 
+                    role="button" 
+                    aria-pressed="true" 
+                    data-toggle="modal" 
+                    data-url="{% url 'question_edit' list_question.id %}" 
+                    data-target="#editQuestionModalCenter" 
+                    title="Редактировать"></span>
+                <span class="wh40 p-0 fa fa-trash btn btn-danger" 
+                    role="button" 
+                    aria-pressed="true" 
+                    data-url="{% url 'question_delete' list_question.id %}" 
+                    data-toggle="modal" 
+                    data-target="#deleteQuestionModalCenter" 
+                    title="Удалить"></span>
+            </span>
+        </div>
+        <div class="text-right">
+            {% for gq in list_question.groups_questions.all %}
+                <span class="btn btn-outline-light disabled">{{ gq.name }}</span>
+            {% endfor %}                
+        </div>        
+    </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <button class="btn-settings btn btn-outline-info btn-lg btn-block position-relative"type="button" data-button>
+        <div class="d-flex flex-row justify-content-between align-items-center">
+          <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active == True %}text-warning{% else %}text-muted{% endif %} question-active" data-secondary role="button"></span>
+          <div class="text-white d-flex justify-content-start align-items-center">
+            <span class="text-left mr-2" data-button-text>{{ list_question.description|truncatechars_html:60 }}</span>
+            <span class="btn-settings--badge p-0 h40 w80 justify-content-center align-items-center" data-button-badge>{{list_question.answers_count}}</span>
+          </div>
+
+          <div class="button-overflow">
+            <span class="childrens btn-overflow-childrens">
+              <span
+                class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active"
+                role="button"
+                data-in_active="{{ list_question.in_active }}"
+                data-type="questions"
+                data-id="{{ list_question.id }}"
+                type="{{ list_question.in_active }}"
+                data-url="{% url 'questioninactive' %}"></span>
+
+              <span
+                class="wh40 p-0 fa fa-pencil btn btn-light"
+                role="button"
+                aria-pressed="true"
+                data-toggle="modal"
+                data-url="{% url 'question_edit' list_question.id %}"
+                data-target="#editQuestionModalCenter"
+                title="Редактировать"></span>
+
+              <span
+                class="wh40 p-0 fa fa-trash btn btn-danger"
+                role="button"
+                aria-pressed="true"
+                data-url="{% url 'question_delete' list_question.id %}"
+                data-toggle="modal"
+                data-target="#deleteQuestionModalCenter"
+                title="Удалить"></span>
+            </span>
+          </div>
+          <div class="ml-auto text-right">
+            {% for gq in list_question.groups_questions.all %}
+
+            <span class="btn btn-outline-light disabled">{{ gq.name }}</span>
+
+            {% endfor %}
+          </div>
+        </div>
+      </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <script src="../../../static/js/bootstrap.min.js"></script>
+</body>
+</html>

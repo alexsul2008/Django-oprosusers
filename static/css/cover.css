@@ -231,6 +231,13 @@ small{
   color: #efefef;
 }
 
+.btn-questions-list{
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 40px auto 80px 35vw;
+  align-items: center;
+}
+
 
 .input-file {
 	position: relative;
@@ -567,3 +574,8 @@ Font-Awesome
 .fa-6 {
   font-size: 20em
 }
+
+
+
+
+

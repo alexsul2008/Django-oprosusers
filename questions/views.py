@@ -135,17 +135,14 @@ def importExelForm(request):
 
         if form.is_valid():
             data = {}
-
-<<<<<<< HEAD
      
-        upload_file = request.FILES['import-exel']
-=======
+            upload_file = request.FILES['import_exel']
+
             dictsGroup = dict(request.POST)
 
             try:
 
                 upload_file = request.FILES['import_exel']
->>>>>>> 05fb903899e3b61af830d824757332f023ef0394
 
                 file_suffix = upload_file.name[upload_file.name.rfind('.'):]
                 new_name_file = 'data' + file_suffix
@@ -159,28 +156,21 @@ def importExelForm(request):
             except ValueError as error:
                 data['error'] = error
 
-<<<<<<< HEAD
-      
-   
-=======
-            # print('Загружаемый файл: ', filename)
-
-
             return JsonResponse(data)
 
         else:
             print('Форма не валидна')
-            form = UploadExcelForm()
->>>>>>> 05fb903899e3b61af830d824757332f023ef0394
-
-    
+            form = UploadExcelForm()   
 
 
-    context = {
-            'data': dataDict
-        }
-    template = 'questions/import_tamplate.html'
-    return render(request, template, context)
+    # context = {
+    #         'data': dataDict
+    #     }
+    # template = 'questions/import_tamplate.html'
+    # return render(request, template, context)
+    data={}
+    data['status'] = 404
+    return JsonResponse(data)
 
 
 
@@ -202,16 +192,22 @@ def usedGroup(user):
         """Для суперпользователя и группы с атрибутом is_boss все вопросы в списке"""
         current_user_group = user_group.values()
 
-        arrayQuestions = Questions.objects.filter(in_active=True) \
+        arrayQuestions = Questions.objects.filter(Q(in_active=True) | Q(groups_questions__in_active=True)) \
             .values_list('id', flat=True)
-        arrayQuestions = random_question(list(arrayQuestions))
+        # print('Список вопросов1: ', list(arrayQuestions))
+        # arrayQuestions = random_question(list(arrayQuestions))
     else:
         """Для зарегистрированного user определяем список вопросов согласно групповой принадлежности"""
         current_user_group = user_group.filter(user=user).values_list('id', flat=True)[0]
         user_list_questions_groups = GroupsQuestions.objects.filter(groups=current_user_group, in_active=True).values_list('id', flat=True)
+        # arrayQuestions = Questions.objects.filter(Q(in_active=True) | Q(groups_questions__in_active=True), groups_questions__in=list(user_list_questions_groups)) \
+        #     .values_list('id', flat=True).distinct()
         arrayQuestions = Questions.objects.filter(in_active=True, groups_questions__in=list(user_list_questions_groups)) \
             .values_list('id', flat=True).distinct()
-        arrayQuestions = random_question(list(arrayQuestions))
+        
+        # print('Список вопросов2: ', list(arrayQuestions))
+        # print('Pfghjc вопросов2: ', arrayQuestions.query)
+        # arrayQuestions = random_question(list(arrayQuestions))
     return current_user_group, arrayQuestions
 
 
@@ -246,7 +242,6 @@ def group_question_activate(request, pk):
     data['active'] = active
     data['status'] = 200
     return JsonResponse(data, safe=False)
-
 
 
 @login_required
@@ -294,6 +289,9 @@ def questionsViews(request):
     """Первоначальная страница с вопросом"""
     global global_total_questions
     """Если список вопросв в сессии пуст, то определяем список из usedGroup"""
+
+    # print(request.session["listQuestionsCook"])
+
     if not 'listQuestionsCook' in request.session:
         user_groups, arrayQuestions = usedGroup(request.user)
 
@@ -309,7 +307,9 @@ def questionsViews(request):
 
         """Проверяем наличие списка ID вопросов в сессии, есле нет его, то создаем"""
         if not 'listQuestionsCook' in request.session:
-            request.session["listQuestionsCook"] = arrayQuestions
+            request.session["listQuestionsCook"] = random_question(list(arrayQuestions))
+
+        print(request.session["listQuestionsCook"])
 
         """Кол-во вопросов"""
         if not 'total_questions' in request.session:
@@ -638,7 +638,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             .exclude(is_superuser=True) \
             .annotate(permit_count=Count('user_permit')) \
             .annotate(date_last_answ=Max('user_permit__date_passage')) \
-            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__name', 'groups__is_boss').order_by('last_name')
+            .values('id', 'first_name', 'last_name', 'is_permits', 'permit_count', 'date_last_answ', 'groups__id', 'groups__name', 'groups__is_boss').order_by('last_name')
 
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
@@ -653,7 +653,9 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
 
         query = self.request.GET.copy()
 
-        print(query)
+        # print(context)
+
+        # print(query)
         if 'page' in query:
             del query['page']
         context['queries'] = query
@@ -1229,9 +1231,9 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
             .annotate(answers_count=Count('answer_questions')) \
             .order_by('id')
 
-        # print(queryset.query)
+        print(queryset.query)
 
-        #
+        # .filter(Q(groups_questions__in_active=True))
 
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs.distinct()
@@ -1241,13 +1243,8 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         context['question_groups'] = GroupsQuestions.objects.all()
-<<<<<<< HEAD
-        context['form_import'] = UploadExcelForm
-
-        print(context)
-=======
         context['form_import'] = UploadExcelForm(auto_id="%s")
->>>>>>> 05fb903899e3b61af830d824757332f023ef0394
+
 
         query = self.request.GET.copy()
         if 'page' in query:

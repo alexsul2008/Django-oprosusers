@@ -54,3 +54,6 @@ class CustomSelect{
 document.querySelectorAll(".custom-select").forEach(selectElement => {
     new CustomSelect(selectElement)
 })
+document.querySelectorAll(".groups-select").forEach(selectElement => {
+    new CustomSelect(selectElement)
+})

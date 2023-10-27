@@ -1445,7 +1445,7 @@ function formFilterInQuestions() {
 }
 
 
-function calculateWidthAndPositionBadge(elem, elemItem = [], elemItemText = []){
+function calculateWidthAndPositionBadge(elem='', elemItem = [], elemItemText = []){
     let widthElem = +elem.offsetWidth
 
     if(elemItem.length){
@@ -1460,7 +1460,7 @@ function calculateWidthAndPositionBadge(elem, elemItem = [], elemItemText = []){
         let maxWidth = maxWidthArrayText(elemItemText)
         let widthElemItemText = Math.abs(widthElem/2 - 100)
 
-        console.log(maxWidth)
+        // console.log(maxWidth)
 
         elemItemText.forEach(function(item){
             item.style.maxWidth = widthElemItemText + 'px'
@@ -1500,4 +1500,21 @@ function selectClassIcon(){
             child.classList.add('fa-sort-alpha-desc')
         }
     }
+}
+
+
+function setGroupUser(arrowItemGroup=[]) {
+    // console.log(typeof arrowItemGroup, arrowItemGroup)
+    for(let i=0; i<arrowItemGroup.length;i++){
+        arrowItemGroup[i].addEventListener('click', selectGroupUser);
+        // arrowItemGroup[i].addEventListener('click', function(){
+        //     modalGroupsUser.show()
+        // });
+    }
+}
+
+function selectGroupUser(){
+    console.log(this)
+    console.log(this.closest('button[data-id]'))
+    modalGroupsUser.show()
 }
