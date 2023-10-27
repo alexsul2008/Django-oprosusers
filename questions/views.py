@@ -52,7 +52,7 @@ def read_exel(request):
     if request.method == 'POST':
 
         json_groups = json.loads(request.body)
-        print(json_groups['groups_questions']) 
+        print(json_groups['groups_questions'])
 
         fileDataExcel = MEDIA_ROOT + 'data.xlsx'
         df = pandas.read_excel(fileDataExcel)
@@ -106,13 +106,13 @@ def read_exel(request):
             Answers.objects.filter(question_id=question_id[0].id).delete()
 
             for item in dataDict[index]["answers"]:
-                
+
                 answersItem = Answers.objects.create(description=item["answer"], approved=item["approvet"], question_id=question_id[0].id)
                 # print('ANSWERS: ', answersItem)
 
 
 
-        
+
         if os.path.exists(fileDataExcel):
             os.remove(fileDataExcel)
         else:
@@ -125,54 +125,53 @@ def read_exel(request):
         return JsonResponse(data)
 
 
-    context = {
-            'data': dataDict
-        }
-    template = 'questions/import_tamplate.html'
-    return render(request, template, context)
-
-
-# def import_exel(request):
-#     data = {}
-
-#     question_groups = GroupsQuestions.objects.all().values()
-
-
-#     data['status'] = 200
-#     # data['question_groups'] = json.dumps(list(question_groups), cls=DjangoJSONEncoder)
-#     data['question_groups'] = list(question_groups)
-
-#     return JsonResponse(data)
-
 
 @csrf_exempt
 def importExelForm(request):
 
     if request.method == 'POST':
-          
-        form = UploadExcelForm(request.POST, request.FILES)   
 
-        dictsGroup = dict(request.POST)
+        form = UploadExcelForm(request.POST, request.FILES)
 
-        print('Список групп: ', dictsGroup['groups_questions'])
+        if form.is_valid():
+            data = {}
 
+<<<<<<< HEAD
      
         upload_file = request.FILES['import-exel']
+=======
+            dictsGroup = dict(request.POST)
 
-        file_suffix = upload_file.name[upload_file.name.rfind('.'):]
-        new_name_file = 'data' + file_suffix
+            try:
 
-        filename = default_storage.save(new_name_file, upload_file)
+                upload_file = request.FILES['import_exel']
+>>>>>>> 05fb903899e3b61af830d824757332f023ef0394
 
-        print('Загружаемый файл: ', filename)
-        data = {}
-        data['status'] = 200
-        data["groups_questions"] = dictsGroup['groups_questions']
-        data['endpoint'] = reverse_lazy('import_exel_db')
-        return JsonResponse(data)
+                file_suffix = upload_file.name[upload_file.name.rfind('.'):]
+                new_name_file = 'data' + file_suffix
 
+                filename = default_storage.save(new_name_file, upload_file)
+
+                data['status'] = 200
+                data["groups_questions"] = dictsGroup['groups_questions']
+                data['endpoint'] = reverse_lazy('import_exel_db')
+
+            except ValueError as error:
+                data['error'] = error
+
+<<<<<<< HEAD
       
    
+=======
+            # print('Загружаемый файл: ', filename)
+
+
+            return JsonResponse(data)
+
+        else:
+            print('Форма не валидна')
+            form = UploadExcelForm()
+>>>>>>> 05fb903899e3b61af830d824757332f023ef0394
 
     
 
@@ -623,7 +622,7 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
     template_name = 'questions/filter_statistics_users_answers.html'
     # context_object_name = 'statistics_filter'
     context_object_name = 'statistics_users'
-    paginate_by = 20
+    paginate_by = 50
     # ordering = 'last_name'
     filterset_class = UsersGroupsFilter
 
@@ -650,10 +649,11 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
         context['filterset'] = self.filterset
         context['user_session'] = WorkPermitUsers.objects.filter(user_id__in = User.objects.values('id')) \
             .annotate(persents=(F('total_not_correct') * 100 / F('total_questions'))) \
-            .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'persents') \
-                .order_by('-date_passage', '-id')
+            .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'persents')
 
         query = self.request.GET.copy()
+
+        print(query)
         if 'page' in query:
             del query['page']
         context['queries'] = query
@@ -1188,7 +1188,6 @@ class GroupsQuestionsUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateV
     success_message = "Группа вопросов: %(name)s - успешно обновлена"
 
     def post(self, request, *args, **kwargs):
-        print(self, request, args, kwargs)
         self.object = self.get_object()
         return super(GroupsQuestionsUpdateView, self).post(request, *args, **kwargs)
 
@@ -1225,17 +1224,30 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
         return self.group_required
 
     def get_queryset(self):
-        queryset = super(QuestionsGroupListsNew, self).get_queryset().all()
+        queryset = super(QuestionsGroupListsNew, self).get_queryset() \
+            .all() \
+            .annotate(answers_count=Count('answer_questions')) \
+            .order_by('id')
+
+        # print(queryset.query)
+
+        #
+
         self.filterset = self.filterset_class(self.request.GET, queryset=queryset)
         return self.filterset.qs.distinct()
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['filterset'] = self.filterset
         context['question_groups'] = GroupsQuestions.objects.all()
+<<<<<<< HEAD
         context['form_import'] = UploadExcelForm
 
         print(context)
+=======
+        context['form_import'] = UploadExcelForm(auto_id="%s")
+>>>>>>> 05fb903899e3b61af830d824757332f023ef0394
 
         query = self.request.GET.copy()
         if 'page' in query:

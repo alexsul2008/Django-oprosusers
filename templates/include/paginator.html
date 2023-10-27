@@ -1,48 +1,48 @@
-
 {% if is_paginated %}
-    <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-center mt-4">
-    {% if page_obj.has_previous %}
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="?{{ queries.urlencode }}&amp;page=1"><i class="fa fa-angle-double-left"></i></a>
-        </li>
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="?{{ queries.urlencode }}&amp;page={{ page_obj.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
-        </li>
-    {% else %}
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="#"><i class="fa fa-angle-double-left"></i></a>
-        </li>
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="#"><i class="fa fa-angle-left"></i></a>
-        </li>
-    {% endif %}
 
-    {% for i in page_obj.paginator.page_range %}
+  <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="btn btn-outline-info  mr-1 wh40" href="?{{ queries.urlencode }}&amp;page=1"><i class="fa fa-angle-double-left"></i></a>
+      </li>
+      <li class="page-item">
+        <a class="btn btn-outline-info  mr-1 wh40" href="?{{ queries.urlencode }}&amp;page={{ page_obj.previous_page_number }}"><i class="fa fa-angle-left"></i></a>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="btn btn-outline-secondary mr-1 wh40 disabled" href="#"><i class="fa fa-angle-double-left"></i></a>
+      </li>
+      <li class="page-item">
+        <a class="btn btn-outline-secondary mr-1 wh40 disabled" href="#"><i class="fa fa-angle-left"></i></a>
+      </li>
+      {% endif %}
+
+      {% for i in page_obj.paginator.page_range %}
         {% if page_obj.number == i %}
-            <li class="page-item">
-                <a class="btn btn-outline-info" href="#">{{ i }}</a>
-            </li>
+        <li class="page-item">
+          <a class="btn btn-outline-info active mr-1 wh40" href="#">{{ i }}</a>
+        </li>
         {% elif i > page_obj.number|add:'-4' and i < page_obj.number|add:'4' %}
-            <li class="page-item">
-                <a class="btn btn-outline-info" href="?{{ queries.urlencode }}&amp;page={{ i }}">{{ i }}</a>
-            </li>
+        <li class="page-item">
+          <a class="btn btn-outline-info mr-1 wh40" href="?{{ queries.urlencode }}&amp;page={{ i }}">{{ i }}</a>
+        </li>
         {% endif %}
-    {% endfor %}
+      {% endfor %}
 
-    {% if page_obj.has_next %}
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="?{{ queries.urlencode }}&amp;page={{ page_obj.next_page_number }}"><i class="fa fa-angle-right"></i></a>
-        </li>
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="?{{ queries.urlencode }}&amp;page={{ page_obj.paginator.num_pages }}"><i class="fa fa-angle-double-right"></i></a>
-        </li>
-    {% else %}
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="#"><i class="fa fa-angle-right"></i></a>
-        </li>
-        <li class="page-item">
-            <a class="btn btn-outline-info" href="#"><i class="fa fa-angle-double-right"></i></a>
-        </li>
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="btn btn-outline-info mr-1 wh40" href="?{{ queries.urlencode }}&amp;page={{ page_obj.next_page_number }}" ><i class="fa fa-angle-right"></i></a>
+      </li>
+      <li class="page-item">
+        <a class="btn btn-outline-info mr-0 wh40" href="?{{ queries.urlencode }}&amp;page={{ page_obj.paginator.num_pages }}"><i class="fa fa-angle-double-right"></i></a>
+      </li>
+      {% else %}
+      <li class="page-item">
+        <a class="btn btn-outline-secondary wh40 disabled" href="#"><i class="fa fa-angle-right"></i></a>
+      </li>
+      <li class="page-item">
+        <a class="btn btn-outline-secondary mr-0 wh40 disabled" href="#"><i class="fa fa-angle-double-right"></i></a>
+      </li>
+      {% endif %}
     {% endif %}
-{% endif %}
+  </ul>

@@ -620,44 +620,44 @@ const element = (tag, classes = [], content) => {
 //     if (options.accept && Array.isArray(options.accept)){
 //         input.setAttribute('accept', options.accept.join(', '))
 //     }
-    
+
 //     input.insertAdjacentElement('afterend', spanFilesName)
 //     input.insertAdjacentElement('afterend', openBtn)
 
 //     const triggerInput = (event) => {
-//         input.click()  
+//         input.click()
 //         event.preventDefault()
-//     }  
+//     }
 
 //     // const changeHandler = event => {
 //     //     console.log(event.target.files.length)
-        
+
 //     //     if(!event.target.files.length){
 //     //         return
 //     //     }
-        
+
 //     //     spanFilesName.textContent = event.target.files[0].name
 
 //     //     const filesExel = event.target.files
-        
+
 //     //     // const reader = new FileReader()
 
 //     //     // console.log(filesExel)
 //     //     // console.log(reader)
-        
+
 //     //     // reader.onload = ev => {
 //     //     //     console.log(ev.target)
 //     //     //     console.log(filesExel)
 
 //     //     // }
-        
-        
-//     // }  
+
+
+//     // }
 
 
 //     openBtn.addEventListener('click', triggerInput)
 //     // input.addEventListener('change', changeHandler)
-    
+
 
 // }
 
@@ -667,14 +667,14 @@ const element = (tag, classes = [], content) => {
 
 // let loadFile
 
-// document.getElementById('file').addEventListener('change', function(event){ 
+// document.getElementById('file').addEventListener('change', function(event){
 //     console.log('Changeeeeeeee!')
-//     const spanFilesName = document.querySelector('.span-file-name')       
+//     const spanFilesName = document.querySelector('.span-file-name')
 //     if(!event.target.files.length){
 //         return
-//     }        
+//     }
 //     spanFilesName.textContent = event.target.files[0].name
-//     loadFile = event.target.files    
+//     loadFile = event.target.files
 // })
 
 
@@ -682,24 +682,31 @@ const element = (tag, classes = [], content) => {
 
 
 document.getElementById('importExelCenter') && document.querySelector('.import-exel').addEventListener('click', () => {
-    
 
-    myModal.show()   
+
+    myModal.show()
 
     const myForm = document.getElementById('import_exel_form')
     const endpoint = myForm.action
     const btnSubmit = document.querySelector('.btn-submit')
-    const btnInputFile = document.querySelector('.input-file input[type=file]')
+    const btnInputFile = document.querySelector('#import_exel')
     const ulInfoList = document.querySelector('.info-list')
+    const btnClose = document.querySelector('#importExelCenter [data-dismiss="modal"]')
+
+    btnClose.addEventListener('click', () => {
+        location.reload()
+    })
+
 
     ulInfoList.innerHTML = ''
 
-    
+
     btnInputFile.addEventListener('change', function(){
         let file = btnInputFile.files[0]
         btnInputFile.closest('.input-file').querySelector('.input-file-text').innerHTML = file.name
+        // btnSubmit.classList.toggle('d-none')
         if(!validateSize(btnInputFile, 5)){
-            // alert("Файл должен быть не более 5 мегабайт");            
+            // alert("Файл должен быть не более 5 мегабайт");
             ulInfoList.insertAdjacentHTML('beforeend', `
             <p class="text-danger">
                     <i class="fa fa-exclamation pr-1" aria-hidden="true"></i>Файл должен быть не более 5 мегабайт</p>
@@ -707,64 +714,75 @@ document.getElementById('importExelCenter') && document.querySelector('.import-e
             btnInputFile.value=""
         }
     })
-    
-    
+
+
     btnSubmit.addEventListener('click', function(e){
-    // myForm.addEventListener('submit', function(e) {   
+    // myForm.addEventListener('submit', function(e) {
         e.preventDefault()
 
-        btnSubmit.setAttribute("disabled", "disabled")
-
         let formData = new FormData(myForm)
+        ulInfoList.innerHTML = ''
 
-        console.log(formData)
-        console.log(endpoint)
-       
-        fetch(endpoint, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('1: ', data)
-            console.log('2: ', data['endpoint'])
-            console.log('3: ', data['groups_questions'])
+        if(myForm.querySelector('select').selectedOptions.length === 0){
             ulInfoList.insertAdjacentHTML('beforeend', `
-                <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Файл загружен. Идет обработка...</p>
+            <p class="text-danger"><i class="fa fa-exclamation pr-1" aria-hidden="true"></i>Выберите группу вопросов.</p>
             `)
-            
-            groups = {'groups_questions': data['groups_questions']}
+        }
 
-            return fetch(data["endpoint"], {
+        if(btnInputFile.files.length === 0){
+            ulInfoList.insertAdjacentHTML('beforeend', `
+            <p class="text-danger"><i class="fa fa-exclamation pr-1" aria-hidden="true"></i>Выберите файл Excel *.xlx или *.xlsx для импорта.</p>
+            `)
+        }
+
+        if ( (myForm.querySelector('select').selectedOptions.length && btnInputFile.files.length) !== 0 ) {
+
+            ulInfoList.innerHTML = ''
+            btnSubmit.setAttribute("disabled", "disabled")
+
+            fetch(endpoint, {
                 method: 'POST',
-                headers: {'X-CSRFToken': csrftoken},
-                mode: 'same-origin',
-                body: JSON.stringify(groups)
+                body: formData
             })
-        })
-        .then(res => res.json())
-        .then(data2 => {
-            console.log(data2)
-            ulInfoList.insertAdjacentHTML('beforeend', `
-                <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Данные успешно загружены.</p>
-            `)
-            btnInputFile.value=""
-            btnSubmit.innerText = 'Ok'
-            btnSubmit.removeAttribute('disabled')
-            btnSubmit.removeAttribute('form')
-            btnSubmit.setAttribute("type", "button")
-            btnSubmit.setAttribute("data-dismiss", "modal")
-            btnSubmit.addEventListener('click', function(){
-                myModal.hide()
+            .then(response => response.json())
+            .then(data => {
+                console.log('1: ', data)
+                console.log('2: ', data['endpoint'])
+                console.log('3: ', data['groups_questions'])
+                ulInfoList.insertAdjacentHTML('beforeend', `
+                    <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Файл загружен. Идет обработка...</p>
+                `)
+
+                groups = {'groups_questions': data['groups_questions']}
+
+                return fetch(data["endpoint"], {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': csrftoken},
+                    mode: 'same-origin',
+                    body: JSON.stringify(groups)
+                })
             })
-        })        
-        .catch(error => {
-            console.error(error);
-            ulInfoList.insertAdjacentHTML('beforeend', `
-                <p class="text-secondary"><i class="fa fa-exclamation text-danger pr-1" aria-hidden="true"></i>${error}</p>
-            `)
-        })      
+            .then(res => res.json())
+            .then(data2 => {
+                console.log(data2)
+                ulInfoList.insertAdjacentHTML('beforeend', `
+                    <p class="text-secondary"><i class="fa fa-check text-success pr-1" aria-hidden="true"></i>Данные успешно загружены.</p>
+                `)
+                btnInputFile.value=""
+                btnInputFile.closest('.input-file').querySelector('.input-file-text').innerHTML = 'Максимум 5 Мб'
+                btnSubmit.classList.add('d-none')
+            })
+            .catch(error => {
+                console.error(error);
+                ulInfoList.insertAdjacentHTML('beforeend', `
+                    <p class="text-secondary"><i class="fa fa-exclamation text-danger pr-1" aria-hidden="true"></i>${error}</p>
+                `)
+            })
+        }
     })
+
+
+
 })
 
 function validateSize(fileInput,size) {
@@ -775,7 +793,7 @@ function validateSize(fileInput,size) {
     }else {
         fileObj = fileInput.files[0];
     }
-    
+
     oSize = fileObj.size; // Size returned in bytes.
     if(oSize > size * 1024 * 1024){
         return false
@@ -836,7 +854,7 @@ let messagesInference = (text=null, tags=null) => {
 }
 
 const collapseOtvet = (id, oprosed, user=null, event) => {
-    console.log(event)
+    // console.log(event)
     // console.log(oprosed)
     let opros = oprosed
     let button = document.getElementById('heading' + id)
@@ -1056,7 +1074,7 @@ const groupsUser = () => {
 
 document.addEventListener('click', (event) => {
     const type = event.target.dataset.type
-    // console.log(type)
+
     if(type === 'activate'){
         const icon_secondary = event.target.closest('button').querySelector('span[data-secondary]')
         $.ajax({
@@ -1119,7 +1137,7 @@ document.addEventListener('click', (event) => {
                 formFilterInQuestions()
             }
         });
-    } else if(type === 'user-check'){        
+    } else if(type === 'user-check'){
         const check = event.target
         const user_id = []
         user_id.push(+check.dataset.user)
@@ -1143,7 +1161,7 @@ document.addEventListener('click', (event) => {
                 formFilterInUsers()
                 checkUserAccess()
             }
-        })        
+        })
     } else if(type === 'allpermits'){
         let user_id = dataUsers
         const checks = event.target
@@ -1151,9 +1169,9 @@ document.addEventListener('click', (event) => {
         let unchekced = false
 
         if(checks.dataset.permits){
-            unchekced = true            
-        }        
-        
+            unchekced = true
+        }
+
         $.ajax({
             type: "POST",
             url: checks.dataset.url,
@@ -1170,25 +1188,25 @@ document.addEventListener('click', (event) => {
                 let is_permits = Boolean(JSON.parse(data.is_permits))
 
                 is_permits === true ? checks.checked = true : checks.checked = false
-                
 
-                for (let item of allUsers) { 
-                    if(unchekc && item.dataset.master === 'false'){                                            
+
+                for (let item of allUsers) {
+                    if(unchekc && item.dataset.master === 'false'){
                         item.checked = is_permits
                         item.dataset.permits = is_permits
                     }else{
-                        if(user_id.includes(+item.dataset.user) ){ 
+                        if(user_id.includes(+item.dataset.user) ){
                             item.setAttribute('value', is_permits)
                             item.dataset.permits = is_permits
                             is_permits === true ? item.checked = true : item.checked = false
                         }
                     }
-                }                
+                }
                 formFilterInUsers()
                 checkUserAccess()
 
             }
-        })    
+        })
 
     }
 })
@@ -1236,7 +1254,7 @@ function checkUserAccess() {
 
     dataUsers = []
     masterUser = []
-    
+
     const allPermits = document.querySelector('input#allpermits')
     const allUsers = Array.from(document.querySelectorAll('input[name=user-check]'))
 
@@ -1244,11 +1262,11 @@ function checkUserAccess() {
         if(item.dataset.master === 'true' ){
             masterUser.push(+item.dataset.user)
         }
-       
+
         if(item.dataset.permits === 'false' && item.dataset.master === 'false'){
             dataUsers.push(+item.dataset.user)
         }
-        
+
         if(dataUsers.length === 0 ){
             allPermits.checked = true
             allPermits.dataset.permits = true
@@ -1424,4 +1442,62 @@ function formFilterInQuestions() {
     });
 
 
+}
+
+
+function calculateWidthAndPositionBadge(elem, elemItem = [], elemItemText = []){
+    let widthElem = +elem.offsetWidth
+
+    if(elemItem.length){
+        elemItem.forEach(function(item){
+            let posElemItem = Math.abs(widthElem/2 - item.offsetWidth)
+            item.style.left = posElemItem + 'px'
+        })
+    }
+
+    if(elemItemText.length){
+
+        let maxWidth = maxWidthArrayText(elemItemText)
+        let widthElemItemText = Math.abs(widthElem/2 - 100)
+
+        console.log(maxWidth)
+
+        elemItemText.forEach(function(item){
+            item.style.maxWidth = widthElemItemText + 'px'
+            item.style.width = widthElemItemText + 'px'
+        })
+    }
+
+}
+
+function maxWidthArrayText(arrayItems = []){
+    let widthArrayText = []
+
+    for (let i=0; i<arrayItems.length; i++){
+        widthArrayText.push(Math.abs(arrayItems[i].offsetWidth))
+    }
+
+    return Math.max(...widthArrayText)
+}
+
+
+
+const arrowDataSort = (arrowBtn=[]) =>{
+    for(let i=0; i<arrowBtn.length;i++){
+        arrowBtn[i].addEventListener('click', selectClassIcon);
+    }
+}
+
+function selectClassIcon(){
+    if(this.classList.contains('asc')){
+        for (const child of this.children){
+            child.classList.add('fa-sort-alpha-asc')
+            child.classList.remove('fa-sort-alpha-desc')
+        }
+    }else if (this.classList.contains('desc')){
+        for (const child of this.children){
+            child.classList.remove('fa-sort-alpha-asc')
+            child.classList.add('fa-sort-alpha-desc')
+        }
+    }
 }

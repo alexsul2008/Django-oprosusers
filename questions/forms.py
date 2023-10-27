@@ -7,15 +7,22 @@ from django.contrib.auth.models import User, Group
 from questions.models import GroupsQuestions, Answers, Questions
 
 class UploadExcelForm(forms.Form):
-    file = forms.FileField()
-    groups = forms.ModelChoiceField(
+    groups_questions = forms.ModelMultipleChoiceField(
         queryset=GroupsQuestions.objects.all(),
-        to_field_name='name',
-        required=True,
-        label = "Группа/Отдел пользователя",
-        widget=forms.SelectMultiple()
+        widget=forms.SelectMultiple(attrs={"class": "custom-select"})
     )
-    
+    import_exel = forms.FileField(
+        label="Выберите файл для загрузки вопросов:"
+        )   #attrs={"accept": ".xlx, .xlsx"}
+
+    def __init__(self, *args, **kwargs):
+
+        # print(args, kwargs)
+        # self.my_field = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'id': 'my_field','class': 'my_class'}))
+        # self.my_field.label_classes = ('class_a', 'class_b', )
+        super(UploadExcelForm, self).__init__(*args, **kwargs)
+
+
 
 class UserPasswordChangeForm(SetPasswordForm):
     """

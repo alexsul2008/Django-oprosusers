@@ -6,7 +6,7 @@
         <h1 class="navbar-brand align-middle m-4">Название Отдела</h1>
 
 
-        
+
             <button type="button" class="btn btn-primary align-middle">
             {% if request.user.is_superuser %}
                 {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">Полный доступ</span>
@@ -15,7 +15,7 @@
                     {{ request.user|has_group }}</span>
             {% endif %}
             </button>
-       
+
 
 
 
@@ -29,12 +29,12 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
 
-                    
+
                             <li class="nav-item ">{% url 'questions' as url_questions %}
                                 <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
                                     href="{% url 'questions' %}">Вопросы</a>
                             </li>
-                        
+
                                 {% if request.user|has_boss:"is_boss" or user.is_superuser %}
                                     <li class="nav-item ">{% url 'statistics' as url_statistics %}
                                         <a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
@@ -48,11 +48,6 @@
                                         <a class="nav-link {% if settings == request.path %}active{% endif %}"
                                         href="{% url 'settings' %}">Настройки</a>
                                     </li>
-                                    <li class="nav-item ">{% url 'import_exel_db' as import_exel_db %}
-                                        <a class="nav-link {% if import_exel_db == request.path %}active{% endif %}"
-                                        href="{% url 'import_exel_db' %}">Импорт</a>
-                                    </li>
-                                   
                                 {% else %}
                                     <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
                                         <a class="nav-link {% if url_statistics_user == request.path %}active{% endif %}"
@@ -65,18 +60,18 @@
                                 {% endif %}
 
 
-                        
+
                     </ul>
 
 
-                
+
                         <a class="btn btn-outline-success my-2 my-sm-0" onclick="userLogout();" href="{%  url 'logout' %}">Выход</a>
 
                     </div>
                 </nav>
 
                 {% else %}
-                
+
 
     {% endif %}
 
@@ -102,7 +97,7 @@
                                             {% endif %}
                                         </h5>
                                     </div>
-                                </div>                     
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer bg-light text-dark pt-2 pb-2">
