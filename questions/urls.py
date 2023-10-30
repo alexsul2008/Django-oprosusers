@@ -23,9 +23,11 @@ urlpatterns = [
         path('nextquestion/', next_question, name='nextquestion'),
         path('questioninactive/', question_inactive, name='questioninactive'),
 
+        path('set-group-user/<int:pk>/', setGroupsUserView, name='set_group_user'),
+
         path('statistics-user/', statisticsuser, name='statistics_user'),
 
-        path('new-statistics-user/', new_statisticsuser, name='new_statistics_user'),
+        # path('new-statistics-user/', new_statisticsuser, name='new_statistics_user'),
 
         path('statistics/', UsersGroupListsNew.as_view(), name='statistics'),
         path('statistics/<int:pk>/delete/', statisticsUserDeleteView, name='statisticsuserdelete'),

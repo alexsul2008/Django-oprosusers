@@ -10,20 +10,6 @@
         <div class="container-fluid">
             <h1 class="mb-4 pb-3 text-center">Статистика прохождения опросов</h1>
 
-            <div class="row mb-4">
-                <div class="col-4">
-                    <div id="container-highcharts-ajax1" ></div>
-                </div>
-                <div class="col-4">
-                    <div id="container-highcharts-ajax2"></div>
-                </div>
-                <div class="col-4">
-                    <div id="container-highcharts-ajax3"></div>
-                </div>
-
-            </div>
-
-
             <div class="row">
                 <div class="col-3">
 
@@ -162,7 +148,6 @@
                                     </div>
                                 </div>
                                 <div class="w-43">
-                                    <!-- <span class="text-center">Фамилия Имя инженера</span> -->
                                     <div class="d-flex border border-light rounded-sm">
                                         <input type="search" class="search h40" data-search placeholder="Фамилия Имя инженера" />
                                         <button class="btn btn-info border-0 sort asc" data-sort="username"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
@@ -203,10 +188,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="w-93">
-                                                    <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" data-id="{{ list_answer_user.id }}">
+                                                    <span class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" data-id="{{ list_answer_user.id }}">
                                                         <div class="d-flex flex-row justify-content-between align-items-center">
-                                                            <div class="w-30">
-                                                                <span class="username badge text-left p-1 w-100 statistics-user">{{ forloop.counter }} - {{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                            <div class="w-30 text-left">
+                                                                <span class="username p-1 statistics-user">{{ forloop.counter }} - {{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
                                                             </div>
 
                                                             <div class="w-15">
@@ -244,7 +229,22 @@
                                                             </div>
 
                                                             <div class="w-15">
-                                                                <span data-groups="{{ list_answer_user.groups__id }}" class="groupsname badge badge-light p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
+                                                                <!-- <span data-groups="{{ list_answer_user.groups__id }}" class="groupsname badge badge-light p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span> -->
+
+                                                                <div class="form-groups">
+                                                                    <div class="dropdown">
+                                                                        <form class="align-items-center set-group-user" method="post" action="{% url 'set_group_user' list_answer_user.id %}">
+                                                                            {% csrf_token %}
+                                                                            <button class="dropdown__button groupsname">{{ list_answer_user.groups__name }}</button>
+                                                                            <ul class="dropdown__list">
+                                                                                {% for field in filterset.form.groups %}
+                                                                                <li class="dropdown__list--item " data-value="{{field.data.value}}">{{ field.choice_label }}</li>
+                                                                                {% endfor %}
+                                                                            </ul>
+                                                                            <input type="text" name="group" value="" class="dropdown__input--hidden">
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
                                                             </div>
 
 
@@ -255,7 +255,7 @@
 
                                                         </div>
 
-                                                    </button>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -283,16 +283,16 @@
                                                     </div>
                                                 </div>
                                                 <div class="w-93">
-                                                    <button class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" data-id="{{ list_answer_user.id }}">
+                                                    <span class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" data-id="{{ list_answer_user.id }}">
                                                         <div class="d-flex flex-row justify-content-between align-items-center">
-                                                            <div class="w-30">
-                                                                <span class="username badge text-left p-1 w-100 statistics-user"
-                                                                data-user-id="{{ list_answer_user.id }}"
-                                                                data-url="{% url 'statistics_for_user' %}"
-                                                                data-toggle="collapse"
-                                                                data-target="#collapse_{{ list_answer_user.id }}"
-                                                                aria-expanded="false"
-                                                                aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                            <div class="w-30 text-left">
+                                                                <span class="username p-1 statistics-user"
+                                                                    data-user-id="{{ list_answer_user.id }}"
+                                                                    data-url="{% url 'statistics_for_user' %}"
+                                                                    data-toggle="collapse"
+                                                                    data-target="#collapse_{{ list_answer_user.id }}"
+                                                                    aria-expanded="false"
+                                                                    aria-controls="collapse_{{ list_answer_user.id }}" >{{ forloop.counter }} - {{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
                                                             </div>
 
                                                             <div class="w-15">
@@ -330,7 +330,20 @@
                                                             </div>
 
                                                             <div class="w-15">
-                                                                <span data-groups="{{ list_answer_user.groups__id }}" class="groupsname badge badge-light text-left p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span>
+                                                                <div class="form-groups">
+                                                                    <div class="dropdown">
+                                                                        <form class="align-items-center set-group-user" method="post" action="{% url 'set_group_user' list_answer_user.id %}">
+                                                                            {% csrf_token %}
+                                                                            <button class="dropdown__button groupsname">{{ list_answer_user.groups__name }}</button>
+                                                                            <ul class="dropdown__list">
+                                                                                {% for field in filterset.form.groups %}
+                                                                                <li class="dropdown__list--item " data-value="{{field.data.value}}">{{ field.choice_label }}</li>
+                                                                                {% endfor %}
+                                                                            </ul>
+                                                                            <input type="text" name="group" value="" class="dropdown__input--hidden">
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
                                                             </div>
 
                                                             {% if list_answer_user.permit_count != 0 %}
@@ -348,10 +361,9 @@
                                                                 </div>
                                                             {% endif %}
 
-
                                                         </div>
 
-                                                    </button>
+                                                    </span>
                                                 </div>
                                             </div>
 
@@ -383,7 +395,7 @@
                                                                                 aria-controls="collapse{{sess.id}}"
                                                                                 data-opros-user="{{sess.session_key}}"
                                                                                 data-id="{{sess.id}}">
-                                                                                <div class="row">
+                                                                                <div class="row align-items-center">
                                                                                     {% if sess.total_not_correct != 0 %}
                                                                                     <div class="col-1"><span class="badge badge-light w-100 mb-1 mt-1 pt-2 pb-2">{{sess.id}}</span></div>
                                                                                     <div class="col-2"><span class="badge float-right m-1">Опрос пройден: </span></div>
@@ -425,19 +437,10 @@
                                                         </div>
                                                     </div>
 
-
-
-
-
-
-
                                                     {% endif %}
 
                                                 {% endfor %}
                                                 </div>
-
-
-
 
                                             </div>
                                         </div>
@@ -462,19 +465,6 @@
 
         </div>
 
-
-        <div class="modal fade" id="modalGroupsUser" tabindex="-1" role="dialog" aria-labelledby="modalGroupsUserTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <form>
-                    <select name="groups" class="groups-select form-control" required="" id="groups">
-                        {% for field in filterset.form.groups %}
-                            <option value="{{field.data.value}}">{{ field.choice_label }}</option>
-                        {% endfor %}
-                    </select>
-                    
-                </form>
-            </div>
-        </div>
 
 
         <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalTitle" aria-hidden="true">
@@ -573,8 +563,7 @@
             </div>
         </div>
 
-		<div class="modal fade" id="exampleAddUserModalCenter" tabindex="-1" role="dialog"
-                     aria-labelledby="exampleAddUserModalCenterTitle" aria-hidden="true">
+		<div class="modal fade" id="exampleAddUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleAddUserModalCenterTitle" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 				<div class="modal-content">
 					<div class="modal-header bg-info text-white">
@@ -632,13 +621,13 @@
             const btnDataSort = document.querySelectorAll('[data-sort]')
             arrowDataSort(btnDataSort)
 
-            const btnDataGroups = document.querySelectorAll('[data-groups]')
-            setGroupUser(btnDataGroups)            
+            // const btnDataGroups = document.querySelectorAll('[data-groups]')
+            // setGroupUser(btnDataGroups)
         });
 
-        const modalGroupsUser = new bootstrap.Modal(document.getElementById("modalGroupsUser"), {                
-                    keyboard: false,
-        });
+        // const modalGroupsUser = new bootstrap.Modal(document.getElementById("modalGroupsUser"), {
+        //    keyboard: false,
+        // });
 
 
 

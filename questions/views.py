@@ -36,7 +36,7 @@ from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInli
 
 
 from questions.filters import UsersGroupsFilter, QuestionsFilter
-from questions.forms import UploadExcelForm, UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
+from questions.forms import GroupsUserListForm, UploadExcelForm, UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
 from questions.models import Questions, GroupsQuestions, Answers, UsersAnswer, WorkPermitUsers
 from questions.mixins import MessageMixin
 
@@ -135,7 +135,7 @@ def importExelForm(request):
 
         if form.is_valid():
             data = {}
-     
+
             upload_file = request.FILES['import_exel']
 
             dictsGroup = dict(request.POST)
@@ -160,7 +160,7 @@ def importExelForm(request):
 
         else:
             print('Форма не валидна')
-            form = UploadExcelForm()   
+            form = UploadExcelForm()
 
 
     # context = {
@@ -192,42 +192,39 @@ def usedGroup(user):
         """Для суперпользователя и группы с атрибутом is_boss все вопросы в списке"""
         current_user_group = user_group.values()
 
-        arrayQuestions = Questions.objects.filter(Q(in_active=True) | Q(groups_questions__in_active=True)) \
-            .values_list('id', flat=True)
-        # print('Список вопросов1: ', list(arrayQuestions))
-        # arrayQuestions = random_question(list(arrayQuestions))
+        arrayQuestions = Questions.objects.filter(Q(in_active=True) & Q(groups_questions__in_active=True)) \
+            .values_list('id', flat=True).distinct()
     else:
         """Для зарегистрированного user определяем список вопросов согласно групповой принадлежности"""
         current_user_group = user_group.filter(user=user).values_list('id', flat=True)[0]
         user_list_questions_groups = GroupsQuestions.objects.filter(groups=current_user_group, in_active=True).values_list('id', flat=True)
-        # arrayQuestions = Questions.objects.filter(Q(in_active=True) | Q(groups_questions__in_active=True), groups_questions__in=list(user_list_questions_groups)) \
-        #     .values_list('id', flat=True).distinct()
         arrayQuestions = Questions.objects.filter(in_active=True, groups_questions__in=list(user_list_questions_groups)) \
             .values_list('id', flat=True).distinct()
-        
-        # print('Список вопросов2: ', list(arrayQuestions))
-        # print('Pfghjc вопросов2: ', arrayQuestions.query)
-        # arrayQuestions = random_question(list(arrayQuestions))
+
     return current_user_group, arrayQuestions
 
 
 @login_required
 def settingsViews(request):
-    # list_group_user = Group.objects.all()
-    # list_group_questions = GroupsQuestions.objects.all()
-
-    # gr = GroupsQuestions.objects.get(pk=8)
-
-    # print(gr.groups.all())
-    # print(list_group_questions.query)
-
-
-    context = {
-            # 'list_group_user': list_group_user,
-            # 'list_group_questions': list_group_questions
-        }
+    context = {}
     template = 'questions/settings_tamplate.html'
     return render(request, template, context)
+
+
+@login_required
+@csrf_protect
+def setGroupsUserView(request, pk):
+    if request.method == 'POST':
+        user = User.objects.get(id=pk)
+        user.groups.clear()
+        group = Group.objects.get(id=int(request.POST['group']))
+        user.groups.add(group)
+        user.save()
+    data={}
+    data['status'] = 200
+    return JsonResponse(data, safe=False)
+
+
 
 @login_required
 def group_question_activate(request, pk):
@@ -249,12 +246,9 @@ def listGroupUsersView(request):
     list_group_user = Group.objects.all().values()
     list_group_questions = GroupsQuestions.objects.all()
 
-    # print(list_group_questions)
     data={}
     groups_question = []
     for item in list_group_questions:
-        # print(item.name, item.groups.all().values('id', 'name'))
-        # print(index, value)
         lists = {
             'url': reverse_lazy('group_question_edit', kwargs={'pk': item.id}),
             'url-activate': reverse_lazy('group_question_activate', kwargs={'pk': item.id}),
@@ -265,13 +259,13 @@ def listGroupUsersView(request):
         }
         groups_question.append(lists)
 
-    # print(groups_question)
     data['groups_question'] = json.dumps(groups_question, cls=DjangoJSONEncoder)
 
     groups_user = []
-    for index, value in enumerate(list_group_user):
+    for _, value in enumerate(list_group_user):
         lists = {
             'url': reverse_lazy('group_user_edit', kwargs={'pk': value['id']}),
+            'url_delete': reverse_lazy('group_user_delete', kwargs={'pk': value['id']}),
             'id': value['id'],
             'name': value['name'],
             'is_boss': value['is_boss'],
@@ -309,7 +303,7 @@ def questionsViews(request):
         if not 'listQuestionsCook' in request.session:
             request.session["listQuestionsCook"] = random_question(list(arrayQuestions))
 
-        print(request.session["listQuestionsCook"])
+        print('Список ID вопросов в сессии: ', request.session["listQuestionsCook"])
 
         """Кол-во вопросов"""
         if not 'total_questions' in request.session:
@@ -343,9 +337,11 @@ def questionsViews(request):
             'list_next': last,
             'questions_list': questions_list,
             'count_questions': count_questions,
-            'answers_list': answers_list,
+            'answers_list': random_question(list(answers_list)),
             'total_questions': total_questions,
         }
+
+        # print(type(answers_list), random_question(list(answers_list)))
 
         """На вопрос уже был ответ"""
         if is_answered:
@@ -388,6 +384,8 @@ def question_ajax(request):
         data['is_answered'] = UsersAnswer.objects.filter(session_key=session_key, vop_id=vop_id).exists()
         data['otv_id'] = otv_id
 
+        print('Проверка наличия ответа на вопрос: ', data['is_answered'])
+
         """Если user не отвечал на текущий вопрос"""
         if not data['is_answered']:
             """ Создаем запись в таблице с ответом пользователя"""
@@ -427,7 +425,8 @@ def next_question(request):
         data['flag'] = 1
 
         """ Запрещаем доступ на прохождение опроса """
-        if not request.user.is_superuser:
+        if not (request.user.is_superuser or request.user.groups.filter(is_boss=True)):
+        # if not request.user.is_superuser or not :
             User.objects.filter(username=request.user.username).update(is_permits=False)
 
         user_id = User.objects.get(username=request.user.username).id
@@ -466,6 +465,8 @@ def next_question(request):
         questions_list = Questions.objects.get(id=pk).description
         answers_list = Answers.objects.filter(question_id=pk)
 
+        # print(type(answers_list), random_question(list(answers_list)))
+
         """Последний вопрос из списка"""
         try:
             last = massivId[1]
@@ -476,7 +477,7 @@ def next_question(request):
         request.session["listQuestionsCook"] = massivId
         # data['questions_list'] = serializers.serialize('json', questions_list, indent=2, ensure_ascii=False, fields=('description','image', 'doc_url'))
         data['questions_list'] = questions_list
-        data['answers'] = serializers.serialize('json', answers_list, indent=2, ensure_ascii=False,
+        data['answers'] = serializers.serialize('json', random_question(list(answers_list)), indent=2, ensure_ascii=False,
                                                 fields=('description', 'approved'))
         data['next'] = last
         data['id'] = massivId[0]
@@ -505,7 +506,7 @@ def oprosanswers_list(request):
 
     session_for_user = request.POST.get('val')
 
-    print(session_for_user)
+    # print(session_for_user)
 
     answers = UsersAnswer.objects.filter(session_key=session_for_user).values('correct', 'vop_id', 'vop__description', 'otv_id')
 
@@ -516,77 +517,80 @@ def oprosanswers_list(request):
     for index, value in enumerate(answers):
         data['answers'][index]['otv'] = list(Answers.objects.filter(question=value['vop_id']).values())
 
+
+    print(data)
+
     return JsonResponse(data, safe=False)
 
 
-@login_required
-def statisticsuser(request):
-    """
-	Статистика пройденных опросов пользователя
-	:param request:
-	:return:
-	"""
+# @login_required
+# def statisticsuser(request):
+#     """
+# 	Статистика пройденных опросов пользователя
+# 	:param request:
+# 	:return:
+# 	"""
 
-    users = User.objects.all().exclude(is_superuser=True)
+#     users = User.objects.all().exclude(is_superuser=True)
 
-    if not (request.user.is_superuser or request.user.groups.values('is_boss')[0]['is_boss']):
-        sessions_lists_users = WorkPermitUsers.objects.filter(user_id=request.user.id).values('id', 'session_key', 'date_passage').order_by('-date_passage', '-id')
+#     if not (request.user.is_superuser or request.user.groups.values('is_boss')[0]['is_boss']):
+#         sessions_lists_users = WorkPermitUsers.objects.filter(user_id=request.user.id).values('id', 'session_key', 'date_passage').order_by('-date_passage', '-id')
 
-        models_users_answers = UsersAnswer
+#         models_users_answers = UsersAnswer
 
-        list_quests = []
+#         list_quests = []
 
-        for sessions_us in sessions_lists_users:
-            user_answers_not_correct = models_users_answers.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')
+#         for sessions_us in sessions_lists_users:
+#             user_answers_not_correct = models_users_answers.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')
 
-            """Количество не правильных ответов"""
-            user_answers_not_correct_total = user_answers_not_correct.count()
+#             """Количество не правильных ответов"""
+#             user_answers_not_correct_total = user_answers_not_correct.count()
 
-            """Количество вопросов-ответов в сессии"""
-            models_users_answers_total = models_users_answers.objects.filter(
-                session_key=sessions_us['session_key']).count()
+#             """Количество вопросов-ответов в сессии"""
+#             models_users_answers_total = models_users_answers.objects.filter(
+#                 session_key=sessions_us['session_key']).count()
 
-            if models_users_answers_total != 0:
-                percents = user_answers_not_correct_total * 100 / models_users_answers_total
-            else:
-                percents = 0
+#             if models_users_answers_total != 0:
+#                 percents = user_answers_not_correct_total * 100 / models_users_answers_total
+#             else:
+#                 percents = 0
 
-            user_answers_not_correct_quest = []
-            for i in user_answers_not_correct:
-                question = Questions.objects.get(id=i)
-                new_answ = Answers.objects.filter(question_id=i).values('id', 'description', 'approved',
-                                                                        'question_id').order_by('question_id',
-                                                                                                'id')
+#             user_answers_not_correct_quest = []
+#             for i in user_answers_not_correct:
+#                 question = Questions.objects.get(id=i)
+#                 new_answ = Answers.objects.filter(question_id=i).values('id', 'description', 'approved',
+#                                                                         'question_id').order_by('question_id',
+#                                                                                                 'id')
 
-                new_user_answer = UsersAnswer.objects.filter(session_key=sessions_us['session_key'],
-                                                             correct=False).values_list('otv',
-                                                                                        flat=True)
+#                 new_user_answer = UsersAnswer.objects.filter(session_key=sessions_us['session_key'],
+#                                                              correct=False).values_list('otv',
+#                                                                                         flat=True)
 
-                list_quest_all_new = {
-                    'id': question.id,
-                    'otv': list(new_user_answer),
-                    'question': question.description,
-                    'new_answ': list(new_answ),
-                }
+#                 list_quest_all_new = {
+#                     'id': question.id,
+#                     'otv': list(new_user_answer),
+#                     'question': question.description,
+#                     'new_answ': list(new_answ),
+#                 }
 
-                user_answers_not_correct_quest.append(list_quest_all_new)
+#                 user_answers_not_correct_quest.append(list_quest_all_new)
 
-            list_vop_count = {
-                'count': user_answers_not_correct_total,
-                'count_all_question': models_users_answers_total,
-                'percents': round(percents),
-                'date_passage': sessions_us['date_passage'],
-                'number_opros_id': sessions_us['id'],
-                'vop': user_answers_not_correct_quest,
-            }
+#             list_vop_count = {
+#                 'count': user_answers_not_correct_total,
+#                 'count_all_question': models_users_answers_total,
+#                 'percents': round(percents),
+#                 'date_passage': sessions_us['date_passage'],
+#                 'number_opros_id': sessions_us['id'],
+#                 'vop': user_answers_not_correct_quest,
+#             }
 
-            list_quests.append(list_vop_count)
+#             list_quests.append(list_vop_count)
 
-        context = {
-            'user_stat': list_quests,
-        }
-        template = 'questions/statistics_questions.html'
-    return render(request, template, context)
+#         context = {
+#             'user_stat': list_quests,
+#         }
+#         template = 'questions/statistics_questions.html'
+#     return render(request, template, context)
 
 
 def render_to_json(request, data):
@@ -649,7 +653,10 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
         context['filterset'] = self.filterset
         context['user_session'] = WorkPermitUsers.objects.filter(user_id__in = User.objects.values('id')) \
             .annotate(persents=(F('total_not_correct') * 100 / F('total_questions'))) \
-            .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'persents')
+            .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'persents') \
+            .order_by('-date_passage', '-id')
+
+        # context['user_groups'] = GroupsUserListForm(auto_id="%s")
 
         query = self.request.GET.copy()
 
@@ -660,7 +667,6 @@ class UsersGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView):
             del query['page']
         context['queries'] = query
         return context
-
 
 
 @csrf_protect
@@ -713,22 +719,22 @@ def total_questions(request):
             total_in_active.append([{'in_active': x, 'total': q.filter(in_active=x).count()}])
 
     total_doc_url = []
-    for docurl in dt['doc_url']:
+    # for docurl in dt['doc_url']:
 
-        if docurl == '':
-            total_doc_url.append([{'doc_url': '', 'total': total_count}])
-            # total_doc_url.append([{'doc_url': '', 'total': q.count()}])
-        elif docurl == 'False':
-            total_doc_url.append(
-                [{'doc_url': 'False', 'total': q.filter(Q(doc_url__isnull=True) | Q(doc_url='')).count()}])
-        else:
-            total_doc_url.append(
-                [{'doc_url': 'True', 'total': q.exclude(Q(doc_url__isnull=True) | Q(doc_url='')).count()}])
+    #     if docurl == '':
+    #         total_doc_url.append([{'doc_url': '', 'total': total_count}])
+    #         # total_doc_url.append([{'doc_url': '', 'total': q.count()}])
+    #     elif docurl == 'False':
+    #         total_doc_url.append(
+    #             [{'doc_url': 'False', 'total': q.filter(Q(doc_url__isnull=True) | Q(doc_url='')).count()}])
+    #     else:
+    #         total_doc_url.append(
+    #             [{'doc_url': 'True', 'total': q.exclude(Q(doc_url__isnull=True) | Q(doc_url='')).count()}])
 
     data = {}
     data['groups_questions'] = json.dumps(list(total_groups_questions), cls=DjangoJSONEncoder)
     data['in_active'] = json.dumps(list(total_in_active), cls=DjangoJSONEncoder)
-    data['doc_url'] = json.dumps(list(total_doc_url), cls=DjangoJSONEncoder)
+    # data['doc_url'] = json.dumps(list(total_doc_url), cls=DjangoJSONEncoder)
     return JsonResponse(data)
 
 
@@ -772,7 +778,7 @@ def user_checked(request):
 
 
 @login_required
-def new_statisticsuser(request):
+def statisticsuser(request):
     all_answers_user = WorkPermitUsers.objects.filter(user_id = request.user.id) \
             .annotate(percents=(F('total_not_correct') * 100 / F('total_questions'))) \
             .values('id', 'user_id', 'session_key', 'date_passage', 'total_questions', 'total_not_correct', 'percents') \
@@ -989,8 +995,11 @@ def statistics_for_user(request):
 # Иззменение статуса активности вопроса из True/False
 @csrf_protect
 def question_inactive(request):
+
+    print(request.POST)
+
     id = request.POST['id']
-    in_active = request.POST['in_active']
+    in_active = request.POST['in_active'].title()
 
     if in_active == 'True':
         in_active = False
@@ -1159,6 +1168,8 @@ class GroupUserEditView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return self.success_message % dict(cleaned_data, name=self.object.name)
 
 
+
+
 class GroupUserDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Group
     template_name = 'questions/group_user_delete_form.html'
@@ -1231,7 +1242,7 @@ class QuestionsGroupListsNew(LoginRequiredMixin, GroupRequiredMixin, FilterView)
             .annotate(answers_count=Count('answer_questions')) \
             .order_by('id')
 
-        print(queryset.query)
+        # print(queryset.query)
 
         # .filter(Q(groups_questions__in_active=True))
 

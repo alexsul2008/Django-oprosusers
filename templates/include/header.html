@@ -1,6 +1,6 @@
 {% load user_tags %}
 
-<header>
+<header class="mb-auto">
     {% if request.user.is_authenticated %}
 
         <h1 class="navbar-brand align-middle m-4">Название Отдела</h1>
@@ -51,11 +51,7 @@
                                 {% else %}
                                     <li class="nav-item ">{% url 'statistics_user' as url_statistics_user %}
                                         <a class="nav-link {% if url_statistics_user == request.path %}active{% endif %}"
-                                        href="{% url 'statistics_user' %}">Статистика</a>
-                                    </li>
-                                    <li class="nav-item ">{% url 'new_statistics_user' as url_new_statistics_user %}
-                                        <a class="nav-link {% if url_new_statistics_user == request.path %}active{% endif %}"
-                                        href="{% url 'new_statistics_user' %}">Статистика New</a>
+                                        href="{% url 'statistics_user' %}">Статистика </a>
                                     </li>
                                 {% endif %}
 

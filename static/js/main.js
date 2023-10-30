@@ -66,6 +66,8 @@ $(document).ready(function () {
         $('div.list-group').removeClass('disabled').addClass('disabled');
     });
 
+
+
     $('body').on('click', 'a.nextVopros', function (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -993,7 +995,7 @@ const groupsUser = () => {
                                     <span class="wh40 p-0 fa fa-trash delete-group-user btn btn-sm btn-danger"
                                         role="button"
                                         aria-pressed="true"
-                                        data-url="${groupUsers[i]['url']}"
+                                        data-url="${groupUsers[i]['url_delete']}"
                                         data-toggle="modal"
                                         data-target="#deleteGroupUserModalCenter"
                                         title="Удалить группу пользователей">
@@ -1072,6 +1074,8 @@ const groupsUser = () => {
     })
 }
 
+//
+
 document.addEventListener('click', (event) => {
     const type = event.target.dataset.type
 
@@ -1103,9 +1107,6 @@ document.addEventListener('click', (event) => {
                 icon_secondary.setAttribute('title', active ? 'Деактивировать группу' : 'Активировать группу')
                 icon_secondary.classList.remove(active ? 'text-muted' : 'text-warning')
                 icon_secondary.classList.add(active ? 'text-warning' : 'text-muted')
-
-
-
             }
         });
     } else if(type === 'questions'){
@@ -1280,77 +1281,7 @@ function checkUserAccess() {
 document.addEventListener("DOMContentLoaded", function() {
     checkUserAccess()
 })
-// checkUserAccess()
 
-
-
-// document.querySelector('input#allpermits').addEventListener('click', function(event){
-//     let check = checkUserAccess()
-//     // console.log('All checker: ', event.target.dataset, check, typeof check)
-//     allUserAccess(event, check)
-// })
-
-
-// function allUserAccess(event, listId) {
-//     let allCheck = event.target.dataset.permits
-
-//     $.ajax({
-//         type: "POST",
-//         url: event.target.dataset.url,
-//         data: {
-//             'csrfmiddlewaretoken': csrftoken,
-//             'user_id': listId.toString(),
-//             'val': allCheck
-//         },
-//         cache: false,
-//         dataType: 'json',
-//         success: function (data) {
-//             allCheck = JSON.parse(data.is_permits)
-//             listId.forEach(function(item, i){
-//                 // console.log(i, item, allCheck)
-//                 let input = document.querySelector(`input[data-user="${item}"]`)
-//                 input.dataset.permits = allCheck
-//                 input.setAttribute('value', allCheck)
-//                 input.setAttribute('checked', 'checked')
-//             })
-//             formFilterInUsers()
-//             checkUserAccess()
-//         }
-//     });
-// }
-
-
-
-    /*
-     * Переключатель доступа пользователя
-     */
-// function userAccess(user_id, val, url) {
-// function userAccess(event) {
-//     console.log(event)
-//     const check = event.target
-//     const user_id = []
-//     user_id.push(Number(check.dataset.user))
-
-
-//     $.ajax({
-//         type: "POST",
-//         url: check.dataset.url,
-//         data: {
-//             'csrfmiddlewaretoken': csrftoken,
-//             'user_id': user_id.toString(),
-//             'val': check.value
-//         },
-//         cache: false,
-//         dataType: 'json',
-//         success: function (data) {
-//             let is_permits = JSON.parse(data.is_permits)
-//             check.setAttribute('value', is_permits)
-//             check.dataset.permits = is_permits
-//             formFilterInUsers()
-//             // checkUserAccess()
-//         }
-//     });
-// }
 
 function formFilterInUsers() {
     let forma = $('form#filters-in-users')
@@ -1428,16 +1359,16 @@ function formFilterInQuestions() {
         success: function (data) {
             let groups_questions = JSON.parse(data.groups_questions);
             let in_active = JSON.parse(data.in_active);
-            let doc_url = JSON.parse(data.doc_url);
+            // let doc_url = JSON.parse(data.doc_url);
             for (let i = 0; i < groups_questions.length; i++) {
                 $('span.groups_questions_id_' + groups_questions[i]['id']).text(groups_questions[i]['total']);
             }
             for (let j = 0; j < in_active.length; j++) {
                 $('span.in_active_id_' + [j]).text(in_active[j][0]['total']);
             }
-            for (let d = 0; d < doc_url.length; d++) {
-                $('span.doc_url_id_' + [d]).text(doc_url[d][0]['total']);
-            }
+            // for (let d = 0; d < doc_url.length; d++) {
+            //     $('span.doc_url_id_' + [d]).text(doc_url[d][0]['total']);
+            // }
         }
     });
 
@@ -1481,7 +1412,6 @@ function maxWidthArrayText(arrayItems = []){
 }
 
 
-
 const arrowDataSort = (arrowBtn=[]) =>{
     for(let i=0; i<arrowBtn.length;i++){
         arrowBtn[i].addEventListener('click', selectClassIcon);
@@ -1503,18 +1433,104 @@ function selectClassIcon(){
 }
 
 
-function setGroupUser(arrowItemGroup=[]) {
-    // console.log(typeof arrowItemGroup, arrowItemGroup)
-    for(let i=0; i<arrowItemGroup.length;i++){
-        arrowItemGroup[i].addEventListener('click', selectGroupUser);
-        // arrowItemGroup[i].addEventListener('click', function(){
-        //     modalGroupsUser.show()
-        // });
-    }
-}
+// function setGroupUser(arrowItemGroup=[]) {
+//     for(let i=0; i<arrowItemGroup.length;i++){
+//         arrowItemGroup[i].addEventListener('click', selectGroupUser);
+//         // arrowItemGroup[i].addEventListener('click', function(){
+//         //     modalGroupsUser.show()
+//         // });
+//     }
+// }
 
-function selectGroupUser(){
-    console.log(this)
-    console.log(this.closest('button[data-id]'))
-    modalGroupsUser.show()
-}
+// function selectGroupUser(){
+//     console.log(this)
+//     console.log(this.closest('button[data-id]'))
+//     modalGroupsUser.show()
+// }
+
+
+// const btnGroupsList = document.querySelector('.dropdown__button ')
+
+document.querySelectorAll('.dropdown').forEach(function(dropDownWrapper){
+
+    const dropDownBtn = dropDownWrapper.querySelector('.dropdown__button')
+    const dropDownList = dropDownWrapper.querySelector('.dropdown__list')
+    const dropDownListItems = dropDownList.querySelectorAll('.dropdown__list--item')
+    const dropDownInput = dropDownWrapper.querySelector('.dropdown__input--hidden')
+    const dropFormSetGroupUser = dropDownWrapper.querySelector('form')
+    const endpoint = dropFormSetGroupUser.action
+
+    const descriptorProp = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    const descriptorAttr = Object.getOwnPropertyDescriptor(Element.prototype, 'setAttribute');
+
+
+    const onChange = (value) => {
+        let formData = new FormData(dropFormSetGroupUser)
+        formData.set('group', value);
+
+        fetch(endpoint, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('1: ', data)
+            formFilterInUsers();
+        })
+    };
+
+
+    Object.defineProperties(dropDownInput, {
+        value: {
+            get: descriptorProp.get,
+            set(value) {
+                onChange(value);
+                descriptorProp.set.call(this, value);
+            },
+        },
+        setAttribute: {
+            value(attr, value) {
+                if (attr === 'value') {
+                    onChange(value);
+                }
+                descriptorAttr.value.call(this, attr, value);
+            },
+        }
+    });
+
+
+    dropDownInput.addEventListener('input', () => onChange(dropDownInput.value));
+
+    dropDownBtn.addEventListener('click', (even)=>{
+        even.preventDefault();
+        dropDownList.classList.toggle('dropdown__list--visible')
+        dropDownBtn.classList.add('.dropdown__button--active')
+    })
+
+    dropDownListItems.forEach(function(listItem){
+        listItem.addEventListener('click', function(e){
+            e.stopPropagation()
+            dropDownBtn.innerText = this.innerText
+            dropDownBtn.focus()
+            dropDownInput.value = this.dataset.value
+            dropDownList.classList.remove('dropdown__list--visible')
+        })
+    })
+
+
+    document.addEventListener('click', function(e){
+        if(e.target !== dropDownBtn){
+            dropDownBtn.classList.remove('.dropdown__button--active')
+            dropDownList.classList.remove('dropdown__list--visible')
+        }
+    })
+
+    document.addEventListener('keydown', function(e){
+        if(e.key === 'Tab' || e.key === 'Escape'){
+            dropDownBtn.classList.remove('.dropdown__button--active')
+            dropDownList.classList.remove('dropdown__list--visible')
+        }
+    })
+
+
+})

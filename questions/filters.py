@@ -93,12 +93,12 @@ class QuestionsFilter(django_filters.FilterSet):
         widget=forms.RadioSelect(attrs={'autocomplete': 'off'})
     )
 
-    doc_url = django_filters.ChoiceFilter(
-        choices=DOC_URL_FILTER_CHOICES,
-        method='filter_by_all_name_fields',
-        empty_label=gettext_lazy(u'Все'),
-        widget=forms.RadioSelect(attrs={'autocomplete': 'off'})
-    )
+    # doc_url = django_filters.ChoiceFilter(
+    #     choices=DOC_URL_FILTER_CHOICES,
+    #     method='filter_by_all_name_fields',
+    #     empty_label=gettext_lazy(u'Все'),
+    #     widget=forms.RadioSelect(attrs={'autocomplete': 'off'})
+    # )
 
 
 
@@ -136,11 +136,3 @@ class UsersGroupsFilter(django_filters.FilterSet):
     class Meta:
         model = User
         fields = []
-
-
-
-
-
-
-
-

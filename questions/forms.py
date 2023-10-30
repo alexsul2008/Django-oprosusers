@@ -6,6 +6,18 @@ from django.contrib.auth.models import User, Group
 
 from questions.models import GroupsQuestions, Answers, Questions
 
+
+class GroupsUserListForm(forms.ModelForm):
+    groups = forms.ModelChoiceField(
+        queryset=Group.objects.all(),
+        widget=forms.Select(attrs={'class': 'groups-select'})
+    )
+
+    class Meta:
+        model = User
+        fields = []
+
+
 class UploadExcelForm(forms.Form):
     groups_questions = forms.ModelMultipleChoiceField(
         queryset=GroupsQuestions.objects.all(),
@@ -16,10 +28,6 @@ class UploadExcelForm(forms.Form):
         )   #attrs={"accept": ".xlx, .xlsx"}
 
     def __init__(self, *args, **kwargs):
-
-        # print(args, kwargs)
-        # self.my_field = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'id': 'my_field','class': 'my_class'}))
-        # self.my_field.label_classes = ('class_a', 'class_b', )
         super(UploadExcelForm, self).__init__(*args, **kwargs)
 
 
@@ -67,12 +75,6 @@ class UserAddForm(UserCreationForm):
     #         user.save()
     #         user.save_m2m()
     #     return user
-
-
-
-
-
-
 
 
 
