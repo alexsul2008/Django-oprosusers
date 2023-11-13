@@ -3,135 +3,712 @@
     "model": "auth.user",
     "pk": 1,
     "fields": {
-      "username": "admin",
       "password": "pbkdf2_sha256$320000$L0Z7Y4u54v558QHqRUc47B$K2II4CgQkMHTvnGITkpZRw28SxPQfWD66/z0K1O7+Ps=",
+      "last_login": "2023-11-04T05:21:17.387Z",
+      "is_superuser": true,
+      "username": "admin",
       "first_name": "",
       "last_name": "Администратор",
-      "email": "",
-      "is_superuser": true,
+      "email": "avsulyay@mts.ru",
       "is_staff": true,
-      "is_active": true
+      "is_active": true,
+      "date_joined": "2023-08-17T19:32:52.221Z",
+      "is_permits": true,
+      "groups": [],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 2,
+    "pk": 13,
     "fields": {
-      "username": "vissarion40",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Епифан",
-      "last_name": "Кулагин",
-      "email": "vissarion40@hotmail.com",
-      "is_staff": true,
-      "is_active": true
+      "password": "pbkdf2_sha256$320000$JkjiwScQ9X1F0FKENPH1k0$xDuvOSqV+0yK/Eh2attqKXbBvEW8YADv07Dv/0083Tw=",
+      "last_login": "2023-10-31T14:18:54.932Z",
+      "is_superuser": false,
+      "username": "avsulyay",
+      "first_name": "Александр",
+      "last_name": "Суляев",
+      "email": "avsulyay@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-17T13:12:33.379Z",
+      "is_permits": true,
+      "groups": [
+        12
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 3,
+    "pk": 14,
     "fields": {
-      "username": "georgi2020",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Филимон",
-      "last_name": "Соболев",
-      "email": "georgi2020@gmail.com",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "iichern3",
+      "first_name": "Илья",
+      "last_name": "Черных",
+      "email": "iichern3@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-18T23:52:01.676Z",
+      "is_permits": true,
+      "groups": [
+        12
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 4,
+    "pk": 15,
     "fields": {
-      "username": "evlampi72",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Клавдия",
-      "last_name": "Носова",
-      "email": "evlampi72@rambler.ru",
-      "is_active": true
+      "password": "",
+      "last_login": "2023-10-11T07:33:38.108Z",
+      "is_superuser": false,
+      "username": "avshkapo",
+      "first_name": "Андрей",
+      "last_name": "Шкапов",
+      "email": "avshkapo@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-18T23:52:01.767Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 5,
+    "pk": 16,
     "fields": {
-      "username": "iraida36",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Эрнест",
-      "last_name": "Гаврилов",
-      "email": "iraida36@yandex.ru",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "aetulupo",
+      "first_name": "Алексей",
+      "last_name": "Тулупов",
+      "email": "aetulupo@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-18T23:52:01.777Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 6,
+    "pk": 17,
     "fields": {
-      "username": "markovaakulina",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Мирон",
-      "last_name": "Рыбаков",
-      "email": "markovaakulina@rambler.ru",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "yyzuzoli",
+      "first_name": "Евгений",
+      "last_name": "Зузолин",
+      "email": "yyzuzoli@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.017Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 7,
+    "pk": 18,
     "fields": {
-      "username": "rjabovsidor",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Фортунат",
-      "last_name": "Ершов",
-      "email": "rjabovsidor@yandex.ru",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sadzyomi",
+      "first_name": "Сергей",
+      "last_name": "Дзёмин",
+      "email": "sadzyomi@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.055Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 8,
+    "pk": 19,
     "fields": {
-      "username": "frolovizmail",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Каллистрат",
-      "last_name": "Селезнев",
-      "email": "frolovizmail@hotmail.com",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "mmpiven",
+      "first_name": "Михаил",
+      "last_name": "Пивень",
+      "email": "mmpiven@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.066Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 9,
+    "pk": 20,
     "fields": {
-      "username": "kuznetsovadam",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Никита",
-      "last_name": "Зыков",
-      "email": "kuznetsovadam@hotmail.com",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "matsurka",
+      "first_name": "Максим",
+      "last_name": "Цурканов",
+      "email": "matsurka@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.076Z",
+      "is_permits": true,
+      "groups": [
+        12
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 10,
+    "pk": 21,
     "fields": {
-      "username": "adam_1990",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Аникей",
-      "last_name": "Ширяев",
-      "email": "adam_1990@yahoo.com",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sakhrapk",
+      "first_name": "Сергей",
+      "last_name": "Храпко",
+      "email": "sakhrapk@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.091Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
     }
   },
   {
     "model": "auth.user",
-    "pk": 11,
+    "pk": 22,
     "fields": {
-      "username": "agorshkova",
-      "password": "pbkdf2_sha256$320000$LJkS0r5xJ2AmqvGenaQWwn$DdtwXj3gbLiifdpaSZcxlFYbH+q7LY1xb3TQkY45yEs=",
-      "first_name": "Исидор",
-      "last_name": "Власов",
-      "email": "agorshkova@hotmail.com",
-      "is_active": true
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "dageras1",
+      "first_name": "Денис",
+      "last_name": "Герасименко",
+      "email": "dageras1@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.110Z",
+      "is_permits": true,
+      "groups": [
+        12
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 23,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "igdemide",
+      "first_name": "Игорь",
+      "last_name": "Демиденко",
+      "email": "igdemide@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.121Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 24,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "svmamont",
+      "first_name": "Светлана",
+      "last_name": "Мамонтова",
+      "email": "svmamont@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.154Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 25,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "yadrobya",
+      "first_name": "Евгений",
+      "last_name": "Дробязко",
+      "email": "yadrobya@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.181Z",
+      "is_permits": true,
+      "groups": [
+        11
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 26,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "aefilimo",
+      "first_name": "Андрей",
+      "last_name": "Филимоненков",
+      "email": "aefilimo@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.199Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 27,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "iayelise",
+      "first_name": "Игорь",
+      "last_name": "Елисеенко",
+      "email": "iayelise@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.210Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 28,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "anshamr1",
+      "first_name": "Алексей",
+      "last_name": "Шамрин",
+      "email": "anshamr1@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.234Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 29,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "dvpiven1",
+      "first_name": "Дмитрий",
+      "last_name": "Пивень",
+      "email": "dvpiven1@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.245Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 30,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "vvkravc3",
+      "first_name": "Виктория",
+      "last_name": "Кравченко",
+      "email": "vvkravc3@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.258Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 31,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "iybulenk",
+      "first_name": "Инна",
+      "last_name": "Буленкова",
+      "email": "iybulenk@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.305Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 32,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "vvmamont",
+      "first_name": "Вячеслав",
+      "last_name": "Мамонтов",
+      "email": "vvmamont@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.340Z",
+      "is_permits": true,
+      "groups": [
+        8
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 33,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sakhoruz",
+      "first_name": "Сергей",
+      "last_name": "Хоружий",
+      "email": "sakhoruz@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.386Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 34,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "dagolov8",
+      "first_name": "Дмитрий",
+      "last_name": "Головань",
+      "email": "dagolov8@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.440Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 35,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "raastafuro",
+      "first_name": "Руслан",
+      "last_name": "Астафуров",
+      "email": "raastafuro@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.491Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 36,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "yvberezov1",
+      "first_name": "Евгений",
+      "last_name": "Березовский",
+      "email": "yvberezov1@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.506Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 38,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "svkuzn37",
+      "first_name": "Сергей",
+      "last_name": "Кузнецов",
+      "email": "svkuzn37@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.552Z",
+      "is_permits": true,
+      "groups": [
+        10
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 39,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "mgkononenk",
+      "first_name": "Михаил",
+      "last_name": "Кононенко",
+      "email": "mgkononenk@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.593Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 40,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "kakorne9",
+      "first_name": "Кирилл",
+      "last_name": "Корнеев",
+      "email": "kakorne9@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.605Z",
+      "is_permits": true,
+      "groups": [
+        13
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 41,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "kamashinsk",
+      "first_name": "Константин",
+      "last_name": "Машинских",
+      "email": "kamashinsk@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.619Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 43,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "demishko",
+      "first_name": "Дмитрий",
+      "last_name": "Мишко",
+      "email": "demishko@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.639Z",
+      "is_permits": true,
+      "groups": [
+        11
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 44,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ikrizen",
+      "first_name": "Илья",
+      "last_name": "Ризен",
+      "email": "ikrizen@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.652Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 45,
+    "fields": {
+      "password": "",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "dnshmato",
+      "first_name": "Дмитрий",
+      "last_name": "Шматов",
+      "email": "dnshmato@mts.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-19T00:06:40.721Z",
+      "is_permits": true,
+      "groups": [
+        11
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 49,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$XJia6Kp6EWqiEYZZ9CnaVg$3ZCixpu2F8zzTGvOhcdM9uk/AQ5bCgCMppqLPm7584Q=",
+      "last_login": "2023-09-26T22:40:32.916Z",
+      "is_superuser": false,
+      "username": "pupkin",
+      "first_name": "Вася",
+      "last_name": "Пупкин",
+      "email": "pupkin@pupkin.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-25T05:30:43.797Z",
+      "is_permits": true,
+      "groups": [
+        9
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 50,
+    "fields": {
+      "password": "pbkdf2_sha256$320000$ErKnKlcut5i7HKIP7XOND8$PxvPNwFgRJDpf1jdvxKvnkR1P39EOO7ZJ+lawRzwP6o=",
+      "last_login": "2023-09-27T01:40:19.860Z",
+      "is_superuser": false,
+      "username": "popov",
+      "first_name": "Петр",
+      "last_name": "Попов",
+      "email": "popov@popov.ru",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2023-09-25T05:31:42.721Z",
+      "is_permits": true,
+      "groups": [
+        11
+      ],
+      "user_permissions": []
     }
   }
 ]

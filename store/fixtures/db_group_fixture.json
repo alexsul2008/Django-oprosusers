@@ -1,61 +1,56 @@
 [
   {
     "model": "auth.group",
-    "pk": 1,
-    "fields": {
-      "name": "Директор",
-      "is_boss": true,
-      "is_group": true
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 2,
-    "fields": {
-      "name": "Руководитель",
-      "is_boss": true,
-      "is_group": true
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 3,
+    "pk": 8,
     "fields": {
       "name": "Модератор",
-      "is_boss": true,
-      "is_group": true
+      "is_group": false,
+      "is_boss": true
     }
   },
   {
     "model": "auth.group",
-    "pk": 4,
+    "pk": 9,
     "fields": {
-      "name": "Анализ",
-      "is_group": true
+      "name": "CS 1 линия",
+      "is_group": false,
+      "is_boss": false
     }
   },
   {
     "model": "auth.group",
-    "pk": 5,
+    "pk": 10,
     "fields": {
-      "name": "Отправка",
-      "is_group": true
+      "name": "CS 2 линия",
+      "is_group": false,
+      "is_boss": false
     }
   },
   {
     "model": "auth.group",
-    "pk": 6,
+    "pk": 11,
     "fields": {
-      "name": "Доставка",
-      "is_group": true
+      "name": "NSN 1 линия",
+      "is_group": false,
+      "is_boss": false
     }
   },
   {
     "model": "auth.group",
-    "pk": 7,
+    "pk": 12,
     "fields": {
-      "name": "Продажа",
-      "is_group": true
+      "name": "NSN 2 линия",
+      "is_group": false,
+      "is_boss": false
+    }
+  },
+  {
+    "model": "auth.group",
+    "pk": 13,
+    "fields": {
+      "name": "PS",
+      "is_group": false,
+      "is_boss": false
     }
   }
 ]

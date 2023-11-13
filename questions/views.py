@@ -32,8 +32,6 @@ from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 from django_filters.views import FilterView
 from extra_views import InlineFormSetView, CreateWithInlinesView, UpdateWithInlinesView, InlineFormSetFactory
 
-# from django.views.generic.list import ListView
-
 
 from questions.filters import UsersGroupsFilter, QuestionsFilter
 from questions.forms import GroupsUserListForm, UploadExcelForm, UserAddForm, UserEditForm, GroupsQuestionsForm, AnswersForm, QuestionsForm, UserPasswordChangeForm, GroupsUserForm
@@ -47,12 +45,9 @@ global_total_questions = 0
 
 def read_exel(request):
 
-    # print(request.body)
-
     if request.method == 'POST':
 
         json_groups = json.loads(request.body)
-        print(json_groups['groups_questions'])
 
         fileDataExcel = MEDIA_ROOT + 'data.xlsx'
         df = pandas.read_excel(fileDataExcel)
@@ -85,13 +80,9 @@ def read_exel(request):
 
             answerDict.append({'answer': str(data[item]['Ответ']), 'approvet': approvet})
 
-        # groups_questions = ['8', '9']
         # Перевод list в int
         groupsGuestions = list(map(int, json_groups['groups_questions']))
 
-        print('Группы для записи: ', type(groupsGuestions), groupsGuestions)
-
-        # pprint.pprint(dataDict)
         for index, value in enumerate(dataDict):
 
             question = dataDict[index]["questions"]
@@ -120,8 +111,6 @@ def read_exel(request):
 
         data = {}
         data['status'] = 200
-        # data["groups_questions"] = groups_questions
-        # data['endpoint'] = reverse_lazy('import_exel_test')
         return JsonResponse(data)
 
 
@@ -163,11 +152,6 @@ def importExelForm(request):
             form = UploadExcelForm()
 
 
-    # context = {
-    #         'data': dataDict
-    #     }
-    # template = 'questions/import_tamplate.html'
-    # return render(request, template, context)
     data={}
     data['status'] = 404
     return JsonResponse(data)
@@ -243,7 +227,7 @@ def group_question_activate(request, pk):
 
 @login_required
 def listGroupUsersView(request):
-    list_group_user = Group.objects.all().values()
+    list_group_user = Group.objects.all().values().order_by('-is_boss')
     list_group_questions = GroupsQuestions.objects.all()
 
     data={}
@@ -303,7 +287,7 @@ def questionsViews(request):
         if not 'listQuestionsCook' in request.session:
             request.session["listQuestionsCook"] = random_question(list(arrayQuestions))
 
-        print('Список ID вопросов в сессии: ', request.session["listQuestionsCook"])
+        # print('Список ID вопросов в сессии: ', request.session["listQuestionsCook"])
 
         """Кол-во вопросов"""
         if not 'total_questions' in request.session:
@@ -341,7 +325,6 @@ def questionsViews(request):
             'total_questions': total_questions,
         }
 
-        # print(type(answers_list), random_question(list(answers_list)))
 
         """На вопрос уже был ответ"""
         if is_answered:
@@ -384,7 +367,7 @@ def question_ajax(request):
         data['is_answered'] = UsersAnswer.objects.filter(session_key=session_key, vop_id=vop_id).exists()
         data['otv_id'] = otv_id
 
-        print('Проверка наличия ответа на вопрос: ', data['is_answered'])
+        # print('Проверка наличия ответа на вопрос: ', data['is_answered'])
 
         """Если user не отвечал на текущий вопрос"""
         if not data['is_answered']:
@@ -486,20 +469,6 @@ def next_question(request):
 
         return JsonResponse(data)
 
-@login_required
-def addUsersForGroup(request):
-    name = request.POST.get('name').strip()
-    if request.user.is_superuser:
-        from questions.auth_ADMSK import LdapADMSK
-        data = {}
-        data['status'] = LdapADMSK().add_users_group(request, name)
-
-        print(data['status'])
-
-
-    # return HttpResponseRedirect(reverse("statistics"))
-    return JsonResponse(data)
-
 
 @login_required
 def oprosanswers_list(request):
@@ -518,7 +487,7 @@ def oprosanswers_list(request):
         data['answers'][index]['otv'] = list(Answers.objects.filter(question=value['vop_id']).values())
 
 
-    print(data)
+    # print(data)
 
     return JsonResponse(data, safe=False)
 
@@ -603,15 +572,9 @@ def render_to_json(request, data):
 @csrf_protect
 # @staff_member_required
 def statisticsUserDeleteView(request, pk):
-    delete_session = WorkPermitUsers.objects.filter(id=pk) #.values('session_key')[0]['session_key']
-    # print(delete_session)
+    delete_session = WorkPermitUsers.objects.filter(id=pk)
     delete_session_val = delete_session.values('session_key')[0]['session_key']
-    # del_session_answer = UsersAnswer.objects.filter(session_key__exact=delete_session_val[0]['session_key'])
     del_session_answer = UsersAnswer.objects.filter(session_key__exact=delete_session_val)
-
-    print(delete_session_val)
-
-    # del_key = delete_session_val[0]['session_key']
 
     del_session_answer.delete()
     delete_session.delete()
@@ -813,7 +776,7 @@ def oprosanswers(request):
     list_questions = UsersAnswer.objects.filter(session_key=sess).values('vop_id', 'otv_id', 'vop_id__description')
     answers = Answers.objects.values('id', 'description', 'approved', 'question_id').order_by('question_id', 'id')
 
-    print(sess)
+    # print(sess)
 
     user_answers_quest = []
     for vop in list_questions:
@@ -996,7 +959,7 @@ def statistics_for_user(request):
 @csrf_protect
 def question_inactive(request):
 
-    print(request.POST)
+    # print(request.POST)
 
     id = request.POST['id']
     in_active = request.POST['in_active'].title()

@@ -2,10 +2,14 @@
 
 {%block content %}
 
-<div class="container-fluid">
-  <h1 class="mb-4 pb-3 text-center">Редактирование вопросов</h1>
+<div class="container-fluid pt-0">
   <div class="row">
-    <div class="col-3">
+    <div class="mb-5 pt-3 pb-3 col-12 card  border border-info filter-groups ">
+        <h4>Редактирование вопросов</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-3 pl-0">
       <form
         method="get"
         id="filters-in-questions"
@@ -129,7 +133,7 @@
         <button type="submit" class="btn btn-outline-info btn-block pt-2 pb-2 mt-3 text-light">Вывести</button>
       </form>
     </div>
-    <div class="col-9">
+    <div class="col-9 pr-0">
       <div class="row">
         <div class="col d-inline-flex">
           <div class="mr-2">
@@ -155,7 +159,7 @@
 
 
 
-            <div class="btn-questions-list btn btn-info btn-block mt-2 pt-3 pb-3 disabled" data-button>
+            <div class="btn-questions-list mt-2 mb-3 p-3 card border-info filter-groups text-white" data-button>
                 <span class="">&nbsp;</span>
                 <p class="text-center mb-0" data-button-text>Вопросы опроса</p>
                 <span class="" data-button-badge>&sum; ответов</span>
@@ -170,7 +174,7 @@
             <span class="text-left" data-button-text="">{{ list_question.description|truncatechars_html:60 }}</span>
             <span class="btn-settings--badge p-0 h40 w80" data-button-badge="">{{list_question.answers_count}}</span>
             <div class="button-overflow">
-                <span class="childrens btn-overflow-childrens">
+                <span class="pl-3 childrens btn-overflow-childrens">
                     <span class="wh40 p-0 fa fa-lightbulb-o btn {% if list_question.in_active %}btn-outline-warning{% else %}btn-outline-secondary{% endif %} question-active"
                         role="button"
                         data-in_active="{{ list_question.in_active }}"

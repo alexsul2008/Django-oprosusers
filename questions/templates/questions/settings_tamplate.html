@@ -4,12 +4,16 @@
 
     {% block content %}
         <div class="container-fluid pt-0">
-            <h1 class="mb-3">Настройки</h1>
             <div class="row">
-                <div class="col-1"></div>
-                <div class="col-3">
+                <div class="mb-5 pt-3 pb-3 col-12 card  border border-info filter-groups ">
+                    <h4>Настройки</h4>
+                </div>
+            </div>
+            <div class="row" id="settings-groups">
+                <div class="col-3 pl-0 pr-0">
                     <div class="d-flex align-items-center mb-3">
                         <h3 class="w-100 pl-0">Группы пользователей</h3>
+                        <!-- <button class="btn btn-info border-0 sort asc" data-sort="groups_users"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button> -->
 
 
                         <button class="flex-grow-1 btn btn-outline-info btn-lg btn-add_group_user" type="button"
@@ -22,12 +26,16 @@
 
                         </button>
                     </div>
-                    <div id="list-group-users" data-url="{% url 'list-group-users' %}" ></div>
+                    <div id="list-group-users" data-url="{% url 'list-group-users' %}"><ul class="list"></ul></div>
+
+                    <!-- <div style="display:none;">
+                        <li><button class="btn-settings"></button></li>
+                      </div> -->
 
 
                 </div>
-                <div class="col-1"></div>
-                <div class="col-6">
+                <div class="col-1 p-0"></div>
+                <div class="col-8 pl-0 pr-0">
                     <div class="d-flex align-items-center mb-3">
                         <h3 class="w-100 pl-0">Группы вопросов</h3>
 
@@ -43,10 +51,9 @@
 
                     </div>
 
-                    <div id="list-group-questions"></div>
+                    <div id="list-group-questions" class="d-flex flex-column w-100"></div>
 
                 </div>
-                <div class="col-1"></div>
             </div>
 
 
@@ -97,27 +104,26 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="deleteGroupQuestions" tabindex="-1" role="dialog"
-                            aria-labelledby="deleteGroupQuestionsTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="deleteGroupQuestionsTitle">Удаление группы вопросов</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body bg-transparent text-dark">
-                                <div class="modal-groups-question-delete"></div>
-                            </div>
-                            <div class="modal-footer bg-light text-dark">
-                                <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
-                                <button form="delete_groups_form" type="submit" class="btn btn-outline-danger">Удалить</button>
-                            </div>
-                        </div>
+        <div class="modal fade" id="deleteGroupQuestions" tabindex="-1" role="dialog"
+                    aria-labelledby="deleteGroupQuestionsTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="deleteGroupQuestionsTitle">Удаление группы вопросов</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body bg-transparent text-dark">
+                        <div class="modal-groups-question-delete"></div>
+                    </div>
+                    <div class="modal-footer bg-light text-dark">
+                        <button type="button" class="btn btn-outline-info" data-dismiss="modal">Закрыть</button>
+                        <button form="delete_groups_form" type="submit" class="btn btn-outline-danger">Удалить</button>
                     </div>
                 </div>
-
+            </div>
+        </div>
 
 
         <div class="modal fade" id="exampleAddGroupUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="#exampleAddGroupUserModalCenterTitle" aria-hidden="true">
@@ -139,7 +145,6 @@
                 </div>
             </div>
         </div>
-
 
 
         <div class="modal fade" id="deleteGroupUserModalCenter" tabindex="-1" role="dialog" aria-labelledby="deleteGroupUserModalCenterTitle" aria-hidden="true">
@@ -204,9 +209,20 @@
 {% endif %}
 
 
-{% block javascript %}
+{% block javascript %} 
     <script>document.addEventListener("DOMContentLoaded", function(event) {
         groupsUser();
+
+        // let options = {
+        //     valueNames: [ 'groups_users'],
+        //     item: 'btn-settings'
+        // };
+
+        // let groupsUserNameList = new List('settings-groups', options);
+
+        // const btnGroupsUserSort = document.querySelector('[data-sort]')
+        // arrowDataSort(btnGroupsUserSort)
     })</script>
 
 {% endblock javascript %}
+

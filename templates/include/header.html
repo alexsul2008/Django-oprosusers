@@ -1,20 +1,18 @@
 {% load user_tags %}
 
-<header class="mb-auto">
-    {% if request.user.is_authenticated %}
 
+    {% if request.user.is_authenticated %}
+    <header class="mb30">
         <h1 class="navbar-brand align-middle m-4">Название Отдела</h1>
 
-
-
-            <button type="button" class="btn btn-primary align-middle">
-            {% if request.user.is_superuser %}
-                {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">Полный доступ</span>
-            {% else %}
-                {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">
-                    {{ request.user|has_group }}</span>
-            {% endif %}
-            </button>
+        <button type="button" class="btn btn-primary align-middle">
+        {% if request.user.is_superuser %}
+            {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">Полный доступ</span>
+        {% else %}
+            {{request.user.get_full_name}} <span class="badge badge-light align-middle p-2">
+                {{ request.user|has_group }}</span>
+        {% endif %}
+        </button>
 
 
 
@@ -28,8 +26,6 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-
-
                             <li class="nav-item ">{% url 'questions' as url_questions %}
                                 <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
                                     href="{% url 'questions' %}">Вопросы</a>
@@ -55,21 +51,17 @@
                                     </li>
                                 {% endif %}
 
-
-
                     </ul>
-
-
 
                         <a class="btn btn-outline-success my-2 my-sm-0" onclick="userLogout();" href="{%  url 'logout' %}">Выход</a>
 
                     </div>
-                </nav>
+            </nav>
 
-                {% else %}
+             
 
 
-    {% endif %}
+    
 
 
             <div class="modal fade" id="messageModalCenter" tabindex="-1" role="dialog" aria-labelledby="messageModalCenterTitle" aria-hidden="true">
@@ -102,16 +94,7 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
-
-
-
-
-
-</header>
+        </header>
+    {% else %} 
+    <header class="mb-auto"></header>       
+    {% endif %}

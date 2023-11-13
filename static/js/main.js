@@ -528,7 +528,7 @@ if(document.querySelector('#accordExample')){
         if(!elem.target.dataset.delete){
             return
         }
-
+      
         let textContentCount = elem.target.closest('div[id^="heading_"]').querySelector('span.badge[data-count]')
         let collapsedContent = elem.target.closest('div[id^="heading_"]').querySelector('div[id^="collapse_"]')
 
@@ -566,14 +566,10 @@ if(document.querySelector('#accordExample')){
                         textCount = Number(textContentCount.textContent) - 1
                         textContentCount.textContent = textCount
 
-                        let closetCount = textContentCount.closest('div[class^="col"')
-                        let nextElCount = closetCount.nextElementSibling
+                        let closetCount = textContentCount.closest('.btn-statistics-user__status')
 
                         if(textCount === 0){
-                            closetCount.classList.add('col-4')
-                            closetCount.classList.remove('col-2')
                             closetCount.innerHTML = '<small class="text-center text-wrap">Опрос не проходил(а)</small>'
-                            nextElCount.remove()
                             collapsedContent.remove()
 
                         }
@@ -961,6 +957,8 @@ const groupsUser = () => {
     const listGroupQuestions = document.getElementById('list-group-questions')
     const url = listGroupUsers.dataset.url
 
+    // const ulGroupUsers = listGroupUsers.querySelector('ul')
+
     $.ajax({
         type: 'GET',
         url: url,
@@ -977,7 +975,7 @@ const groupsUser = () => {
                         <div class="d-flex flex-row align-items-center">
                             <div class="wh40">${is_boss}</div>
                             <div class="text-left text-white">
-                                <span class="p-2">${groupUsers[i]['name']}</span>
+                                <span class="p-2 groups_users">${groupUsers[i]['name']}</span>
                             </div>
                             <div class="button-overflow justify-content-end">
 
@@ -1018,7 +1016,7 @@ const groupsUser = () => {
                     let btn_active_hover = groupQuestions[i]['in_active'] ? 'btn-outline-warning' : 'btn-outline-secondary'
 
                     listGroupQuestions.insertAdjacentHTML('beforeend', `
-                    <button class="btn-settings btn ${bg_btn} btn-lg btn-block position-relative" type="button" style="min-width: 900px;">
+                    <button class="btn-settings btn ${bg_btn} btn-lg btn-block position-relative" type="button">
                         <div class="d-flex flex-row justify-content-between align-items-center">
                             <span class="wh40 p-0 fa fa-lightbulb-o ${in_active}" title="${active}"
                                 role="button"
@@ -1412,13 +1410,14 @@ function maxWidthArrayText(arrayItems = []){
 }
 
 
-const arrowDataSort = (arrowBtn=[]) =>{
+const arrowDataSort = (arrowBtn=[]) =>{    
     for(let i=0; i<arrowBtn.length;i++){
         arrowBtn[i].addEventListener('click', selectClassIcon);
     }
 }
 
 function selectClassIcon(){
+    console.log(this.classList)
     if(this.classList.contains('asc')){
         for (const child of this.children){
             child.classList.add('fa-sort-alpha-asc')

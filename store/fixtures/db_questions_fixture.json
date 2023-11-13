@@ -4,7 +4,12 @@
     "pk": 1,
     "fields": {
       "description": "Какую оперную партию Ф. Шаляпин не исполнял?",
-      "image": "guestions/photo.jpg"
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
     }
   },
   {
@@ -12,7 +17,12 @@
     "pk": 2,
     "fields": {
       "description": "Под каким псевдонимом работал Мишель Дюшан?",
-      "in_active": 0
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
     }
   },
   {
@@ -20,14 +30,25 @@
     "pk": 3,
     "fields": {
       "description": "В каком городе обосновалось коллаборационистское правительство Петена в период оккупации Франции немецкими войсками?",
-      "image": "guestions/060099959b0eb0173b8e25b3f71dad36c218705a66ceef7eaa6dd3328041b9ee.jpg"
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        9
+      ]
     }
   },
   {
     "model": "questions.questions",
     "pk": 4,
     "fields": {
-      "description": "В чем измеряется громкость звука?"
+      "description": "В чем измеряется громкость звука?",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        10
+      ]
     }
   },
   {
@@ -35,29 +56,90 @@
     "pk": 5,
     "fields": {
       "description": "Какого цвета ягоды ядовитого плюща?",
-      "image": "guestions/2ecc73165b1a734928d9d6b7e7e0221e0b26d60f258d34ecc6c172c243ca26e2.jpg"
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        11
+      ]
     }
   },
   {
     "model": "questions.questions",
     "pk": 6,
     "fields": {
-      "description": "Назовите испытанное средство от вампиров?"
+      "description": "Назовите испытанное средство от вампиров?",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        12
+      ]
     }
   },
   {
     "model": "questions.questions",
     "pk": 7,
     "fields": {
-      "description": "Что сделал с Америкой Колумб?"
+      "description": "Что сделал с Америкой Колумб?",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        9
+      ]
     }
   },
   {
     "model": "questions.questions",
-    "pk": 8,
+    "pk": 72,
     "fields": {
-      "description": "Музыку какого композитора Андрей Тарковский использовал в фильме «Солярис»?",
-      "image": "guestions/chaynik_risunok_minimalizm_svetlyy_66191_1920x1080.jpg"
+      "description": "Пробный вопрос",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 73,
+    "fields": {
+      "description": "Пробный вопрос 2",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 74,
+    "fields": {
+      "description": "Пробный вопрос 3",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "questions.questions",
+    "pk": 75,
+    "fields": {
+      "description": "Пробный вопрос 4",
+      "in_active": true,
+      "image": "",
+      "doc_url": "",
+      "groups_questions": [
+        8
+      ]
     }
   }
 ]

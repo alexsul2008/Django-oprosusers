@@ -1,51 +1,72 @@
 [
   {
     "model": "questions.groupsquestions",
-    "pk": 1,
+    "pk": 8,
     "fields": {
-      "name": "Общий вопрос"
+      "name": "Общие",
+      "in_active": true,
+      "groups": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ]
     }
   },
   {
     "model": "questions.groupsquestions",
-    "pk": 2,
+    "pk": 9,
     "fields": {
-      "name": "Открытый вопрос"
+      "name": "Вопросы CS 1 линия",
+      "in_active": true,
+      "groups": [
+        9
+      ]
     }
   },
   {
     "model": "questions.groupsquestions",
-    "pk": 3,
+    "pk": 10,
     "fields": {
-      "name": "Закрытый вопрос"
+      "name": "Вопросы CS 2 линия",
+      "in_active": true,
+      "groups": [
+        10
+      ]
     }
   },
   {
     "model": "questions.groupsquestions",
-    "pk": 4,
+    "pk": 11,
     "fields": {
-      "name": "Разъясняющий вопрос"
+      "name": "Вопросы NSN 1 линия",
+      "in_active": true,
+      "groups": [
+        11
+      ]
     }
   },
   {
     "model": "questions.groupsquestions",
-    "pk": 5,
+    "pk": 12,
     "fields": {
-      "name": "Контрольный вопрос"
+      "name": "Вопросы NSN 2 линия",
+      "in_active": false,
+      "groups": [
+        12
+      ]
     }
   },
   {
     "model": "questions.groupsquestions",
-    "pk": 6,
+    "pk": 13,
     "fields": {
-      "name": "Косвенный вопрос"
-    }
-  },
-  {
-    "model": "questions.groupsquestions",
-    "pk": 7,
-    "fields": {
-      "name": "Альтернативный вопрос"
+      "name": "Вопросы PS",
+      "in_active": true,
+      "groups": [
+        13
+      ]
     }
   }
 ]

@@ -4,9 +4,9 @@
 
     {% block content %}
         <div class="container">
-            <div class="row">
-                <h1 class="mb-3">Статистика вопросов</h1>
-              
+            <div class="d-flex-row">
+                <h1 class="mb-3">Статистика прохождения опроса(ов)</h1>
+                {% if user_stat %}
                     {% for items_all in user_stat %}
                         <div class="w-100">
                             {% if items_all.count == 0 %}
@@ -78,11 +78,14 @@
                             <div id="collapse{{ items_all.number_opros_id }}" style="transition: .6s;" class="collapse"
                                  aria-labelledby="heading{{ items_all.number_opros_id }}"
                                  data-parent="#heading{{ items_all.number_opros_id }}"></div>
-                        </div>
-
-                            
-                        
+                        </div>  
                     {% endfor %}
+                {% else %}
+                    
+                    <div class="alert alert-info" role="alert">
+                        <h4 class="h4">Опрос(ы) не проходил.</h4>
+                      </div>
+                {% endif %}
             </div>
         </div>
     {% endblock content %}

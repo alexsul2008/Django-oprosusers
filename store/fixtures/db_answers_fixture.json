@@ -4,7 +4,8 @@
     "pk": 1,
     "fields": {
       "description": "Моцарт и Сальери",
-      "question_id": 1
+      "question": 1,
+      "approved": false
     }
   },
   {
@@ -12,7 +13,8 @@
     "pk": 2,
     "fields": {
       "description": "Борис Годунов",
-      "question_id": 1
+      "question": 1,
+      "approved": false
     }
   },
   {
@@ -20,8 +22,8 @@
     "pk": 3,
     "fields": {
       "description": "Евгений Онегин",
-      "question_id": 1,
-      "approved": 1
+      "question": 1,
+      "approved": true
     }
   },
   {
@@ -29,7 +31,8 @@
     "pk": 4,
     "fields": {
       "description": "Русалка",
-      "question_id": 1
+      "question": 1,
+      "approved": false
     }
   },
   {
@@ -37,7 +40,8 @@
     "pk": 5,
     "fields": {
       "description": "Жан Мишель Жар",
-      "question_id": 2
+      "question": 2,
+      "approved": false
     }
   },
   {
@@ -45,7 +49,8 @@
     "pk": 6,
     "fields": {
       "description": "Пупо",
-      "question_id": 2
+      "question": 2,
+      "approved": false
     }
   },
   {
@@ -53,8 +58,8 @@
     "pk": 7,
     "fields": {
       "description": "Роз - Селяви",
-      "question_id": 2,
-      "approved": 1
+      "question": 2,
+      "approved": true
     }
   },
   {
@@ -62,7 +67,8 @@
     "pk": 8,
     "fields": {
       "description": "Клодт",
-      "question_id": 2
+      "question": 2,
+      "approved": false
     }
   },
   {
@@ -70,7 +76,8 @@
     "pk": 9,
     "fields": {
       "description": "Мец",
-      "question_id": 3
+      "question": 3,
+      "approved": false
     }
   },
   {
@@ -78,7 +85,8 @@
     "pk": 10,
     "fields": {
       "description": "Лилль",
-      "question_id": 3
+      "question": 3,
+      "approved": false
     }
   },
   {
@@ -86,7 +94,8 @@
     "pk": 11,
     "fields": {
       "description": "Версаль",
-      "question_id": 3
+      "question": 3,
+      "approved": false
     }
   },
   {
@@ -94,8 +103,8 @@
     "pk": 12,
     "fields": {
       "description": "Виши",
-      "question_id": 3,
-      "approved": 1
+      "question": 3,
+      "approved": true
     }
   },
   {
@@ -103,8 +112,8 @@
     "pk": 13,
     "fields": {
       "description": "В децибелах",
-      "question_id": 4,
-      "approved": 1
+      "question": 4,
+      "approved": true
     }
   },
   {
@@ -112,7 +121,8 @@
     "pk": 14,
     "fields": {
       "description": "В дециметрах",
-      "question_id": 4
+      "question": 4,
+      "approved": false
     }
   },
   {
@@ -120,7 +130,8 @@
     "pk": 15,
     "fields": {
       "description": "В паскалях",
-      "question_id": 4
+      "question": 4,
+      "approved": false
     }
   },
   {
@@ -128,7 +139,8 @@
     "pk": 16,
     "fields": {
       "description": "В парсеках",
-      "question_id": 4
+      "question": 4,
+      "approved": false
     }
   },
   {
@@ -136,8 +148,8 @@
     "pk": 17,
     "fields": {
       "description": "Белые",
-      "question_id": 5,
-      "approved": 1
+      "question": 5,
+      "approved": true
     }
   },
   {
@@ -145,7 +157,8 @@
     "pk": 18,
     "fields": {
       "description": "Черные",
-      "question_id": 5
+      "question": 5,
+      "approved": false
     }
   },
   {
@@ -153,7 +166,8 @@
     "pk": 19,
     "fields": {
       "description": "Красные",
-      "question_id": 5
+      "question": 5,
+      "approved": false
     }
   },
   {
@@ -161,7 +175,8 @@
     "pk": 20,
     "fields": {
       "description": "Зеленые",
-      "question_id": 5
+      "question": 5,
+      "approved": false
     }
   },
   {
@@ -169,8 +184,8 @@
     "pk": 21,
     "fields": {
       "description": "Чеснок",
-      "question_id": 6,
-      "approved": 1
+      "question": 6,
+      "approved": true
     }
   },
   {
@@ -178,7 +193,8 @@
     "pk": 22,
     "fields": {
       "description": "Кинжал",
-      "question_id": 6
+      "question": 6,
+      "approved": false
     }
   },
   {
@@ -186,7 +202,8 @@
     "pk": 23,
     "fields": {
       "description": "Дубина",
-      "question_id": 6
+      "question": 6,
+      "approved": false
     }
   },
   {
@@ -194,7 +211,8 @@
     "pk": 24,
     "fields": {
       "description": "Пуля",
-      "question_id": 6
+      "question": 6,
+      "approved": false
     }
   },
   {
@@ -202,7 +220,8 @@
     "pk": 25,
     "fields": {
       "description": "Завоевал",
-      "question_id": 7
+      "question": 7,
+      "approved": false
     }
   },
   {
@@ -210,8 +229,8 @@
     "pk": 26,
     "fields": {
       "description": "Открыл",
-      "question_id": 7,
-      "approved": 1
+      "question": 7,
+      "approved": true
     }
   },
   {
@@ -219,32 +238,134 @@
     "pk": 27,
     "fields": {
       "description": "Продал",
-      "question_id": 7
+      "question": 7,
+      "approved": false
     }
   },
   {
     "model": "questions.answers",
-    "pk": 28,
+    "pk": 477,
     "fields": {
-      "description": "Бетховен",
-      "question_id": 8
+      "description": "Не правильный ответ 3",
+      "question": 72,
+      "approved": false
     }
   },
   {
     "model": "questions.answers",
-    "pk": 29,
+    "pk": 478,
     "fields": {
-      "description": "Чайковский",
-      "question_id": 8
+      "description": "Не правильный ответ 1",
+      "question": 72,
+      "approved": false
     }
   },
   {
     "model": "questions.answers",
-    "pk": 30,
+    "pk": 479,
     "fields": {
-      "description": "Бах",
-      "question_id": 8,
-      "approved": 1
+      "description": "Правильный ответ",
+      "question": 72,
+      "approved": true
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 480,
+    "fields": {
+      "description": "Не правильный ответ 2",
+      "question": 72,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 481,
+    "fields": {
+      "description": "2_Не правильный ответ 4",
+      "question": 73,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 482,
+    "fields": {
+      "description": "2_Правильный ответ пробного вопроса 2",
+      "question": 73,
+      "approved": true
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 483,
+    "fields": {
+      "description": "2_Не правильный ответ 2",
+      "question": 73,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 484,
+    "fields": {
+      "description": "2_Не правильный ответ 1",
+      "question": 73,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 485,
+    "fields": {
+      "description": "2_Не правильный ответ 3",
+      "question": 73,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 486,
+    "fields": {
+      "description": "3_Правильный ответ",
+      "question": 74,
+      "approved": true
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 487,
+    "fields": {
+      "description": "3_Не правильный ответ 1",
+      "question": 74,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 488,
+    "fields": {
+      "description": "4_Не правильный ответ 1",
+      "question": 75,
+      "approved": false
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 489,
+    "fields": {
+      "description": "4_Правильный ответ",
+      "question": 75,
+      "approved": true
+    }
+  },
+  {
+    "model": "questions.answers",
+    "pk": 490,
+    "fields": {
+      "description": "4_Не правильный ответ 2",
+      "question": 75,
+      "approved": false
     }
   }
 ]

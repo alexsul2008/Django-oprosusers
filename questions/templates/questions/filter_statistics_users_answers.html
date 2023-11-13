@@ -7,11 +7,15 @@
 {% if user.is_authenticated %}
 
     {% block content %}
-        <div class="container-fluid">
-            <h1 class="mb-4 pb-3 text-center">Статистика прохождения опросов</h1>
+        <div class="container-fluid pt-0">            
+            <div class="row">
+                <div class="mb-5 pt-3 pb-3 col-12 card  border border-info filter-groups ">
+                    <h4>Статистика прохождения опросов</h4>
+                </div>
+            </div>
 
             <div class="row">
-                <div class="col-3">
+                <div class="col-3 pl-0">
 
 
                     <form method="get" id="filters-in-users" data-url="{% url 'totalusers' %}">
@@ -104,7 +108,7 @@
 
 
                 </div>
-                <div class="col-9">
+                <div class="col-9 pr-0">
 
 
                     {% if success %}
@@ -131,7 +135,7 @@
 
 
                     <div class="list-group">
-                        <span class="btn btn-info btn-block mt-2 pt-2 pb-2 disabled"
+                        <span class="btn btn-info btn-block disabled  mt-2 mb-3 pt-3 pb-3 filter-groups"
                                 type="button"
                                 data-toggle="" data-target=""
                                 aria-expanded="false" aria-controls="">
@@ -157,8 +161,10 @@
                                     <span class="text-center">Группа</span>
                                     <button class="btn btn-info sort asc" data-sort="groupsname"><i class="fa fa-sort-alpha-asc" aria-hidden="true"></i></button>
                                 </div>
-                                <div class="w-20"><span class="text-center">&sum; опросов</span></div>
-                                <div class="w-20"><span class="text-center">Дата прохождения </span></div>
+                                <div class="w-40 d-flex flex-row justify-content-around">
+                                    <div class="w-30"><span class="text-center">&sum; опросов</span></div>
+                                    <div class="w-40"><span class="text-center">Дата прохождения </span></div>
+                                </div>
                             </div>
                         </span>
 
@@ -191,7 +197,7 @@
                                                     <span class="btn btn-outline-info btn-lg btn-block btn-statistics-user position-relative" type="button" data-id="{{ list_answer_user.id }}">
                                                         <div class="d-flex flex-row justify-content-between align-items-center">
                                                             <div class="w-30 text-left">
-                                                                <span class="username p-1 statistics-user">{{ forloop.counter }} - {{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                                <span class="username p-1 statistics-user">{{ list_answer_user.last_name }} {{ list_answer_user.first_name }}</span>
                                                             </div>
 
                                                             <div class="w-15">
@@ -228,10 +234,7 @@
                                                                 </span>
                                                             </div>
 
-                                                            <div class="w-15">
-                                                                <!-- <span data-groups="{{ list_answer_user.groups__id }}" class="groupsname badge badge-light p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.groups__name }}</span> -->
-
-                                                                <div class="form-groups">
+                                                            <div class="w-15"><div class="form-groups">
                                                                     <div class="dropdown">
                                                                         <form class="align-items-center set-group-user" method="post" action="{% url 'set_group_user' list_answer_user.id %}">
                                                                             {% csrf_token %}
@@ -247,11 +250,11 @@
                                                                 </div>
                                                             </div>
 
-
-                                                            <div class="w-40">
-                                                                <small class="text-center text-wrap">Опрос не проходил(а)</small>
+                                                            <div class="btn-statistics-user__status w-40 d-flex flex-row justify-content-around">
+                                                                
+                                                                    <small class="text-center text-wrap">Опрос не проходил(а)</small>
+                                                                
                                                             </div>
-
 
                                                         </div>
 
@@ -292,7 +295,7 @@
                                                                     data-toggle="collapse"
                                                                     data-target="#collapse_{{ list_answer_user.id }}"
                                                                     aria-expanded="false"
-                                                                    aria-controls="collapse_{{ list_answer_user.id }}" >{{ forloop.counter }} - {{ list_answer_user.last_name }} {{ list_answer_user.first_name }} - {{ list_answer_user.id }}</span>
+                                                                    aria-controls="collapse_{{ list_answer_user.id }}" >{{ list_answer_user.last_name }} {{ list_answer_user.first_name }}</span>
                                                             </div>
 
                                                             <div class="w-15">
@@ -345,21 +348,19 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                            <div class="btn-statistics-user__status w-40 d-flex flex-row justify-content-around">
                                                             {% if list_answer_user.permit_count != 0 %}
-                                                                <div class="w-20">
-                                                                    <span class="badge badge-light text-center p-2 w-50 h40 justify-content-center align-items-center" data-count="{{ list_answer_user.permit_count }}">{{ list_answer_user.permit_count }}</span>
-                                                                </div>
-                                                                <div class="w-20">
-                                                                    <span class="badge badge-light text-center p-2 w-100 h40 justify-content-center align-items-center">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
-                                                                </div>
+                                                                
+                                                                <span class="badge badge-light text-center w-30 h40 justify-content-center align-items-center" data-count="{{ list_answer_user.permit_count }}">{{ list_answer_user.permit_count }}</span>
+                                                            
+                                                            
+                                                                <span class="badge badge-light text-center w-40 h40 justify-content-center align-items-center">{{ list_answer_user.date_last_answ|date:"j E Y" }}</span>
+                                                                
 
                                                             {% else %}
-                                                                <div class="w-40">
-                                                                    <small class="text-center text-wrap">Опрос не проходил(а)</small>
-
-                                                                </div>
+                                                                <small class="text-center text-wrap">Опрос не проходил(а)</small>
                                                             {% endif %}
+                                                            </div>
 
                                                         </div>
 
@@ -368,7 +369,7 @@
                                             </div>
 
 
-                                            <div id="collapse_{{ list_answer_user.id }}" class="collapse"  style="transition: .6s;" data-collapse-user="{{ list_answer_user.id }}"
+                                            <div id="collapse_{{ list_answer_user.id }}" class="collapse"  data-collapse-user="{{ list_answer_user.id }}"
                                                 aria-labelledby="heading_{{ list_answer_user.id }}" data-parent="#accordExample">
 
 
@@ -429,7 +430,7 @@
                                                                     </div>
 
 
-                                                                <div id="collapse{{sess.id}}" class="collapse" style="transition: .6s;" aria-labelledby="heading{{sess.id}}" data-parent="#accordionExampleUserListQuestions_{{ list_answer_user.id }}">
+                                                                <div id="collapse{{sess.id}}" class="collapse" aria-labelledby="heading{{sess.id}}" data-parent="#accordionExampleUserListQuestions_{{ list_answer_user.id }}">
 
                                                                 </div>
                                                             </div>
@@ -607,9 +608,7 @@
 
 {% block javascript %}
     <script>
-        window.onload = (function () {
-            formFilterInUsers();
-        });
+        
 
         document.addEventListener("DOMContentLoaded", function() {
             let options = {
@@ -621,14 +620,8 @@
             const btnDataSort = document.querySelectorAll('[data-sort]')
             arrowDataSort(btnDataSort)
 
-            // const btnDataGroups = document.querySelectorAll('[data-groups]')
-            // setGroupUser(btnDataGroups)
-        });
-
-        // const modalGroupsUser = new bootstrap.Modal(document.getElementById("modalGroupsUser"), {
-        //    keyboard: false,
-        // });
-
+            formFilterInUsers();
+        });      
 
 
     </script>
